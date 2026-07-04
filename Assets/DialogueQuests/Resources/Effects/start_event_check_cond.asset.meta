@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 22115c8ebf6833e42bb3b50766b7fa28
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Effects/start_event_check_cond.asset
+  uploadId: 669316

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bb290a12cd945ac4ca10b24a1d5d5fac
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Effects/show_object.asset
+  uploadId: 669316

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e59188d6bae626f49850e83be8d682df, type: 3}
+  m_Name: RecipeCroissant
+  m_EditorClassIdentifier: Assembly-CSharp::FarmingEngine.BreadRecipeData
+  id: croissant
+  title: "\uD06C\uB8E8\uC544\uC0C1"
+  icon: {fileID: 21300000, guid: cb56becdfd1b7694ca6961cf713f7b00, type: 3}
+  desc: "\uBC84\uD130\uAC00 \uB4EC\uBFCD \uB4E4\uC5B4\uAC04 \uBC14\uC0AD\uD55C \uD06C\uB8E8\uC544\uC0C1"
+  required_items:
+  - {fileID: 11400000, guid: 8a0923afa6df93b448fb470f07bbd3ad, type: 2}
+  - {fileID: 11400000, guid: 8a0923afa6df93b448fb470f07bbd3ad, type: 2}
+  - {fileID: 11400000, guid: 743d7695875780d4aa3b7baa3954cfd3, type: 2}
+  - {fileID: 11400000, guid: f3ff54c98f67a3d42a5ca2c7a30dd8ae, type: 2}
+  result_item: {fileID: 11400000, guid: 764773b6368d09141a4d0c1820eb5f6f, type: 2}
+  result_quantity: 3
+  bake_duration: 40
+  unlocked_by_default: 1

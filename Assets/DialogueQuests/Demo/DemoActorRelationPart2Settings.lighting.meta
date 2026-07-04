@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6d24e71e2cd689d45aeedbbb50b0fbc8
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 4890085278179872738
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Demo/DemoActorRelationPart2Settings.lighting
+  uploadId: 669316

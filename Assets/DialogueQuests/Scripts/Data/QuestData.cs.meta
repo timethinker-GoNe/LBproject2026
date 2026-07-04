@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: a2e207a509725314f8a9d840dbfc8b08
+timeCreated: 1554175900
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Scripts/Data/QuestData.cs
+  uploadId: 669316

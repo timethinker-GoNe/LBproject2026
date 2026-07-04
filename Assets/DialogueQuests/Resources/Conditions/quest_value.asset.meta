@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 315abbb05fe59874e913870c7c48cdca
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Conditions/quest_value.asset
+  uploadId: 669316

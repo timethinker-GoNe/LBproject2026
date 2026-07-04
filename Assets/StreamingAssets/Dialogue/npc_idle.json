@@ -1,0 +1,53 @@
+{
+  "_comment": "NPC 잡담 대화. 스토리이벤트 매칭이 없을 때 재생. entries를 위→아래 순서로 평가, conditions 모두 충족하는 첫 entry 실행. conditions 빈 배열=항상. entry간 go_to로 흐름 연결.",
+  "npcs": {
+    "grandma": {
+      "entries": [
+        {
+          "id": "all_done",
+          "conditions": [
+            {
+              "type": "npc_status",
+              "npc_id": "grandma",
+              "value": "all_done"
+            }
+          ],
+          "lines": [
+            {
+              "actor": "grandma",
+              "text_key": "farm_01.grandma.idle.greet_03",
+              "type": "choice",
+              "choices": [
+                { "text_key": "farm_01.grandma.choice.trade", "go_to": "trade" },
+                { "text_key": "farm_01.grandma.choice.bye" }
+              ]
+            }
+          ],
+          "effects": []
+        },
+        {
+          "id": "default",
+          "conditions": [],
+          "lines": [
+            {
+              "actor": "grandma",
+              "text_key": "farm_01.grandma.idle.greet_01",
+              "type": "choice",
+              "choices": [
+                { "text_key": "farm_01.grandma.choice.trade", "go_to": "trade" },
+                { "text_key": "farm_01.grandma.choice.bye" }
+              ]
+            }
+          ],
+          "effects": []
+        },
+        {
+          "id": "trade",
+          "conditions": [],
+          "lines": [],
+          "effects": [{ "type": "open_shop" }]
+        }
+      ]
+    }
+  }
+}

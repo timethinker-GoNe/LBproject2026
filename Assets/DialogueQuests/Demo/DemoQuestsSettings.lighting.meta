@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 825bf32d709953243973ce7316e15d0f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 4890085278179872738
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Demo/DemoQuestsSettings.lighting
+  uploadId: 669316

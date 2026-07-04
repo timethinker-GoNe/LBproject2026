@@ -1,0 +1,170 @@
+{
+  "_comment": "스토리이벤트. StoryEventManager가 로드. triggers+conditions로 위→아래 순서 평가, 첫 매칭 이벤트 실행. on_start→대화→on_end 순.",
+  "events": [
+    {
+      "id": "grandma_offer_tutorial_001",
+      "triggers": [
+        {
+          "type": "npc_talk",
+          "npc_id": "grandma"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "quest_status",
+          "quest_id": "fq_tutorial_001",
+          "status": "Available"
+        }
+      ],
+      "on_start": [],
+      "lines": [
+        {
+          "actor": "grandma",
+          "text_key": "farm_01.grandma.intro.start",
+          "type": "normal",
+          "choices": null
+        }
+      ],
+      "effects": [
+        {
+          "type": "start_fq_quest",
+          "quest_id": "fq_tutorial_001"
+        },
+        {
+          "type": "give_item",
+          "item_id": "seed_tomato",
+          "quantity": 5
+        }
+      ],
+      "on_end": []
+    },
+    {
+      "id": "grandma_progress_tutorial_001",
+      "triggers": [
+        {
+          "type": "npc_talk",
+          "npc_id": "grandma"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "quest_status",
+          "quest_id": "fq_tutorial_001",
+          "status": "InProgress"
+        }
+      ],
+      "on_start": [],
+      "lines": [
+        {
+          "actor": "grandma",
+          "text_key": "farm_01.grandma.tutorial.start",
+          "type": "normal",
+          "choices": null
+        }
+      ],
+      "effects": [],
+      "on_end": []
+    },
+    {
+      "id": "grandma_reward_tutorial_001",
+      "triggers": [
+        {
+          "type": "npc_talk",
+          "npc_id": "grandma"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "quest_status",
+          "quest_id": "fq_tutorial_001",
+          "status": "Completed"
+        }
+      ],
+      "on_start": [],
+      "lines": [
+        {
+          "actor": "grandma",
+          "text_key": "farm_01.grandma.tutorial.complete",
+          "type": "normal",
+          "choices": null
+        }
+      ],
+      "effects": [
+        {
+          "type": "receive_fq_reward",
+          "quest_id": "fq_tutorial_001"
+        },
+        {
+          "type": "start_fq_quest",
+          "quest_id": "fq_tutorial_002"
+        }
+      ],
+      "on_end": []
+    },
+    {
+      "id": "grandma_progress_tutorial_002",
+      "triggers": [
+        {
+          "type": "npc_talk",
+          "npc_id": "grandma"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "quest_status",
+          "quest_id": "fq_tutorial_002",
+          "status": "InProgress"
+        }
+      ],
+      "on_start": [],
+      "lines": [
+        {
+          "actor": "grandma",
+          "text_key": "farm_01.grandma.tutorial_water.start",
+          "type": "normal",
+          "choices": null
+        }
+      ],
+      "effects": [],
+      "on_end": []
+    },
+    {
+      "id": "grandma_reward_tutorial_002",
+      "triggers": [
+        {
+          "type": "npc_talk",
+          "npc_id": "grandma"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "quest_status",
+          "quest_id": "fq_tutorial_002",
+          "status": "Completed"
+        }
+      ],
+      "on_start": [],
+      "lines": [
+        {
+          "actor": "grandma",
+          "text_key": "farm_01.grandma.complete.thanks",
+          "type": "normal",
+          "choices": null
+        }
+      ],
+      "effects": [
+        {
+          "type": "receive_fq_reward",
+          "quest_id": "fq_tutorial_002"
+        }
+      ],
+      "on_end": [
+        {
+          "type": "set_npc_status",
+          "npc_id": "grandma",
+          "value": "all_done"
+        }
+      ]
+    }
+  ]
+}

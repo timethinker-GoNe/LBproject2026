@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d5c1a5b1457c7584b8df70fd5a504a40
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Effects/hide_object.asset
+  uploadId: 669316

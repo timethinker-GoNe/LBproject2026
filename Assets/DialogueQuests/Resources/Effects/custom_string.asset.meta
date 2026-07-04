@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 115599022fc8e584d81106451d812e5f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Effects/custom_string.asset
+  uploadId: 669316

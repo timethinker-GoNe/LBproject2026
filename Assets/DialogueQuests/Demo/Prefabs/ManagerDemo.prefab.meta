@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 53db536283528104e8654fc8a6caafe0
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Demo/Prefabs/ManagerDemo.prefab
+  uploadId: 669316

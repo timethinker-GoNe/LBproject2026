@@ -1,0 +1,16 @@
+{
+  "_comment": "NPC 상점 데이터. for_sale=플레이어가 구매 가능, accepts=플레이어가 판매 가능. price/sell_able 미지정 시 ItemData 기본값 사용.",
+  "npcs": {
+    "grandma": {
+      "shop_title": "할머니 상점",
+      "for_sale": [
+        { "id": "bread" },
+        { "id": "apple", "price": 30 }
+      ],
+      "accepts": [
+        { "id": "tomato", "price": 20, "sell_able": true },
+        { "id": "diamond", "sell_able": false }
+      ]
+    }
+  }
+}

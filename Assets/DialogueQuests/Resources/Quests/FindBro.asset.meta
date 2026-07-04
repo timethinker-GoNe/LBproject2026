@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: eb923647b81e5544d970b4654789a9aa
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Quests/FindBro.asset
+  uploadId: 669316

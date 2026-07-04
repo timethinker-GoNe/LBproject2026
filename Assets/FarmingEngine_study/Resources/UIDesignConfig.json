@@ -1,0 +1,43 @@
+{
+  "ancMinX": 0.2,
+  "ancMinY": 0.18,
+  "ancMaxX": 0.8,
+  "ancMaxY": 0.88,
+  "slotCount": 24,
+  "cols": 6,
+  "cellSize": 54,
+  "cellSpacing": 4,
+  "panelBgSprite": "",
+  "slotBgSprite": "",
+  "closeBtnSprite": "",
+  "colPanel": [
+    0.54,
+    0.27,
+    0.07,
+    1
+  ],
+  "colHeader": [
+    0.35,
+    0.16,
+    0.03,
+    1
+  ],
+  "colSlotBg": [
+    0.8,
+    0.6,
+    0.28,
+    1
+  ],
+  "colHover": [
+    0.95,
+    0.75,
+    0.4,
+    1
+  ],
+  "colTitle": [
+    1,
+    0.92,
+    0.72,
+    1
+  ]
+}

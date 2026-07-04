@@ -1,0 +1,44 @@
+{
+  "slides": [
+    {
+      "id": "slide_01",
+      "image": "intro_01.png",
+      "text": "아주 오래전, 밀 냄새가 바람을 타고 흐르는 나라가 있었습니다.\n그곳의 이름은 이스트 왕국.\n계절마다 다른 빵 냄새가 피어나는, 작고 따뜻한 왕국이었지요."
+    },
+    {
+      "id": "slide_02",
+      "image": "intro_02.png",
+      "text": "하지만 이스트 왕국의 평화는 언제나 완전한 것은 아니었습니다.\n들판이 끝나는 곳, 오래된 숲의 그림자 아래에는\n사람들의 발길이 닿지 않는 어둠이 숨어 있었지요."
+    },
+    {
+      "id": "slide_03",
+      "image": "intro_03.png",
+      "text": "수확의 계절이 가까워지면\n숲에서는 낯선 울음소리가 들려왔고,\n아침의 밀밭에는 알 수 없는 발자국이 남았습니다."
+    },
+    {
+      "id": "slide_04",
+      "image": "intro_04.png",
+      "text": "사람들은 알고 있었습니다.\n이 왕국의 빛이, 언제나 숲의 어둠과 맞닿아 있었다는 것을."
+    },
+    {
+      "id": "slide_05",
+      "image": "intro_05.png",
+      "text": ""
+    },
+    {
+      "id": "slide_06",
+      "image": "intro_06.png",
+      "text": ""
+    }
+  ],
+  "text_style": {
+    "text_color": "#ffffff",
+    "text_size": 28,
+    "panel_color": "#000000",
+    "panel_alpha": 0.8,
+    "panel_anchor_min_x": 0,
+    "panel_anchor_min_y": 0,
+    "panel_anchor_max_x": 1,
+    "panel_anchor_max_y": 0.35
+  }
+}

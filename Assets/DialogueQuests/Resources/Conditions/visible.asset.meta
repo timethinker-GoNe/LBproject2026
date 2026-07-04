@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b57e6b47f807d84478dc3183f0912e52
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Conditions/visible.asset
+  uploadId: 669316

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9a16858bdcac738408ba10d572bb72c9
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Demo/Materials/Tree.mat
+  uploadId: 669316

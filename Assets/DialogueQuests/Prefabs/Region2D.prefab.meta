@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: d36e2267f8d26c04097b39fb28d11936
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Prefabs/Region2D.prefab
+  uploadId: 669316

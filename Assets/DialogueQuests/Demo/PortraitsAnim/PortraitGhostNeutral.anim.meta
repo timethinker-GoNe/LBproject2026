@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5540c1edb87b5a449adb320bf3b5048a
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Demo/PortraitsAnim/PortraitGhostNeutral.anim
+  uploadId: 669316

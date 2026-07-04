@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bc997f0c95fb71b44b0be8fa21bbfff1
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Actors/GhostB.asset
+  uploadId: 669316

@@ -1,0 +1,6 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+Assets/Scenes/Demo.unity filter=lfs diff=lfs merge=lfs -text
+Assets/Scenes/Sample-Day.unity filter=lfs diff=lfs merge=lfs -text
+Assets/Scenes/Sample-Night.unity filter=lfs diff=lfs merge=lfs -text
+Assets/SyntyStudios/PolygonAdventure/Scenes/Demo.unity filter=lfs diff=lfs merge=lfs -text

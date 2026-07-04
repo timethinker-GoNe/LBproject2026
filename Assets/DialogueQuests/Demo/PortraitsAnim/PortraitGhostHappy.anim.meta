@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0d58d39523207f54a819b4b06704017f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Demo/PortraitsAnim/PortraitGhostHappy.anim
+  uploadId: 669316

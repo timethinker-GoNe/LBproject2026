@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e444721c77f88a940943746b85d645e7
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Demo/Materials/TreeTrunk.mat
+  uploadId: 669316

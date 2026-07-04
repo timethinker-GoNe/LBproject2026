@@ -1,0 +1,117 @@
+{
+  "quickbar": {
+    "ancMinX": 0.25,
+    "ancMinY": 0.01,
+    "ancMaxX": 0.75,
+    "ancMaxY": 0.1
+  },
+  "equip": {
+    "ancMinX": 0.91,
+    "ancMinY": 0.1,
+    "ancMaxX": 1,
+    "ancMaxY": 0.82
+  },
+  "fullinv": {
+    "ancMinX": 0.25,
+    "ancMinY": 0.18,
+    "ancMaxX": 0.75,
+    "ancMaxY": 0.88,
+    "slotCount": 30,
+    "cols": 6,
+    "cellSize": 54,
+    "cellSpacing": 4,
+    "colPanel": [
+      0.54,
+      0.27,
+      0.07,
+      1
+    ],
+    "colHeader": [
+      0.35,
+      0.16,
+      0.03,
+      1
+    ],
+    "colSlotBg": [
+      0.8,
+      0.6,
+      0.28,
+      1
+    ],
+    "colHover": [
+      0.95,
+      0.75,
+      0.4,
+      1
+    ],
+    "colTitle": [
+      1,
+      0.92,
+      0.72,
+      1
+    ],
+    "panelBgSprite": "",
+    "slotBgSprite": "",
+    "closeBtnSprite": ""
+  },
+  "bag": {
+    "ancMinX": 0.3,
+    "ancMinY": 0.15,
+    "ancMaxX": 0.7,
+    "ancMaxY": 0.85
+  },
+  "storage": {
+    "ancMinX": 0.2,
+    "ancMinY": 0.15,
+    "ancMaxX": 0.8,
+    "ancMaxY": 0.85
+  },
+  "craft": {
+    "ancMinX": 0.05,
+    "ancMinY": 0.1,
+    "ancMaxX": 0.42,
+    "ancMaxY": 0.9
+  },
+  "craftsub": {
+    "ancMinX": 0.42,
+    "ancMinY": 0.1,
+    "ancMaxX": 0.65,
+    "ancMaxY": 0.9
+  },
+  "shop": {
+    "ancMinX": 0.1,
+    "ancMinY": 0.1,
+    "ancMaxX": 0.72,
+    "ancMaxY": 0.9
+  },
+  "mixing": {
+    "ancMinX": 0.22,
+    "ancMinY": 0.18,
+    "ancMaxX": 0.66,
+    "ancMaxY": 0.85
+  },
+  "dialogue": {
+    "ancMinX": 0.05,
+    "ancMinY": 0.65,
+    "ancMaxX": 0.95,
+    "ancMaxY": 0.9
+  },
+  "read": {
+    "ancMinX": 0.25,
+    "ancMinY": 0.1,
+    "ancMaxX": 0.75,
+    "ancMaxY": 0.9
+  },
+  "pause": {
+    "ancMinX": 0,
+    "ancMinY": 0,
+    "ancMaxX": 1,
+    "ancMaxY": 1
+  },
+  "action": {
+    "ancMinX": 0.38,
+    "ancMinY": 0.35,
+    "ancMaxX": 0.54,
+    "ancMaxY": 0.6
+  }
+}

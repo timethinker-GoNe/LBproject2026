@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c67eb23f50d3f3741a44fcb6fc1e7412
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Demo/PortraitsAnim/PortraitGirl.controller
+  uploadId: 669316

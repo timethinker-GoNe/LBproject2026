@@ -1,0 +1,62 @@
+{
+  "edges": [
+    {
+      "from": "01",
+      "to": "02"
+    },
+    {
+      "from": "02",
+      "to": "03"
+    },
+    {
+      "from": "03",
+      "to": "04-A"
+    },
+    {
+      "from": "03",
+      "to": "04-B"
+    }
+  ],
+  "nodes": [
+    {
+      "col": 0,
+      "desc": "DEV_EDITOR · 탭 9개 · Notes API · LifeGame 디자인",
+      "id": "01",
+      "row": 0,
+      "status": "done",
+      "title": "개발 에디터 구축"
+    },
+    {
+      "col": 1,
+      "desc": "기존 코드 현황 정리 · 아키텍처 파악 · 미완성 목록화",
+      "id": "02",
+      "row": 0,
+      "status": "active",
+      "title": "전체 시스템 Recap"
+    },
+    {
+      "col": 2,
+      "desc": "세부 개발 로드맵 확정 · 우선순위 결정",
+      "id": "03",
+      "row": 0,
+      "status": "pending",
+      "title": "계획 전체 수립"
+    },
+    {
+      "col": 3,
+      "desc": "일러스트/아이콘 삽입 테스트 · 에셋 네이밍 컨벤션 확립",
+      "id": "04-A",
+      "row": 0,
+      "status": "pending",
+      "title": "캐릭터 아트 & 컨벤션"
+    },
+    {
+      "col": 3,
+      "desc": "BakeryOven · BakingPanel · BreadDisplayShelf 설계 및 구현",
+      "id": "04-B",
+      "row": 1,
+      "status": "pending",
+      "title": "베이킹 시스템 개발"
+    }
+  ]
+}

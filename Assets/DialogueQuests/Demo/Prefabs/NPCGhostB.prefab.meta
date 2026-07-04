@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 58e133526ddfcc54dab62ff37fc2e7f7
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Demo/Prefabs/NPCGhostB.prefab
+  uploadId: 669316

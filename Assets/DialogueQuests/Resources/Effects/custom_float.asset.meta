@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0c5899391b098cc44a641b07146e0309
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Effects/custom_float.asset
+  uploadId: 669316

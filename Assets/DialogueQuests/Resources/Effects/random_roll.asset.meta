@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 509e17d648d3eda4f88a37ce953046c4
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Effects/random_roll.asset
+  uploadId: 669316

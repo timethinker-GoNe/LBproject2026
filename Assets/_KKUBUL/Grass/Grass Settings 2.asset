@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1c1e4b3ed04dba48bb4f2c4aec9a583, type: 3}
+  m_Name: Grass Settings 2
+  m_EditorClassIdentifier: 
+  shaderToUse: {fileID: 7200000, guid: ea880144542851a4d94923ac31b4bafa, type: 3}
+  materialToUse: {fileID: 2100000, guid: 2a66c866bc527fd429f11ae1ce35a639, type: 2}
+  grassRandomHeightMin: 0
+  grassRandomHeightMax: 5
+  bladeRadius: 0.201
+  bladeForwardAmount: 1
+  bladeCurveAmount: 2
+  bottomWidth: 0
+  MinWidth: 0.2
+  MinHeight: 0.2
+  MaxWidth: 0.2
+  MaxHeight: 0.2
+  windSpeed: 1
+  windStrength: 0.02
+  allowedBladesPerVertex: 4
+  allowedSegmentsPerBlade: 3
+  affectStrength: 1
+  topTint: {r: 0.2086004, g: 0.23773581, b: 0.05876111, a: 1}
+  bottomTint: {r: 0.20784315, g: 0.2392157, b: 0.058823533, a: 1}
+  colorVariationProbability: 0.15
+  variationBottomTint: {r: 0.8037735, g: 0.8037735, b: 0.8037735, a: 1}
+  variationTopTint: {r: 0.80392164, g: 0.80392164, b: 0.80392164, a: 1}
+  colorVariationNoiseScale: 50
+  colorVariationThreshold: 0.493
+  brightnessVariationScale: 0.5
+  brightnessVariationSteps: 6
+  brightnessVariationStrength: 0.324
+  drawBounds: 0
+  minFadeDistance: 80
+  maxDrawDistance: 250
+  cullingTreeDepth: 4
+  castShadow: 0

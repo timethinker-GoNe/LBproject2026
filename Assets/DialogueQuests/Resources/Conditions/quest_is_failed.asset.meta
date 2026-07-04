@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 86ef206a698708240aac11d9dc6c9b26
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Conditions/quest_is_failed.asset
+  uploadId: 669316

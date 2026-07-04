@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: cfbc4dd31ae2f6a4a96c17fdb1012700
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Effects/play_music.asset
+  uploadId: 669316

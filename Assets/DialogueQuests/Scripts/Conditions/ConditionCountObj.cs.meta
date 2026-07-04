@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: bd4d1ca8ddb5f894c95ce5e1ce5a6f67
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Scripts/Conditions/ConditionCountObj.cs
+  uploadId: 669316

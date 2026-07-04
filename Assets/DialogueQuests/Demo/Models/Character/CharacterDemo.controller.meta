@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ba52387f9a87f5c4b9b695faed45af12
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Demo/Models/Character/CharacterDemo.controller
+  uploadId: 669316

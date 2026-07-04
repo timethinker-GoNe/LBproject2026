@@ -1,0 +1,11 @@
+{
+  "illustration": "start_illustration.png",
+  "buttons": {
+    "new_game": "btn_new_game.png",
+    "load_game": "btn_load_game.png",
+    "settings": "btn_settings.png",
+    "quit": "btn_quit.png"
+  },
+  "title_text": ".",
+  "subtitle_text": "당신만의 농장을 일구어라"
+}

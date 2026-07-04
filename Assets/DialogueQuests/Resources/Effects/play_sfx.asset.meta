@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a95756095b0a2444280722a1be95db0f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Effects/play_sfx.asset
+  uploadId: 669316

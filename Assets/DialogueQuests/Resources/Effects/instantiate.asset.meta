@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9a213201fed17cf42b9d665056c5fd41
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Effects/instantiate.asset
+  uploadId: 669316

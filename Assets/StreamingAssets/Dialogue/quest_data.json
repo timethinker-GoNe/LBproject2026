@@ -1,0 +1,74 @@
+{
+  "quests": [
+    {
+      "id": "fq_tutorial_001",
+      "title": "농사의 시작",
+      "description": "할머니의 부탁대로 땅을 갈고 씨앗을 심어보자.",
+      "giverNpcId": "grandma",
+      "triggerNote": "grandma_intro 이벤트 종료 시 자동 시작 → quest_config.json > event_effects > grandma_intro > start_fq_quest",
+      "visibleConditions": [],
+      "startConditions": [],
+      "objectives": [
+        {
+          "type": "TillSoil",
+          "targetId": "",
+          "requiredAmount": 3
+        },
+        {
+          "type": "PlantSeed",
+          "targetId": "",
+          "requiredAmount": 1
+        }
+      ],
+      "rewards": [
+        {
+          "type": "Gold",
+          "targetId": "",
+          "amount": 50
+        }
+      ],
+      "nextQuestIds": ["fq_tutorial_002"]
+    },
+    {
+      "id": "fq_tutorial_002",
+      "title": "물 주고 수확하기",
+      "description": "심은 씨앗에 물을 주고, 자란 작물을 수확해서 할머니에게 가져가자.",
+      "giverNpcId": "grandma",
+      "triggerNote": "fq_tutorial_001 보상 수령 후 자동 Available. 보상은 grandma_idle_complete 이벤트 종료 시 지급 → quest_config.json > event_effects > grandma_idle_complete > receive_fq_reward",
+      "visibleConditions": [
+        {
+          "type": "QuestCompleted",
+          "targetId": "fq_tutorial_001",
+          "value": 0
+        }
+      ],
+      "startConditions": [
+        {
+          "type": "QuestCompleted",
+          "targetId": "fq_tutorial_001",
+          "value": 0
+        }
+      ],
+      "objectives": [
+        {
+          "type": "WaterPlant",
+          "targetId": "",
+          "requiredAmount": 3
+        },
+        {
+          "type": "HarvestCrop",
+          "targetId": "",
+          "requiredAmount": 1
+        }
+      ],
+      "rewards": [
+        {
+          "type": "Gold",
+          "targetId": "",
+          "amount": 100
+        }
+      ],
+      "nextQuestIds": []
+    }
+  ]
+}

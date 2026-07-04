@@ -1,0 +1,60 @@
+{
+  "version": "v1_20260614",
+  "date": "2026-06-14",
+  "label": "씬 관리 탭 초기 구축",
+  "changelog": "Scene_Start / Intro / CharCreate / Farm_01 4개 씬 계층 구조 및 컴포넌트 설명 초기 작성.",
+  "scenes": {
+    "Scene_Start": {
+      "path": "Assets/Scenes/Game/Scene_Start.unity",
+      "components": [
+        {"group": "MANAGERS", "name": "StartScreenManager", "ns": "FarmingEngine", "desc": "타이틀 화면 전체 흐름 관리. 새 게임 시작·저장 슬롯 로드·설정 패널 전환 담당. 씬 로드 순서의 진입점."},
+        {"group": "MANAGERS", "name": "EventSystem",        "ns": "Unity",          "desc": "UI 클릭·키보드 입력·포커스 이동 이벤트를 Canvas로 전달. 씬에 하나만 있어야 함."},
+        {"group": "CAMERA",   "name": "UICamera",           "ns": "tag:MainCamera", "desc": "UI 전용 카메라. Screen Space UI만 렌더링. MainCamera 태그로 Canvas 렌더 카메라로 참조됨."},
+        {"group": "UI",       "name": "MenuCanvas",         "ns": "",               "desc": "타이틀 메인 캔버스. MenuPanel(Btn_NewGame·Btn_LoadGame·Btn_Quit·Btn_Settings), SaveSlotPanel(슬롯 3개), SettingsPanel(오디오·디스플레이·키바인딩), ConfirmPanel 포함."},
+        {"group": "UI",       "name": "BackgroundCanvas",   "ns": "",               "desc": "배경 및 전환 효과 캔버스. BackgroundPanel(배경 이미지), BlackPanel(씬 전환 페이드 in/out) 포함."},
+        {"group": "ENVIRONMENT", "name": "Directional Light", "ns": "Unity",        "desc": "씬 전역 방향성 광원. UI 씬에서 시각적 영향 거의 없으나 Unity 기본 구조상 포함."}
+      ]
+    },
+    "Scene_Intro": {
+      "path": "Assets/Scenes/Game/Scene_Intro.unity",
+      "components": [
+        {"group": "MANAGERS", "name": "IntroManager",  "ns": "FarmingEngine", "desc": "인트로 연출 흐름 관리. 슬라이드 패널 순서 제어 및 스킵 처리. 완료 후 Scene_CharCreate로 전환."},
+        {"group": "MANAGERS", "name": "EventSystem",   "ns": "Unity",         "desc": "UI 이벤트 전달. 씬에 하나만 있어야 함."},
+        {"group": "CAMERA",   "name": "UICamera",      "ns": "tag:MainCamera","desc": "UI 전용 카메라."},
+        {"group": "UI",       "name": "IntroCanvas",   "ns": "",              "desc": "IntroSequence(텍스트/이미지 슬라이드 패널들), SkipButton 포함. IntroManager가 순서 제어."},
+        {"group": "ENVIRONMENT", "name": "Directional Light", "ns": "Unity",  "desc": "씬 기본 광원."}
+      ]
+    },
+    "Scene_CharCreate": {
+      "path": "Assets/Scenes/Game/Scene_CharCreate.unity",
+      "components": [
+        {"group": "MANAGERS", "name": "CharCreateManager", "ns": "FarmingEngine", "desc": "직업 카드 선택·외형 선택·이름 입력 흐름 관리. 확인 시 선택 데이터를 저장하고 Scene_Farm_01로 전환."},
+        {"group": "MANAGERS", "name": "EventSystem",       "ns": "Unity",          "desc": "UI 이벤트 전달."},
+        {"group": "CAMERA",   "name": "UICamera",          "ns": "tag:MainCamera", "desc": "UI 전용 카메라."},
+        {"group": "UI",       "name": "CharCreateCanvas",  "ns": "",               "desc": "Card_Farmer·Card_Chef·Card_Merchant(직업 선택 카드, BackgroundCardUI), AppearancePreview(외형 전환 버튼), NameInput(InputField), Btn_Confirm·Btn_Back 포함."},
+        {"group": "ENVIRONMENT", "name": "Directional Light", "ns": "Unity",       "desc": "씬 기본 광원."}
+      ]
+    },
+    "Scene_Farm_01": {
+      "path": "Assets/Scenes/Game/Scene_Farm_01.unity",
+      "components": [
+        {"group": "MANAGERS", "name": "SaveManager",        "ns": "FarmingEngine",  "desc": "슬롯별 게임 데이터(.farming 파일) 저장·로드. PlayerData·WorldData 직렬화."},
+        {"group": "MANAGERS", "name": "QuestManager",       "ns": "FarmingQuest",   "desc": "퀘스트 수락·진행·완료 상태 관리. QuestUI 및 StoryEventManager에 이벤트 발행."},
+        {"group": "MANAGERS", "name": "StoryEventManager",  "ns": "FarmingEngine",  "desc": "story_events.json·npc_idle.json 로드, 이벤트 트리거·NPC 대사 처리. QuestManager 상태 구독."},
+        {"group": "MANAGERS", "name": "EventSystem",        "ns": "Unity",          "desc": "씬 내 모든 UI 이벤트 처리."},
+        {"group": "CAMERA",   "name": "Main Camera",        "ns": "",               "desc": "3D 월드 렌더링 메인 카메라. TheCamera.cs가 플레이어 추적·줌·화면 셰이크 제어."},
+        {"group": "UI",       "name": "SaveUI_Canvas",      "ns": "",               "desc": "SaveSlotPanel(슬롯 0~2 저장/로드 UI) 포함."},
+        {"group": "UI",       "name": "QuestUI",            "ns": "",               "desc": "FarmingQuestPanel(J키 저널), Tracker(우상단 미니 트래커), Toast(알림 팝업) 포함."},
+        {"group": "UI",       "name": "SettingsPanel",      "ns": "FarmingEngine",  "desc": "Tab_Audio·Tab_Display·Tab_Keys 3탭 구성. 설정값 PlayerPrefs 저장."},
+        {"group": "UI",       "name": "FullInventoryPanel", "ns": "",               "desc": "전체 아이템창. 커스텀 인벤토리 UI."},
+        {"group": "UI",       "name": "ConfirmPanel",       "ns": "FarmingEngine",  "desc": "위험 작업 이중 확인 다이얼로그. 콜백 방식 결과 전달."},
+        {"group": "UI",       "name": "HUD 텍스트",         "ns": "",               "desc": "MessageText·DayText·PlayTimeText 상시 표시 텍스트."},
+        {"group": "WORLD",    "name": "Ground",             "ns": "",               "desc": "농장 지면 오브젝트."},
+        {"group": "WORLD",    "name": "SoilArea",           "ns": "",               "desc": "경작 가능 흙 영역."},
+        {"group": "CHARACTERS","name": "Actor 오브젝트들",  "ns": "DialogueQuests", "desc": "플레이어 캐릭터 및 NPC Actor 오브젝트. DialogueQuests.Actor 컴포넌트 부착."},
+        {"group": "ENVIRONMENT","name": "배경 오브젝트",    "ns": "",               "desc": "나무·풀·울타리·건물 등 월드 배경 오브젝트."},
+        {"group": "QUESTS",   "name": "퀘스트 존 마커",     "ns": "",               "desc": "퀘스트 트리거 존 마커들. StoryEventManager가 참조."}
+      ]
+    }
+  }
+}

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 372cbd75ea57ed147a5b3cae41705378
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Conditions/count_scene_objects.asset
+  uploadId: 669316

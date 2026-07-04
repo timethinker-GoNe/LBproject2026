@@ -1,0 +1,484 @@
+{
+  "quickbar": {
+    "ancMinX": 0.25,
+    "ancMinY": 0.02,
+    "ancMaxX": 0.75,
+    "ancMaxY": 0.12,
+    "areas": [
+      {
+        "name": "main",
+        "slotCount": 10,
+        "slotCols": 10,
+        "slotGap": 0,
+        "slotPad": 12,
+        "slotSize": 84,
+        "slotJustify": "center",
+        "slotAlign": "center",
+        "slotPadLeft": 15,
+        "slotPadRight": 20,
+        "slotPadTop": 12,
+        "slotPadBottom": 12
+      }
+    ],
+    "bgSprite": "UISprites/T_bar_quick.png",
+    "slotSprite": "UISprites/quickbar_slot.png"
+  },
+  "equip": {
+    "ancMinX": 0.8,
+    "ancMinY": 0.01,
+    "ancMaxX": 1,
+    "ancMaxY": 0.25,
+    "areas": [
+      {
+        "name": "main",
+        "slotCount": 6,
+        "slotCols": 3,
+        "slotGap": 12,
+        "slotPad": 5,
+        "slotSize": 100,
+        "slotJustify": "center",
+        "slotAlign": "center",
+        "slotPadLeft": 5,
+        "slotPadRight": 10,
+        "slotPadTop": 15,
+        "slotPadBottom": 15
+      }
+    ],
+    "bgSprite": "Panel_square",
+    "slotSprite": "UISprites/equip_slot.png"
+  },
+  "fullinv": {
+    "ancMinX": 0.25,
+    "ancMinY": 0.37,
+    "ancMaxX": 0.75,
+    "ancMaxY": 0.95,
+    "slotCount": 24,
+    "cols": 8,
+    "cellSize": 35,
+    "cellSpacing": 6,
+    "slotJustify": "center",
+    "slotAlign": "start",
+    "headerHeight": 40,
+    "headerText": "인벤토리",
+    "panelBgSprite": "Panel_big",
+    "slotBgSprite": "Slot",
+    "closeBtnSprite": "Button_close",
+    "headerBarSprite": "bar_long2",
+    "compSprites": { "slotPanel": "@panel_big", "header": "@bar_long", "close": "@close" }
+  },
+  "bag": {
+    "ancMinX": 0.3,
+    "ancMinY": 0.15,
+    "ancMaxX": 0.7,
+    "ancMaxY": 0.85,
+    "areas": [
+      {
+        "name": "main",
+        "slotCount": 8,
+        "slotCols": 4,
+        "slotGap": 4,
+        "slotPad": 4,
+        "slotSize": 70,
+        "slotJustify": "center",
+        "slotAlign": "center",
+        "slotPadLeft": 4,
+        "slotPadRight": 4,
+        "slotPadTop": 4,
+        "slotPadBottom": 4
+      }
+    ],
+    "bgSprite": "bar_long2",
+    "slotSprite": "UISprites/bag_slot.png"
+  },
+  "storage": {
+    "ancMinX": 0.11,
+    "ancMinY": 0.2,
+    "ancMaxX": 0.62,
+    "ancMaxY": 0.9,
+    "areas": [
+      {
+        "name": "main",
+        "slotCount": 30,
+        "slotCols": 6,
+        "slotGap": 4,
+        "slotPad": 4,
+        "slotSize": 60,
+        "slotJustify": "center",
+        "slotAlign": "center",
+        "slotPadLeft": 35,
+        "slotPadRight": 42,
+        "slotPadTop": 33,
+        "slotPadBottom": 30
+      }
+    ],
+    "bgSprite": "Panel_big",
+    "slotSprite": "UISprites/storage_slot.png",
+    "compSprites": { "close": "@close" }
+  },
+  "craft": {
+    "ancMinX": 0.05,
+    "ancMinY": 0.1,
+    "ancMaxX": 0.42,
+    "ancMaxY": 0.9,
+    "areas": [
+      {
+        "name": "main",
+        "slotCount": 8,
+        "slotCols": 3,
+        "slotGap": 4,
+        "slotPad": 4,
+        "slotSize": 70,
+        "slotJustify": "center",
+        "slotAlign": "center",
+        "slotPadLeft": 4,
+        "slotPadRight": 4,
+        "slotPadTop": 4,
+        "slotPadBottom": 4
+      }
+    ],
+    "bgSprite": "Panel_big"
+  },
+  "craftsub": {
+    "ancMinX": 0.42,
+    "ancMinY": 0.1,
+    "ancMaxX": 0.65,
+    "ancMaxY": 0.9,
+    "areas": [
+      {
+        "name": "main",
+        "slotCount": 14,
+        "slotCols": 2,
+        "slotGap": 4,
+        "slotPad": 4,
+        "slotSize": 70,
+        "slotJustify": "center",
+        "slotAlign": "center",
+        "slotPadLeft": 4,
+        "slotPadRight": 4,
+        "slotPadTop": 4,
+        "slotPadBottom": 4
+      }
+    ],
+    "bgSprite": "Panel_long"
+  },
+  "shop": {
+    "ancMinX": 0.05,
+    "ancMinY": 0.16,
+    "ancMaxX": 0.7,
+    "ancMaxY": 0.95,
+    "areas": [
+      {
+        "name": "buy",
+        "slotCount": 8,
+        "slotCols": 4,
+        "slotGap": 4,
+        "slotPad": 8,
+        "slotSize": 80,
+        "slotJustify": "center",
+        "slotAlign": "center",
+        "slotPadLeft": 8,
+        "slotPadRight": 8,
+        "slotPadTop": 8,
+        "slotPadBottom": 8
+      },
+      {
+        "name": "sell",
+        "slotCount": 12,
+        "slotCols": 4,
+        "slotGap": 4,
+        "slotPad": 8,
+        "slotSize": 80,
+        "slotJustify": "center",
+        "slotAlign": "center",
+        "slotPadLeft": 8,
+        "slotPadRight": 8,
+        "slotPadTop": 8,
+        "slotPadBottom": 8
+      }
+    ],
+    "bgSprite": "Panel_big",
+    "slotSprite": "UISprites/shop_slot.png",
+    "compSprites": { "tb": "@bar_long", "bs": "@panel_big", "ss": "@panel_big", "ds": "@bar_long" }
+  },
+  "mixing": {
+    "ancMinX": 0.22,
+    "ancMinY": 0.18,
+    "ancMaxX": 0.66,
+    "ancMaxY": 0.85,
+    "areas": [
+      {
+        "name": "main",
+        "slotCount": 6,
+        "slotCols": 4,
+        "slotGap": 4,
+        "slotPad": 4,
+        "slotSize": 70,
+        "slotJustify": "center",
+        "slotAlign": "center",
+        "slotPadLeft": 4,
+        "slotPadRight": 4,
+        "slotPadTop": 4,
+        "slotPadBottom": 4
+      }
+    ],
+    "bgSprite": "Panel_big",
+    "slotSprite": "UISprites/mixing_slot.png",
+    "compSprites": { "result": "@upgrade_slot", "close": "@close", "mix_btn": "@btn" }
+  },
+  "dialogue": {
+    "ancMinX": 0.17,
+    "ancMinY": 0.03,
+    "ancMaxX": 0.82,
+    "ancMaxY": 0.34,
+    "bgSprite": "DialogueBox"
+  },
+  "read": {
+    "ancMinX": 0.25,
+    "ancMinY": 0.1,
+    "ancMaxX": 0.75,
+    "ancMaxY": 0.9,
+    "bgSprite": "Panel_big",
+    "compSprites": { "close": "@close" }
+  },
+  "pause": {
+    "ancMinX": 0,
+    "ancMinY": 0,
+    "ancMaxX": 1,
+    "ancMaxY": 1,
+    "bgSprite": "Panel_big",
+    "compSprites": { "save": "@blue_btn", "load": "@blue_btn", "new": "@blue_btn", "music": "@speaker" }
+  },
+  "action": {
+    "ancMinX": 0.38,
+    "ancMinY": 0.38,
+    "ancMaxX": 0.54,
+    "ancMaxY": 0.6,
+    "areas": [
+      {
+        "name": "main",
+        "slotCount": 4,
+        "slotCols": 4,
+        "slotGap": 3,
+        "slotPad": 3,
+        "slotSize": 60,
+        "slotJustify": "center",
+        "slotAlign": "center",
+        "slotPadLeft": 3,
+        "slotPadRight": 3,
+        "slotPadTop": 3,
+        "slotPadBottom": 3
+      }
+    ],
+    "compSprites": { "bg0": "@square", "bg1": "@square", "bg2": "@square", "bg3": "@square" }
+  },
+  "gameover": {
+    "ancMinX": 0.25,
+    "ancMinY": 0.2,
+    "ancMaxX": 0.75,
+    "ancMaxY": 0.8,
+    "bgSprite": "Square",
+    "compSprites": { "load": "@blue_btn", "new": "@blue_btn" }
+  },
+  "timeclock": {
+    "ancMinX": 0.78,
+    "ancMinY": 0.86,
+    "ancMaxX": 1,
+    "ancMaxY": 1,
+    "compSprites": { "fill": "@clock" }
+  },
+  "hpbar": {
+    "ancMinX": 0.01,
+    "ancMinY": 0.88,
+    "ancMaxX": 0.23,
+    "ancMaxY": 0.98,
+    "compSprites": { "bar": "@bar_empty" }
+  },
+  "xpbar": {
+    "ancMinX": 0.01,
+    "ancMinY": 0.78,
+    "ancMaxX": 0.56,
+    "ancMaxY": 0.86,
+    "compSprites": { "fill": "@fill_yellow" }
+  },
+  "attrbar": {
+    "ancMinX": 0,
+    "ancMinY": 0.42,
+    "ancMaxX": 0.07,
+    "ancMaxY": 0.86,
+    "compSprites": { "bar": "@bar_empty" }
+  },
+  "progressbar": {
+    "ancMinX": 0.3,
+    "ancMinY": 0.45,
+    "ancMaxX": 0.7,
+    "ancMaxY": 0.53,
+    "compSprites": { "bar": "@bar_empty" }
+  },
+  "craftinfo": {
+    "ancMinX": 0.65,
+    "ancMinY": 0.1,
+    "ancMaxX": 0.95,
+    "ancMaxY": 0.9,
+    "bgSprite": "Panel_big",
+    "compSprites": { "close": "@close" }
+  },
+  "actionsui": {
+    "ancMinX": 0.38,
+    "ancMinY": 0.38,
+    "ancMaxX": 0.54,
+    "ancMaxY": 0.6
+  },
+  "tooltip": {
+    "ancMinX": 0.3,
+    "ancMinY": 0.52,
+    "ancMaxX": 0.6,
+    "ancMaxY": 0.62
+  },
+  "questui": {
+    "ancMinX": 0.83,
+    "ancMinY": 0.83,
+    "ancMaxX": 1,
+    "ancMaxY": 1,
+    "trackerBgSprite": "",
+    "toastBgSprite": "",
+    "fontSize": 18
+  },
+  "farmingquest": {
+    "ancMinX": 0.25,
+    "ancMinY": 0.27,
+    "ancMaxX": 0.75,
+    "ancMaxY": 0.95,
+    "panelBgSprite": "",
+    "fontSize": 16
+  },
+  "bakingpanel": {
+    "ancMinX": 0.05,
+    "ancMinY": 0.02,
+    "ancMaxX": 0.95,
+    "ancMaxY": 0.98,
+    "leftRatio": 0.38,
+    "titleBarH": 0.11,
+    "panelBgColor": "rgba(31,26,20,0.97)",
+    "titleBarBgColor": "rgba(20,15,9,1)",
+    "titleBarBgSprite": "",
+    "leftPanelBgColor": "rgba(23,19,15,0.95)",
+    "leftPanelBgSprite": "",
+    "rightPanelBgColor": "rgba(23,19,15,0.95)",
+    "rightPanelBgSprite": "",
+    "fontTitle": 60,
+    "fontLeftTitle": 42,
+    "fontRecipeTitle": 51,
+    "fontRecipeDesc": 36,
+    "fontIngrLabel": 39,
+    "fontBakeBtn": 42,
+    "fontStatus": 33,
+    "fontOutputLabel": 36,
+    "recipeButtonH": 180,
+    "recipeButtonFont": 48,
+    "ingredientSlotSize": 192,
+    "ingredientSpacing": 18,
+    "outputBtnW": 192,
+    "outputBtnH": 186,
+    "padding": 24,
+    "titlePadding": 12,
+    "bkEls": {
+      "title": {
+        "top": 0,
+        "left": 0,
+        "w": 78,
+        "h": 100
+      },
+      "closebtn": {
+        "top": 8,
+        "left": 83,
+        "w": 14,
+        "h": 84
+      },
+      "lefttitle": {
+        "top": 1,
+        "left": 2,
+        "w": 96,
+        "h": 14
+      },
+      "recipelist": {
+        "top": 15,
+        "left": 1,
+        "w": 98,
+        "h": 84
+      },
+      "recipetitle": {
+        "top": 1,
+        "left": 2,
+        "w": 96,
+        "h": 16
+      },
+      "recipedesc": {
+        "top": 18,
+        "left": 2,
+        "w": 96,
+        "h": 12
+      },
+      "ingrlabel": {
+        "top": 31,
+        "left": 2,
+        "w": 96,
+        "h": 7
+      },
+      "ingrcontainer": {
+        "top": 38,
+        "left": 2,
+        "w": 96,
+        "h": 18
+      },
+      "divider": {
+        "top": 56,
+        "left": 2,
+        "w": 96,
+        "h": 1.5
+      },
+      "bakebtn": {
+        "top": 58,
+        "left": 2,
+        "w": 44,
+        "h": 11
+      },
+      "statustext": {
+        "top": 70,
+        "left": 2,
+        "w": 96,
+        "h": 7
+      },
+      "progressslider": {
+        "top": 77,
+        "left": 2,
+        "w": 96,
+        "h": 7
+      },
+      "outputlabel": {
+        "top": 85,
+        "left": 2,
+        "w": 96,
+        "h": 6
+      },
+      "outputbtn": {
+        "top": 92,
+        "left": 2,
+        "w": 22,
+        "h": 7
+      }
+    }
+  },
+  "_feSprites": {
+    "close":         "Button_close",
+    "blue_btn":      "ButtonBlue",
+    "square":        "Square",
+    "bar_long":      "bar_long2",
+    "panel_big":     "Panel_big",
+    "clock":         "clock_fill",
+    "bar_empty":     "Bar_empty",
+    "fill_yellow":   "fill_yellow",
+    "speaker":       "speaker_on",
+    "upgrade_slot":  "T_UpgadeSlotEmpty_BG",
+    "btn":           "Button"
+  }
+}

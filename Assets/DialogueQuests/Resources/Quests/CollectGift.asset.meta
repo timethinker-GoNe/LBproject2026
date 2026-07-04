@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e5670af608182c64d9981f18d6417aa5
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Quests/CollectGift.asset
+  uploadId: 669316

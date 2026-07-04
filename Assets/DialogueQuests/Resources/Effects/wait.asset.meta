@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: dbe30a6aef89b3043b8547139e27f580
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Effects/wait.asset
+  uploadId: 669316

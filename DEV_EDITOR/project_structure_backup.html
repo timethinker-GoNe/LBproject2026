@@ -1,0 +1,2328 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farming + Bakery Project Dashboard</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3250;
+    --accent: #5b8af5;
+    --accent2: #a78bfa;
+    --green: #34d399;
+    --yellow: #fbbf24;
+    --red: #f87171;
+    --orange: #fb923c;
+    --cyan: #22d3ee;
+    --pink: #f472b6;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, #1e2640 0%, #12162a 100%); border-bottom: 1px solid var(--border); padding: 20px 32px; display: flex; align-items: center; gap: 16px; }
+  .header-icon { font-size: 32px; }
+  .header-title { font-size: 22px; font-weight: 700; color: var(--text); }
+  .header-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-left: 8px; }
+  .badge-blue { background: #1e3a8a; color: #93c5fd; }
+  .badge-green { background: #064e3b; color: #6ee7b7; }
+  .badge-yellow { background: #78350f; color: #fde68a; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; background: var(--surface); border-bottom: 1px solid var(--border); overflow-x: auto; }
+  .tab { padding: 12px 20px; cursor: pointer; color: var(--text2); font-size: 13px; font-weight: 500; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.2s; }
+  .tab:hover { color: var(--text); background: var(--surface2); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--surface2); }
+
+  /* Content */
+  .content { padding: 24px 32px; max-width: 1400px; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* Grid */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+  /* Cards */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .card-title { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+  .card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+
+  /* Stat cards */
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+  .stat-num { font-size: 32px; font-weight: 700; line-height: 1; }
+  .stat-label { font-size: 11px; color: var(--text2); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* System boxes */
+  .system-box { border-radius: 10px; padding: 16px; border: 1px solid; }
+  .system-fe { background: #0f1e3a; border-color: #1e3f7a; }
+  .system-dq { background: #1a0f3a; border-color: #3f1e7a; }
+  .system-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot-blue { background: var(--accent); }
+  .dot-purple { background: var(--accent2); }
+  .dot-green { background: var(--green); }
+  .dot-yellow { background: var(--yellow); }
+  .dot-red { background: var(--red); }
+  .dot-orange { background: var(--orange); }
+
+  /* File list */
+  .file-list { list-style: none; }
+  .file-list li { padding: 4px 0; color: var(--text2); font-size: 12px; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid #1e2035; }
+  .file-list li:last-child { border-bottom: none; }
+  .file-count { font-size: 10px; background: var(--surface2); padding: 1px 5px; border-radius: 4px; color: var(--text3); }
+
+  /* Connection arrow */
+  .connection { display: flex; align-items: center; gap: 12px; margin: 16px 0; }
+  .conn-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 12px; flex: 1; }
+  .conn-arrow { color: var(--text3); font-size: 18px; flex-shrink: 0; }
+  .conn-label { font-size: 10px; color: var(--text3); text-align: center; margin-top: 4px; }
+
+  /* Status indicators */
+  .status { display: flex; align-items: center; gap: 6px; font-size: 12px; padding: 4px 0; }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .ok { color: var(--green); }
+  .warn { color: var(--yellow); }
+  .err { color: var(--red); }
+  .info { color: var(--cyan); }
+
+  /* Optimization cards */
+  .opt-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
+  .opt-status { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .opt-done { background: #064e3b; }
+  .opt-pending { background: #78350f; }
+  .opt-deferred { background: #1e3a8a; }
+  .opt-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .opt-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .opt-file { font-size: 11px; color: var(--text3); margin-top: 4px; font-family: monospace; }
+
+  /* Before/After */
+  .ba-container { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .ba-before { background: #1f1010; border-right: 1px solid var(--border); padding: 16px; }
+  .ba-after { background: #0f1f10; padding: 16px; }
+  .ba-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .ba-before .ba-label { color: var(--red); }
+  .ba-after .ba-label { color: var(--green); }
+
+  /* Architecture diagram */
+  .arch-diagram { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; position: relative; }
+  .arch-row { display: flex; gap: 12px; justify-content: center; margin: 8px 0; }
+  .arch-node { border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; text-align: center; border: 1px solid; min-width: 100px; }
+  .arch-node-core { background: #0f1e4a; border-color: var(--accent); color: var(--accent); }
+  .arch-node-fe { background: #0f2a4a; border-color: #2563eb; color: #93c5fd; }
+  .arch-node-dq { background: #2a0f4a; border-color: #7c3aed; color: #c4b5fd; }
+  .arch-node-wrap { background: #2a2a0a; border-color: #d97706; color: #fde68a; }
+  .arch-node-save { background: #0a2a1a; border-color: #059669; color: #6ee7b7; }
+  .arch-arrow { text-align: center; color: var(--text3); font-size: 12px; margin: 2px 0; }
+  .arch-divider { width: 100%; height: 1px; background: var(--border); margin: 12px 0; position: relative; }
+  .arch-divider span { position: absolute; left: 50%; transform: translateX(-50%); top: -9px; background: var(--surface); padding: 0 8px; font-size: 11px; color: var(--text3); }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+  .tl-item { position: relative; padding-bottom: 20px; }
+  .tl-dot { position: absolute; left: -21px; top: 4px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid; }
+  .tl-done { border-color: var(--green); background: var(--green); }
+  .tl-active { border-color: var(--accent); background: var(--accent); }
+  .tl-pending { border-color: var(--border); background: var(--surface); }
+  .tl-future { border-color: var(--text3); background: var(--surface); }
+  .tl-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .tl-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .tl-tag { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 4px; margin-right: 4px; margin-top: 4px; }
+
+  /* Code block */
+  pre { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 11px; font-family: 'Cascadia Code', 'Fira Code', monospace; color: #c9d1d9; overflow-x: auto; line-height: 1.6; margin: 8px 0; }
+  .kw { color: #ff7b72; }
+  .cl { color: #d2a8ff; }
+  .st { color: #a5d6ff; }
+  .cm { color: #8b949e; font-style: italic; }
+  .nm { color: #79c0ff; }
+  .fn { color: #d2a8ff; }
+
+  /* Tree */
+  .tree { font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: 12px; line-height: 1.8; color: var(--text2); background: var(--surface2); border-radius: 8px; padding: 14px; overflow-x: auto; }
+  .tree .folder { color: var(--yellow); font-weight: 600; }
+  .tree .file-cs { color: var(--accent); }
+  .tree .file-asset { color: var(--green); }
+  .tree .file-scene { color: var(--pink); }
+  .tree .count { color: var(--text3); font-size: 10px; }
+
+  /* Tags row */
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .tag { font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: 500; }
+  .tag-blue { background: #1e3a8a33; color: #93c5fd; border: 1px solid #1e3a8a; }
+  .tag-green { background: #064e3b33; color: #6ee7b7; border: 1px solid #065f46; }
+  .tag-yellow { background: #78350f33; color: #fde68a; border: 1px solid #92400e; }
+  .tag-red { background: #7f1d1d33; color: #fca5a5; border: 1px solid #991b1b; }
+  .tag-purple { background: #4c1d9533; color: #c4b5fd; border: 1px solid #5b21b6; }
+  .tag-orange { background: #7c2d1233; color: #fdba74; border: 1px solid #9a3412; }
+
+  /* Conflict table */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: var(--surface2); padding: 8px 12px; text-align: left; color: var(--text2); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+
+  /* Section header */
+  .section-header { margin-bottom: 20px; }
+  .section-header h2 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .section-header p { font-size: 13px; color: var(--text2); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .ba-container { grid-template-columns: 1fr; }
+    .content { padding: 16px; }
+  }
+
+  /* Node graph */
+  .node-graph { display: flex; flex-direction: column; gap: 8px; }
+  .ng-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .ng-node { padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; border: 1px solid; white-space: nowrap; }
+  .ng-arrow { color: var(--text3); font-size: 16px; }
+  .ng-label { font-size: 10px; color: var(--text3); }
+  .ng-group { border: 1px dashed var(--border); border-radius: 8px; padding: 10px; flex: 1; }
+  .ng-group-title { font-size: 10px; color: var(--text3); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .scroll-x { overflow-x: auto; }
+
+  .mb-8 { margin-bottom: 8px; }
+  .mb-16 { margin-bottom: 16px; }
+  .mb-24 { margin-bottom: 24px; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+
+  .text-green { color: var(--green); }
+  .text-red { color: var(--red); }
+  .text-yellow { color: var(--yellow); }
+  .text-blue { color: var(--accent); }
+  .text-purple { color: var(--accent2); }
+  .text-orange { color: var(--orange); }
+  .text-cyan { color: var(--cyan); }
+  .text-muted { color: var(--text2); }
+  .text-sm { font-size: 12px; }
+  .text-xs { font-size: 11px; }
+  .font-mono { font-family: 'Cascadia Code', 'Fira Code', monospace; }
+
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  .highlight-box { border-radius: 8px; padding: 12px 14px; font-size: 12px; border-left: 3px solid; margin-bottom: 12px; }
+  .highlight-warn { background: #78350f22; border-color: var(--yellow); color: #fde68a; }
+  .highlight-ok { background: #064e3b22; border-color: var(--green); color: #6ee7b7; }
+  .highlight-info { background: #1e3a8a22; border-color: var(--accent); color: #93c5fd; }
+  .highlight-err { background: #7f1d1d22; border-color: var(--red); color: #fca5a5; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-icon">🌾</div>
+  <div>
+    <div class="header-title">Farming + Bakery Project Dashboard
+      <span class="badge badge-blue">FarmingEngine</span>
+      <span class="badge badge-green">DialogueQuests</span>
+    </div>
+    <div class="header-sub">Unity 농장 시뮬레이션 → 베이커리 경영 시스템 | 최종 업데이트: 2026-04-11</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('overview')">📊 전체 개요</div>
+  <div class="tab" onclick="showTab('architecture')">🏗️ 아키텍처</div>
+  <div class="tab" onclick="showTab('coexistence')">🔗 공존 분석</div>
+  <div class="tab" onclick="showTab('optimization')">⚡ 최적화 현황</div>
+  <div class="tab" onclick="showTab('action-system')">⚙️ 액션 시스템 Before/After</div>
+  <div class="tab" onclick="showTab('ui-focus')">🖥️ UI 포커스 Before/After</div>
+  <div class="tab" onclick="showTab('bakery')">🥐 베이커리 로드맵</div>
+  <div class="tab" onclick="showTab('scenemap')">🗺️ 씬 맵</div>
+  <div class="tab" onclick="showTab('savesystem')">💾 저장 시스템</div>
+  <div class="tab" onclick="showTab('gameflow')">🎮 게임 씬 흐름</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 1: 전체 개요 -->
+<!-- ============================================================ -->
+<div class="content">
+<div class="section active" id="tab-overview">
+  <div class="section-header">
+    <h2>📊 프로젝트 전체 개요</h2>
+    <p>FarmingEngine + DialogueQuests 기반 Unity 농장 시뮬레이션 게임</p>
+  </div>
+
+  <div class="grid-4 mb-24">
+    <div class="stat-card">
+      <div class="stat-num text-blue">431</div>
+      <div class="stat-label">전체 .cs 파일</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num text-purple">45</div>
+      <div class="stat-label">액션 클래스</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num text-green">27+</div>
+      <div class="stat-label">UI 패널</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num text-yellow">6</div>
+      <div class="stat-label">게임 씬</div>
+    </div>
+  </div>
+
+  <div class="grid-2 mb-24">
+    <div class="system-box system-fe">
+      <div class="system-title"><span class="dot dot-blue"></span> FarmingEngine_study <span class="badge badge-blue">메인 시스템</span></div>
+      <ul class="file-list">
+        <li>🎮 <span>Gameplay 스크립트</span> <span class="file-count">51개</span></li>
+        <li>⚡ <span>Action 클래스</span> <span class="file-count">45개</span></li>
+        <li>🖥️ <span>UI 패널</span> <span class="file-count">27개</span></li>
+        <li>👤 <span>Player 스크립트</span> <span class="file-count">11개</span></li>
+        <li>📦 <span>Data (ScriptableObject)</span> <span class="file-count">17개</span></li>
+        <li>🔧 <span>Tools / Editor</span> <span class="file-count">22개</span></li>
+      </ul>
+      <div class="tags mt-8">
+        <span class="tag tag-blue">ScriptableObject</span>
+        <span class="tag tag-blue">싱글톤 패턴</span>
+        <span class="tag tag-blue">이벤트 기반</span>
+        <span class="tag tag-blue">Binary 저장 → JSON</span>
+      </div>
+    </div>
+
+    <div class="system-box system-dq">
+      <div class="system-title"><span class="dot dot-purple"></span> DialogueQuests <span class="badge badge-yellow">내러티브 시스템</span></div>
+      <ul class="file-list">
+        <li>💬 <span>System 핵심</span> <span class="file-count">11개</span></li>
+        <li>✅ <span>Conditions (조건 체크)</span> <span class="file-count">18개</span></li>
+        <li>💥 <span>Effects (효과 실행)</span> <span class="file-count">17개</span></li>
+        <li>🖥️ <span>UI 패널</span> <span class="file-count">9개</span></li>
+        <li>📦 <span>Data</span> <span class="file-count">5개</span></li>
+        <li>🔧 <span>Tools / Editor</span> <span class="file-count">5개</span></li>
+      </ul>
+      <div class="tags mt-8">
+        <span class="tag tag-purple">느슨한 결합</span>
+        <span class="tag tag-purple">조건부 컴파일</span>
+        <span class="tag tag-purple">.dq 저장 파일</span>
+        <span class="tag tag-purple">이벤트 통신</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-16">
+    <div class="card-title">📁 폴더 구조</div>
+    <div class="tree">
+<span class="folder">Assets/</span>
+├── <span class="folder">FarmingEngine_study/</span>         <span class="count">← 메인 게임 엔진</span>
+│   ├── <span class="folder">Scripts/</span>
+│   │   ├── <span class="folder">Actions/</span>             <span class="count">45개 액션 클래스 (ActionCook, ActionHarvest ...)</span>
+│   │   ├── <span class="folder">Data/</span>                <span class="count">ScriptableObject 데이터 클래스</span>
+│   │   ├── <span class="folder">Gameplay/</span>            <span class="count">Plant, Item, Construction, Animal ...</span>
+│   │   ├── <span class="folder">Player/</span>              <span class="count">PlayerCharacter + 11개 서브 시스템</span>
+│   │   ├── <span class="folder">UI/</span>                  <span class="count">TheUI, InventoryPanel, CraftPanel ...</span>
+│   │   └── <span class="folder">Tools/</span>               <span class="count">SaveTool ✅JSON, DialogueQuestsWrap</span>
+│   └── <span class="folder">Resources/</span>              <span class="count">Items/, Plants/, Constructions/ .asset 파일</span>
+│
+├── <span class="folder">DialogueQuests/</span>              <span class="count">← 대화/퀘스트 시스템 (독립적)</span>
+│   └── <span class="folder">Scripts/</span>
+│       ├── <span class="folder">System/</span>              <span class="count">NarrativeManager, NarrativeData ...</span>
+│       ├── <span class="folder">Conditions/</span>          <span class="count">18개 조건 (ConditionInventory, ConditionDay ...)</span>
+│       ├── <span class="folder">Effects/</span>             <span class="count">17개 효과 (EffectInventory, EffectGold ...)</span>
+│       └── <span class="folder">Tools/</span>               <span class="count">SaveTool ✅JSON (.dq 파일)</span>
+│
+├── <span class="folder">Scenes/</span>
+│   ├── <span class="folder">KKUBUL_works/</span>           <span class="count">✅ 활성 씬 (Desert, InHouse, Sample 낮/밤)</span>
+│   ├── <span class="folder">Deprecated/</span>            <span class="count">⚠️ 구버전 씬 (삭제 가능)</span>
+│   └── <span class="folder">pre_dev/</span>               <span class="count">⚠️ 개발 초기 씬 (삭제 가능)</span>
+│
+├── <span class="folder">_KKUBUL/</span>                    <span class="count">3rd party assets</span>
+└── <span class="folder">TextMesh Pro/</span>              <span class="count">텍스트 렌더링 패키지</span>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">🎮 핵심 싱글톤</div>
+      <ul class="file-list">
+        <li><span class="dot dot-blue"></span> TheGame — 게임 전체 관리</li>
+        <li><span class="dot dot-blue"></span> TheData — ScriptableObject 로드</li>
+        <li><span class="dot dot-blue"></span> TheUI — UI 패널 관리</li>
+        <li><span class="dot dot-blue"></span> TheAudio — 오디오 관리</li>
+        <li><span class="dot dot-blue"></span> TheCamera — 카메라</li>
+        <li><span class="dot dot-purple"></span> NarrativeManager — 대화/퀘스트</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">💾 저장 시스템</div>
+      <ul class="file-list">
+        <li><span class="dot dot-green"></span> <span class="font-mono">player.farming</span> — FarmingEngine 세이브</li>
+        <li><span class="dot dot-purple"></span> <span class="font-mono">player.dq</span> — DialogueQuests 세이브</li>
+        <li><span class="dot dot-green"></span> JSON 포맷 (✅ 신규 적용)</li>
+        <li><span class="dot dot-yellow"></span> Binary fallback (구버전 호환)</li>
+        <li><span class="dot dot-blue"></span> Application.persistentDataPath</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">🌱 농작물 시스템</div>
+      <ul class="file-list">
+        <li><span class="dot dot-green"></span> Plant.cs — 성장/수확 로직</li>
+        <li><span class="dot dot-green"></span> PlantData — ScriptableObject</li>
+        <li><span class="dot dot-green"></span> Soil.cs — 토양/물 관리</li>
+        <li><span class="dot dot-yellow"></span> 0.5초마다 SlowUpdate 체크</li>
+        <li><span class="dot dot-blue"></span> 2단계 성장 + 재성장 지원</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 2: 아키텍처 -->
+<!-- ============================================================ -->
+<div class="section" id="tab-architecture">
+  <div class="section-header">
+    <h2>🏗️ 시스템 아키텍처</h2>
+    <p>전체 시스템 구성 및 데이터 흐름</p>
+  </div>
+
+  <div class="arch-diagram mb-16">
+    <div class="card-title" style="margin-bottom:16px;">전체 시스템 구성도</div>
+
+    <div class="arch-row">
+      <div class="arch-node arch-node-core" style="min-width:200px;">🎮 Unity Scene<br><span style="font-size:10px;font-weight:400;color:#64748b;">KKUBUL_works/*.unity</span></div>
+    </div>
+    <div class="arch-arrow">▼</div>
+
+    <div class="arch-row">
+      <div class="arch-node arch-node-fe">TheGame<br><span style="font-size:10px;font-weight:400;">싱글톤 / 이벤트</span></div>
+      <div class="arch-node arch-node-fe">TheData<br><span style="font-size:10px;font-weight:400;">ScriptableObject 로드</span></div>
+      <div class="arch-node arch-node-fe">TheUI<br><span style="font-size:10px;font-weight:400;">패널 관리</span></div>
+      <div class="arch-node arch-node-fe">TheAudio<br><span style="font-size:10px;font-weight:400;">오디오</span></div>
+    </div>
+    <div class="arch-arrow">▼</div>
+
+    <div style="display:flex; gap:12px; margin-bottom:8px;">
+      <div style="flex:1;">
+        <div style="text-align:center; font-size:11px; color:var(--text3); margin-bottom:6px;">FarmingEngine 레이어</div>
+        <div class="arch-row">
+          <div class="arch-node arch-node-fe" style="flex:1;">PlayerCharacter<br><span style="font-size:10px;font-weight:400;">+ 11개 서브시스템</span></div>
+          <div class="arch-node arch-node-fe" style="flex:1;">Actions (45개)<br><span style="font-size:10px;font-weight:400;">AAction/MAction/SAction</span></div>
+        </div>
+        <div style="margin:6px 0; text-align:center; color:var(--text3);">▼</div>
+        <div class="arch-row">
+          <div class="arch-node arch-node-fe" style="flex:1;">Gameplay<br><span style="font-size:10px;font-weight:400;">Plant/Item/Construction</span></div>
+          <div class="arch-node arch-node-fe" style="flex:1;">Inventory<br><span style="font-size:10px;font-weight:400;">Dictionary 슬롯</span></div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;padding:0 8px;color:var(--text3);">↔</div>
+
+      <div style="flex:1;">
+        <div style="text-align:center; font-size:11px; color:var(--text3); margin-bottom:6px;">DialogueQuests 레이어</div>
+        <div class="arch-row">
+          <div class="arch-node arch-node-dq" style="flex:1;">NarrativeManager<br><span style="font-size:10px;font-weight:400;">싱글톤</span></div>
+          <div class="arch-node arch-node-dq" style="flex:1;">Actor<br><span style="font-size:10px;font-weight:400;">플레이어/NPC</span></div>
+        </div>
+        <div style="margin:6px 0; text-align:center; color:var(--text3);">▼</div>
+        <div class="arch-row">
+          <div class="arch-node arch-node-dq" style="flex:1;">Conditions (18개)<br><span style="font-size:10px;font-weight:400;">퀘스트 조건 체크</span></div>
+          <div class="arch-node arch-node-dq" style="flex:1;">Effects (17개)<br><span style="font-size:10px;font-weight:400;">효과 실행</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-divider"><span>통합 레이어</span></div>
+
+    <div class="arch-row">
+      <div class="arch-node arch-node-wrap">DialogueQuestsWrap.cs<br><span style="font-size:10px;font-weight:400;">#if DIALOGUE_QUESTS | 이벤트 브릿지</span></div>
+    </div>
+    <div class="arch-arrow">▼</div>
+
+    <div class="arch-row">
+      <div class="arch-node arch-node-save">SaveTool (JSON) ✅<br><span style="font-size:10px;font-weight:400;">player.farming</span></div>
+      <div class="arch-node arch-node-save">SaveTool (JSON) ✅<br><span style="font-size:10px;font-weight:400;">player.dq</span></div>
+    </div>
+  </div>
+
+  <div class="grid-2 mb-16">
+    <div class="card">
+      <div class="card-title">📦 데이터 계층 구조</div>
+      <div class="node-graph">
+        <div class="ng-row">
+          <div class="ng-node" style="background:#1a2a4a;border-color:#3b5998;color:#93c5fd;">IdData</div>
+          <div class="ng-arrow">←</div>
+          <div style="font-size:11px;color:var(--text3);">기반 클래스 (id 필드)</div>
+        </div>
+        <div class="ng-row" style="padding-left:20px;">
+          <div class="ng-arrow">▼</div>
+        </div>
+        <div class="ng-row" style="padding-left:20px;">
+          <div class="ng-node" style="background:#1a2a4a;border-color:#3b5998;color:#93c5fd;">CraftData</div>
+          <div style="font-size:11px;color:var(--text3);margin-left:8px;">title, icon, craft_items[], craft_near<br><span style="color:var(--green);font-size:10px;">✅ Dictionary 캐싱 추가됨</span></div>
+        </div>
+        <div class="ng-row" style="padding-left:40px;flex-wrap:wrap;gap:8px;">
+          <div style="font-size:12px;color:var(--text3);">↙ ↓ ↘ ↘</div>
+        </div>
+        <div class="ng-row" style="padding-left:40px;flex-wrap:wrap;gap:6px;">
+          <div class="ng-node" style="background:#0a2040;border-color:#1d4ed8;color:#93c5fd;font-size:10px;padding:4px 8px;">ItemData<br><span style="font-weight:400;">아이템</span></div>
+          <div class="ng-node" style="background:#0a2040;border-color:#1d4ed8;color:#93c5fd;font-size:10px;padding:4px 8px;">PlantData<br><span style="font-weight:400;">농작물</span></div>
+          <div class="ng-node" style="background:#0a2040;border-color:#1d4ed8;color:#93c5fd;font-size:10px;padding:4px 8px;">ConstructionData<br><span style="font-weight:400;">건설물</span></div>
+          <div class="ng-node" style="background:#0a2040;border-color:#1d4ed8;color:#93c5fd;font-size:10px;padding:4px 8px;">CharacterData<br><span style="font-weight:400;">캐릭터</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⚡ 액션 시스템 계층</div>
+      <div class="node-graph">
+        <div class="ng-row">
+          <div class="ng-node" style="background:#2a1a0a;border-color:#c2410c;color:#fdba74;">SAction</div>
+          <div style="font-size:11px;color:var(--text3);margin-left:8px;">추상 기반 (ScriptableObject)</div>
+        </div>
+        <div style="padding-left:20px;color:var(--text3);font-size:12px;">├─</div>
+        <div class="ng-row" style="padding-left:30px;gap:8px;flex-wrap:wrap;">
+          <div class="ng-node" style="background:#2a200a;border-color:#d97706;color:#fde68a;font-size:11px;padding:4px 10px;">AAction<br><span style="font-weight:400;font-size:10px;">자동 실행</span></div>
+          <div class="ng-node" style="background:#2a200a;border-color:#d97706;color:#fde68a;font-size:11px;padding:4px 10px;">MAction<br><span style="font-weight:400;font-size:10px;">두 오브젝트 필요</span></div>
+        </div>
+        <div style="padding-left:40px;color:var(--text3);font-size:11px;margin-top:8px;">├─ ActionHarvest (AAction)</div>
+        <div style="padding-left:40px;color:var(--text3);font-size:11px;">├─ ActionWaterPlant (AAction)</div>
+        <div style="padding-left:40px;color:var(--text3);font-size:11px;">├─ ActionCook (MAction)</div>
+        <div style="padding-left:40px;color:var(--text3);font-size:11px;">├─ ActionPlant (SAction)</div>
+        <div style="padding-left:40px;color:var(--text3);font-size:11px;">└─ ... 41개 더</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💾 저장/로드 흐름 (JSON 마이그레이션 후)</div>
+    <div class="connection">
+      <div class="conn-box">
+        <div style="color:var(--accent);font-weight:600;font-size:12px;">PlayerData.Save()</div>
+        <div class="conn-label">TheGame.beforeSave 이벤트</div>
+      </div>
+      <div class="conn-arrow">→</div>
+      <div class="conn-box">
+        <div style="color:var(--green);font-weight:600;font-size:12px;">SaveTool.SaveFile&lt;T&gt;()</div>
+        <div class="conn-label">JsonConvert.SerializeObject() ✅</div>
+      </div>
+      <div class="conn-arrow">→</div>
+      <div class="conn-box">
+        <div style="color:var(--yellow);font-weight:600;font-size:12px;">player.farming</div>
+        <div class="conn-label">JSON 텍스트 파일</div>
+      </div>
+    </div>
+    <div class="connection">
+      <div class="conn-box">
+        <div style="color:var(--accent);font-weight:600;font-size:12px;">NarrativeData.Save()</div>
+        <div class="conn-label">DialogueQuestsWrap → beforeSave</div>
+      </div>
+      <div class="conn-arrow">→</div>
+      <div class="conn-box">
+        <div style="color:var(--green);font-weight:600;font-size:12px;">SaveTool.SaveFile&lt;T&gt;() (DQ)</div>
+        <div class="conn-label">JsonConvert.SerializeObject() ✅</div>
+      </div>
+      <div class="conn-arrow">→</div>
+      <div class="conn-box">
+        <div style="color:var(--yellow);font-weight:600;font-size:12px;">player.dq</div>
+        <div class="conn-label">JSON 텍스트 파일</div>
+      </div>
+    </div>
+    <div class="highlight-info mt-8">⬆ 로드 시: JSON 파싱 실패 → 자동으로 구버전 Binary 파일 읽기 (마이그레이션 fallback)</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 3: 공존 분석 -->
+<!-- ============================================================ -->
+<div class="section" id="tab-coexistence">
+  <div class="section-header">
+    <h2>🔗 공존 분석: FarmingEngine + DialogueQuests</h2>
+    <p>두 시스템이 함께 작동하는 방식과 잠재적 이슈 분석</p>
+  </div>
+
+  <div class="highlight-ok mb-16">
+    ✅ <strong>전체 판정: 공존 가능 (안전)</strong> — DialogueQuestsWrap.cs가 이벤트 기반으로 느슨하게 결합되어 있고, 조건부 컴파일로 독립 빌드도 지원됩니다.
+  </div>
+
+  <div class="grid-2 mb-16">
+    <div class="card">
+      <div class="card-title">🔗 통합 방식</div>
+      <ul class="file-list">
+        <li><span class="dot dot-green"></span> <code>#if DIALOGUE_QUESTS</code> 조건부 컴파일</li>
+        <li><span class="dot dot-green"></span> DialogueQuestsWrap.cs 단일 브릿지</li>
+        <li><span class="dot dot-green"></span> 이벤트로만 통신 (onPause, onPlaySFX...)</li>
+        <li><span class="dot dot-green"></span> 동일 filename으로 저장 (다른 확장자)</li>
+        <li><span class="dot dot-yellow"></span> NarrativeManager.getTimestamp → TheGame 시간 공유</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">📂 파일 분리 저장</div>
+      <ul class="file-list">
+        <li><span class="dot dot-blue"></span> <code>player.farming</code> — FarmingEngine 세이브</li>
+        <li><span class="dot dot-purple"></span> <code>player.dq</code> — DialogueQuests 세이브</li>
+        <li><span class="dot dot-green"></span> 파일명 동일 → 같은 슬롯 관리</li>
+        <li><span class="dot dot-green"></span> 로드/세이브 동기화 (afterLoad/beforeSave)</li>
+        <li><span class="dot dot-green"></span> 두 파일 모두 JSON 포맷으로 통일됨 ✅</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card mb-16">
+    <div class="card-title">⚠️ 동일 클래스명 (네임스페이스로 분리됨)</div>
+    <div class="scroll-x">
+    <table>
+      <thead>
+        <tr>
+          <th>클래스명</th>
+          <th>FarmingEngine</th>
+          <th>DialogueQuests</th>
+          <th>충돌 위험도</th>
+          <th>비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="font-mono">SaveTool</td>
+          <td class="text-blue">FarmingEngine.SaveTool</td>
+          <td class="text-purple">DialogueQuests.SaveTool</td>
+          <td><span class="text-green">✅ 없음</span></td>
+          <td>네임스페이스 분리</td>
+        </tr>
+        <tr>
+          <td class="font-mono">TheUI</td>
+          <td class="text-blue">FarmingEngine.TheUI</td>
+          <td class="text-purple">DialogueQuests.TheUI</td>
+          <td><span class="text-green">✅ 없음</span></td>
+          <td>각각 독립 UI 관리</td>
+        </tr>
+        <tr>
+          <td class="font-mono">UIPanel</td>
+          <td class="text-blue">FarmingEngine.UIPanel</td>
+          <td class="text-purple">DialogueQuests.UIPanel</td>
+          <td><span class="text-green">✅ 없음</span></td>
+          <td>네임스페이스 분리</td>
+        </tr>
+        <tr>
+          <td class="font-mono">DialoguePanel</td>
+          <td class="text-blue">FarmingEngine.DialoguePanel</td>
+          <td class="text-purple">DialogueQuests.DialoguePanel</td>
+          <td><span class="text-yellow">⚠️ 주의</span></td>
+          <td>두 using 동시 사용 시 모호성</td>
+        </tr>
+        <tr>
+          <td class="font-mono">SceneNav</td>
+          <td class="text-blue">FarmingEngine.SceneNav</td>
+          <td class="text-purple">DialogueQuests.SceneNav</td>
+          <td><span class="text-yellow">⚠️ 주의</span></td>
+          <td>같은 파일에 사용 시 명시 필요</td>
+        </tr>
+        <tr>
+          <td class="font-mono">TheAudio</td>
+          <td class="text-blue">FarmingEngine.TheAudio</td>
+          <td class="text-purple">DialogueQuests.TheAudio</td>
+          <td><span class="text-green">✅ 없음</span></td>
+          <td>각 시스템이 독립 사용</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="highlight-warn mt-8">
+      ⚠️ <code>using FarmingEngine;</code> 와 <code>using DialogueQuests;</code> 를 동일 파일에 쓸 경우,
+      <code>DialoguePanel</code>, <code>SceneNav</code>는 <code>FarmingEngine.DialoguePanel</code> 처럼 전체 경로 명시 필요.
+      현재는 DialogueQuestsWrap.cs만 두 네임스페이스를 함께 사용하고 있어 실제 문제 없음.
+    </div>
+  </div>
+
+  <div class="grid-2 mb-16">
+    <div class="card">
+      <div class="card-title">✅ 정상 동작 확인된 부분</div>
+      <div class="status ok"><span class="status-dot" style="background:var(--green)"></span> 이벤트 기반 통신 (pause/unpause, audio)</div>
+      <div class="status ok"><span class="status-dot" style="background:var(--green)"></span> 게임 타임스탬프 공유 (GetTimestamp)</div>
+      <div class="status ok"><span class="status-dot" style="background:var(--green)"></span> 저장/로드 동기화</div>
+      <div class="status ok"><span class="status-dot" style="background:var(--green)"></span> Actor ↔ Selectable 연동 (InitActor)</div>
+      <div class="status ok"><span class="status-dot" style="background:var(--green)"></span> ConditionInventory — FarmingEngine 인벤토리 조건 체크</div>
+      <div class="status ok"><span class="status-dot" style="background:var(--green)"></span> ConditionDay/DayTime — FarmingEngine 게임 시간 조건</div>
+      <div class="status ok"><span class="status-dot" style="background:var(--green)"></span> EffectInventory/EffectGold — 아이템/골드 지급</div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚠️ 주의가 필요한 부분</div>
+      <div class="status warn"><span class="status-dot" style="background:var(--yellow)"></span> DIALOGUE_QUESTS 스크립트 정의 필수 (미설정 시 통합 무효)</div>
+      <div class="status warn"><span class="status-dot" style="background:var(--yellow)"></span> NarrativeManager 씬에 없으면 오류 로그 출력</div>
+      <div class="status warn"><span class="status-dot" style="background:var(--yellow)"></span> PlayerCharacter에 Actor 스크립트 없으면 통합 실패</div>
+      <div class="status warn"><span class="status-dot" style="background:var(--yellow)"></span> 두 SaveTool의 JSON 마이그레이션 동시 완료 필요</div>
+      <div class="status info"><span class="status-dot" style="background:var(--cyan)"></span> Deprecated/, pre_dev/ 씬 정리 권장</div>
+      <div class="status info"><span class="status-dot" style="background:var(--cyan)"></span> EffectXP — FarmingEngine LevelData와 연동 확인 필요</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔗 통합 코드 요약 (DialogueQuestsWrap.cs)</div>
+    <pre><span class="cm">// FarmingEngine ↔ DialogueQuests 브릿지</span>
+<span class="kw">#if</span> DIALOGUE_QUESTS
+<span class="kw">using</span> DialogueQuests;
+<span class="kw">#endif</span>
+
+<span class="kw">namespace</span> <span class="nm">FarmingEngine</span> {
+  <span class="kw">public class</span> <span class="cl">DialogueQuestsWrap</span> : <span class="cl">MonoBehaviour</span> {
+
+    <span class="cm">// 이벤트 연결 (Awake)</span>
+    narrative.onPauseGameplay  += () => TheGame.Get().<span class="fn">PauseScripts</span>();
+    narrative.onUnpauseGameplay+= () => TheGame.Get().<span class="fn">UnpauseScripts</span>();
+    narrative.onPlaySFX        += (ch, clip, vol) => TheAudio.Get().<span class="fn">PlaySFX</span>(ch, clip, vol);
+    narrative.getTimestamp     += () => TheGame.Get().<span class="fn">GetTimestamp</span>();   <span class="cm">// 시간 공유</span>
+
+    <span class="cm">// 저장 동기화</span>
+    the_game.beforeSave += () => NarrativeData.<span class="fn">Save</span>(pdata.filename, ...);
+
+    <span class="cm">// 로드 동기화</span>
+    TheGame.afterLoad  += () => NarrativeData.<span class="fn">AutoLoad</span>(pdata.filename);
+    TheGame.afterNewGame += () => NarrativeData.<span class="fn">NewGame</span>(pdata.filename);
+  }
+}</pre>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 4: 최적화 현황 -->
+<!-- ============================================================ -->
+<div class="section" id="tab-optimization">
+  <div class="section-header">
+    <h2>⚡ 최적화 현황</h2>
+    <p>적용 완료 / 대기 중 / 향후 계획 항목 추적</p>
+  </div>
+
+  <div style="font-size:12px;color:var(--text2);margin-bottom:16px;display:flex;gap:16px;">
+    <span>🟢 적용 완료</span>
+    <span>🟡 적용 대기</span>
+    <span>🔵 향후 계획</span>
+  </div>
+
+  <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;">🚨 긴급 (보안/안정성)</div>
+
+  <div class="opt-card">
+    <div class="opt-status opt-done">✅</div>
+    <div>
+      <div class="opt-title text-green">BinaryFormatter → Newtonsoft.Json 마이그레이션</div>
+      <div class="opt-desc">
+        BinaryFormatter는 deprecated + 보안 취약점 존재. Newtonsoft.Json으로 교체 완료.<br>
+        기존 바이너리 세이브 파일 자동 변환 지원 (JSON 파싱 실패 → Binary fallback → 다음 저장 시 JSON으로 전환).
+      </div>
+      <div class="opt-file">📄 FarmingEngine_study/Scripts/Tools/SaveTool.cs<br>
+      📄 DialogueQuests/Scripts/Tools/SaveTool.cs<br>
+      📄 Packages/manifest.json (com.unity.nuget.newtonsoft-json: 3.2.1 추가)</div>
+    </div>
+  </div>
+
+  <div style="font-size:13px;font-weight:600;color:var(--text2);margin:16px 0 8px;text-transform:uppercase;letter-spacing:0.05em;">⚡ 성능</div>
+
+  <div class="opt-card">
+    <div class="opt-status opt-done">✅</div>
+    <div>
+      <div class="opt-title text-green">CraftData.Get(id) Dictionary 캐싱</div>
+      <div class="opt-desc">
+        기존 선형 탐색 O(n) → Dictionary 조회 O(1) 로 최적화.<br>
+        Load() 시 craft_dict 동시 구축. 아이템 수 증가해도 성능 유지.
+      </div>
+      <div class="opt-file">📄 FarmingEngine_study/Scripts/Data/CraftData.cs</div>
+      <pre style="margin-top:8px;"><span class="cm">// Before: O(n) 선형 탐색</span>
+<span class="kw">foreach</span> (CraftData item <span class="kw">in</span> craft_data) {
+    <span class="kw">if</span> (item.id == id) <span class="kw">return</span> item;
+}
+
+<span class="cm">// After: O(1) Dictionary 조회 ✅</span>
+craft_dict.<span class="fn">TryGetValue</span>(id, <span class="kw">out</span> CraftData result);
+<span class="kw">return</span> result;</pre>
+    </div>
+  </div>
+
+  <div class="opt-card">
+    <div class="opt-status opt-pending">🟡</div>
+    <div>
+      <div class="opt-title text-yellow">Plant.cs SlowUpdate → 이벤트 기반 전환</div>
+      <div class="opt-desc">
+        현재 모든 Plant가 0.5초마다 성장 체크를 실행. 농장이 커질수록 연산 증가.<br>
+        대안: onNewDay 이벤트 구독 + 필요 시에만 성장 계산.
+      </div>
+      <div class="opt-file">📄 FarmingEngine_study/Scripts/Gameplay/Plant.cs — SlowUpdate()</div>
+    </div>
+  </div>
+
+  <div class="opt-card">
+    <div class="opt-status opt-pending">🟡</div>
+    <div>
+      <div class="opt-title text-yellow">TheData.cs 지연 로드 (Lazy Loading)</div>
+      <div class="opt-desc">
+        현재 Awake에서 모든 ScriptableObject를 한번에 로드. 콘텐츠 증가 시 초기 로딩 느려짐.<br>
+        대안: Addressables 패키지 도입 또는 Resources.LoadAsync 활용.
+      </div>
+      <div class="opt-file">📄 FarmingEngine_study/Scripts/Data/TheData.cs — Awake()</div>
+    </div>
+  </div>
+
+  <div style="font-size:13px;font-weight:600;color:var(--text2);margin:16px 0 8px;text-transform:uppercase;letter-spacing:0.05em;">🏗️ 구조 (향후 계획)</div>
+
+  <div class="opt-card">
+    <div class="opt-status opt-deferred">🔵</div>
+    <div>
+      <div class="opt-title text-blue">액션 클래스 데이터 기반 통합</div>
+      <div class="opt-desc">
+        45개의 개별 액션 클래스에 공통 로직 분산. ScriptableObject 설정만으로 새 액션 추가 가능한 구조로 리팩토링.<br>
+        <strong>주의:</strong> 베이커리 시스템 추가 후 패턴 파악이 충분해진 뒤 진행 권장.
+      </div>
+      <div class="opt-file">📄 FarmingEngine_study/Scripts/Actions/*.cs (45개)</div>
+    </div>
+  </div>
+
+  <div class="opt-card">
+    <div class="opt-status opt-deferred">🔵</div>
+    <div>
+      <div class="opt-title text-blue">UI 포커스 상태 머신 도입</div>
+      <div class="opt-desc">
+        현재 각 패널이 개별적으로 포커스를 관리. 게임패드 네비게이션이 복잡하고 충돌 가능성 있음.<br>
+        UIFocusManager 상태 머신으로 중앙화.
+      </div>
+      <div class="opt-file">📄 FarmingEngine_study/Scripts/UI/TheUI.cs, UISlotPanel.cs</div>
+    </div>
+  </div>
+
+  <div class="opt-card">
+    <div class="opt-status opt-deferred">🔵</div>
+    <div>
+      <div class="opt-title text-blue">Deprecated 씬 및 에셋 정리</div>
+      <div class="opt-desc">
+        Scenes/Deprecated/, Scenes/pre_dev/ 폴더에 사용하지 않는 씬 존재. 빌드 크기 감소 및 관리 명확화.
+      </div>
+      <div class="opt-file">📄 Assets/Scenes/Deprecated/, Assets/Scenes/pre_dev/</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 5: 액션 시스템 Before/After -->
+<!-- ============================================================ -->
+<div class="section" id="tab-action-system">
+  <div class="section-header">
+    <h2>⚙️ 액션 시스템 Before / After</h2>
+    <p>현재 45개 개별 클래스 구조와 향후 데이터 기반 통합 구조 비교</p>
+  </div>
+
+  <div class="ba-container mb-24">
+    <div class="ba-before">
+      <div class="ba-label">❌ BEFORE — 현재 구조 (45개 개별 클래스)</div>
+      <div class="highlight-err" style="margin-bottom:12px;">문제: 새 액션마다 새 클래스 파일 필요. 공통 로직 중복. 비개발자가 수정 불가.</div>
+      <pre><span class="cm">// ActionCook.cs (MAction 상속)</span>
+<span class="kw">public class</span> <span class="cl">ActionCook</span> : <span class="cl">MAction</span> {
+    <span class="kw">public</span> ItemData cooked_item;
+    <span class="kw">public float</span> duration = 0.5f;
+    <span class="kw">public float</span> energy = 1f;
+
+    <span class="kw">public override void</span> <span class="fn">DoAction</span>(...) {
+        character.<span class="fn">TriggerProgressBusy</span>(duration, () => {
+            inventory.<span class="fn">RemoveItemAt</span>(slot.index, <span class="nm">1</span>);
+            character.Inventory.<span class="fn">GainItem</span>(cooked_item, <span class="nm">1</span>);
+            character.Attributes.<span class="fn">AddAttribute</span>(
+                AttributeType.Energy, -energy);
+        });
+    }
+    <span class="kw">public override bool</span> <span class="fn">CanDoAction</span>(...) {
+        <span class="kw">return</span> character.Attributes
+            .<span class="fn">GetAttributeValue</span>(AttributeType.Energy) >= energy;
+    }
+}
+
+<span class="cm">// ActionBake.cs (별도 클래스 필요 ← 문제!)</span>
+<span class="kw">public class</span> <span class="cl">ActionBake</span> : <span class="cl">MAction</span> {
+    <span class="kw">public</span> ItemData baked_result;
+    <span class="kw">public float</span> duration = 3f;  <span class="cm">// 거의 동일한 코드</span>
+    <span class="kw">public float</span> energy = 2f;
+    <span class="cm">// ... 중복 코드 반복</span>
+}</pre>
+      <div style="margin-top:12px;">
+        <div class="text-sm text-muted mb-8">현재 구조 시각화:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;">
+          <div class="ng-node" style="background:#2a0f0f;border-color:#7f1d1d;color:#fca5a5;font-size:10px;padding:3px 6px;">ActionCook</div>
+          <div class="ng-node" style="background:#2a0f0f;border-color:#7f1d1d;color:#fca5a5;font-size:10px;padding:3px 6px;">ActionHarvest</div>
+          <div class="ng-node" style="background:#2a0f0f;border-color:#7f1d1d;color:#fca5a5;font-size:10px;padding:3px 6px;">ActionPlant</div>
+          <div class="ng-node" style="background:#2a0f0f;border-color:#7f1d1d;color:#fca5a5;font-size:10px;padding:3px 6px;">ActionWaterPlant</div>
+          <div class="ng-node" style="background:#2a0f0f;border-color:#7f1d1d;color:#fca5a5;font-size:10px;padding:3px 6px;">ActionBuild</div>
+          <div class="ng-node" style="background:#2a0f0f;border-color:#7f1d1d;color:#fca5a5;font-size:10px;padding:3px 6px;">ActionEat</div>
+          <div class="ng-node" style="background:#2a0f0f;border-color:#7f1d1d;color:#fca5a5;font-size:10px;padding:3px 6px;">ActionCraft</div>
+          <div class="ng-node" style="background:#2a0f0f;border-color:#7f1d1d;color:#fca5a5;font-size:10px;padding:3px 6px;">ActionAttack</div>
+          <div class="ng-node" style="background:#2a0f0f;border-color:#7f1d1d;color:#fca5a5;font-size:10px;padding:3px 6px;">... 37개 더</div>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:6px;">
+          각각 독립 .cs 파일 → 45개 클래스가 수평으로 나열
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-after">
+      <div class="ba-label">✅ AFTER — 향후 구조 (데이터 기반)</div>
+      <div class="highlight-ok" style="margin-bottom:12px;">개선: 새 액션은 ScriptableObject 에셋 하나만 추가. 코드 변경 불필요.</div>
+      <pre><span class="cm">// ActionConfig.cs — 설정 에셋</span>
+[<span class="cl">CreateAssetMenu</span>]
+<span class="kw">public class</span> <span class="cl">ActionConfig</span> : <span class="cl">ScriptableObject</span> {
+    <span class="kw">public</span> ActionType type;        <span class="cm">// Cook, Bake, Harvest...</span>
+    <span class="kw">public float</span> duration;
+    <span class="kw">public float</span> energy_cost;
+    <span class="kw">public</span> ItemData result_item;
+    <span class="kw">public</span> AttributeType attribute;
+    <span class="kw">public</span> GroupData required_near;
+}
+
+<span class="cm">// GenericTransformAction.cs — 하나의 클래스로 통합</span>
+<span class="kw">public class</span> <span class="cl">GenericTransformAction</span> : <span class="cl">MAction</span> {
+    <span class="kw">public</span> ActionConfig config;   <span class="cm">// 에셋만 교체</span>
+
+    <span class="kw">public override void</span> <span class="fn">DoAction</span>(...) {
+        character.<span class="fn">TriggerProgressBusy</span>(config.duration, () => {
+            inventory.<span class="fn">RemoveItemAt</span>(slot.index, <span class="nm">1</span>);
+            character.Inventory.<span class="fn">GainItem</span>(config.result_item, <span class="nm">1</span>);
+            character.Attributes.<span class="fn">AddAttribute</span>(
+                config.attribute, -config.energy_cost);
+        });
+    }
+}</pre>
+      <div style="margin-top:12px;">
+        <div class="text-sm text-muted mb-8">향후 구조 시각화:</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <div class="ng-node" style="background:#0a2a1a;border-color:#065f46;color:#6ee7b7;font-size:11px;padding:6px 12px;">GenericTransformAction<br><span style="font-size:10px;font-weight:400;">단일 클래스</span></div>
+          <div class="ng-arrow">←</div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div class="ng-node" style="background:#1a2a0a;border-color:#3f6212;color:#a3e635;font-size:10px;padding:2px 8px;">cook_action.asset</div>
+            <div class="ng-node" style="background:#1a2a0a;border-color:#3f6212;color:#a3e635;font-size:10px;padding:2px 8px;">bake_action.asset</div>
+            <div class="ng-node" style="background:#1a2a0a;border-color:#3f6212;color:#a3e635;font-size:10px;padding:2px 8px;">brew_action.asset</div>
+            <div class="ng-node" style="background:#1a2a0a;border-color:#3f6212;color:#a3e635;font-size:10px;padding:2px 8px;">+ 새 에셋 추가만으로 확장</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:6px;">
+          클래스 1개 + ScriptableObject 에셋 N개 → 코드 변경 없이 확장
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight-warn">
+    ⚠️ <strong>구현 권장 시점:</strong> 베이커리 시스템 추가 완료 후 (Phase 4 이후). 현재 모든 액션이 안정적으로 동작 중이므로 지금 리팩토링은 리스크 대비 효용이 낮음.
+    새 베이커리 액션은 기존 패턴(ActionCook 참고)을 따르는 새 클래스로 먼저 추가하고, 이후 전체 통합.
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 6: UI 포커스 Before/After -->
+<!-- ============================================================ -->
+<div class="section" id="tab-ui-focus">
+  <div class="section-header">
+    <h2>🖥️ UI 포커스 시스템 Before / After</h2>
+    <p>현재 분산된 포커스 관리와 향후 중앙화된 상태 머신 비교</p>
+  </div>
+
+  <div class="ba-container mb-24">
+    <div class="ba-before">
+      <div class="ba-label">❌ BEFORE — 현재 구조 (분산된 포커스 관리)</div>
+      <div class="highlight-err" style="margin-bottom:12px;">문제: 각 패널이 자체적으로 포커스를 체크. 게임패드 충돌 위험. 새 패널 추가 시 모든 곳 수정 필요.</div>
+      <pre><span class="cm">// TheUI.cs Update() — 포커스 직접 관리</span>
+<span class="kw">void</span> <span class="fn">Update</span>() {
+    <span class="cm">// 게임패드 자동 포커스 — 조건 분산</span>
+    <span class="cl">UISlotPanel</span> focus = UISlotPanel.<span class="fn">GetFocusedPanel</span>();
+
+    <span class="kw">if</span> (focus != pause_panel
+        && TheGame.Get().<span class="fn">IsPausedByPlayer</span>()
+        && PlayerControls.<span class="fn">IsAnyGamePad</span>()) {
+        pause_panel.<span class="fn">Focus</span>();  <span class="cm">// 직접 패널 조작</span>
+    }
+    <span class="kw">if</span> (focus == pause_panel
+        && !TheGame.Get().<span class="fn">IsPausedByPlayer</span>()) {
+       UISlotPanel.<span class="fn">UnfocusAll</span>();
+    }
+}
+
+<span class="cm">// IsBlockingPanelOpened() — 패널 목록 하드코딩</span>
+<span class="kw">public bool</span> <span class="fn">IsBlockingPanelOpened</span>() {
+    <span class="kw">return</span> StoragePanel.<span class="fn">IsAnyVisible</span>()
+        || ReadPanel.<span class="fn">IsAnyVisible</span>()
+        || ShopPanel.Get().<span class="fn">IsVisible</span>()
+        || pause_panel.<span class="fn">IsVisible</span>()
+        || game_over_panel.<span class="fn">IsVisible</span>();
+        <span class="cm">// ← 새 패널 추가 시 여기도 수정 필요!</span>
+}</pre>
+      <div style="margin-top:12px;">
+        <div class="text-sm text-muted mb-8">현재 포커스 관리 시각화:</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;gap:6px;align-items:center;">
+            <div class="ng-node" style="background:#2a0f0f;border-color:#7f1d1d;color:#fca5a5;font-size:10px;padding:3px 8px;">TheUI (Update)</div>
+            <div class="ng-arrow" style="font-size:12px;">→ 직접 체크</div>
+            <div class="ng-node" style="background:#1a1a1a;border-color:#4a4a4a;color:#aaa;font-size:10px;padding:3px 8px;">PausePanel</div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <div class="ng-node" style="background:#2a0f0f;border-color:#7f1d1d;color:#fca5a5;font-size:10px;padding:3px 8px;">PlayerUI</div>
+            <div class="ng-arrow" style="font-size:12px;">→ 직접 체크</div>
+            <div class="ng-node" style="background:#1a1a1a;border-color:#4a4a4a;color:#aaa;font-size:10px;padding:3px 8px;">InventoryPanel</div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <div class="ng-node" style="background:#2a0f0f;border-color:#7f1d1d;color:#fca5a5;font-size:10px;padding:3px 8px;">각종 패널들</div>
+            <div class="ng-arrow" style="font-size:12px;">→ 개별 관리</div>
+            <div class="ng-node" style="background:#1a1a1a;border-color:#4a4a4a;color:#aaa;font-size:10px;padding:3px 8px;">StoragePanel</div>
+          </div>
+          <div style="font-size:11px;color:var(--red);margin-top:4px;">
+            ❌ 중앙 관리자 없음 → 포커스 충돌 발생 가능
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-after">
+      <div class="ba-label">✅ AFTER — 향후 구조 (UIFocusManager 상태 머신)</div>
+      <div class="highlight-ok" style="margin-bottom:12px;">개선: 중앙 관리. 새 패널은 자신을 등록만 하면 됨. 상태 전환 명확.</div>
+      <pre><span class="cm">// UIFocusManager.cs — 중앙 포커스 관리</span>
+<span class="kw">public class</span> <span class="cl">UIFocusManager</span> : <span class="cl">MonoBehaviour</span> {
+
+    <span class="kw">public enum</span> UIState {
+        Gameplay, Inventory, Pause,
+        Shop, Storage, GameOver
+    }
+
+    <span class="kw">private</span> UIState current_state;
+    <span class="kw">private</span> Stack&lt;UIState&gt; state_stack; <span class="cm">// 뒤로가기 지원</span>
+
+    <span class="cm">// 패널이 자신을 등록</span>
+    <span class="kw">public void</span> <span class="fn">RegisterPanel</span>(<span class="cl">UIPanel</span> panel, UIState state,
+        <span class="kw">bool</span> is_blocking = <span class="kw">false</span>) { ... }
+
+    <span class="cm">// 상태 전환</span>
+    <span class="kw">public void</span> <span class="fn">PushState</span>(UIState newState) {
+        state_stack.<span class="fn">Push</span>(current_state);
+        <span class="fn">TransitionTo</span>(newState);
+    }
+
+    <span class="kw">public void</span> <span class="fn">PopState</span>() {
+        <span class="kw">if</span> (state_stack.Count > <span class="nm">0</span>)
+            <span class="fn">TransitionTo</span>(state_stack.<span class="fn">Pop</span>());
+    }
+
+    <span class="cm">// IsBlockingPanelOpened — 자동 계산</span>
+    <span class="kw">public bool</span> <span class="fn">IsBlocking</span>() =>
+        current_state != UIState.Gameplay;
+}</pre>
+      <div style="margin-top:12px;">
+        <div class="text-sm text-muted mb-8">향후 포커스 관리 시각화:</div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;">
+          <div class="ng-node" style="background:#0a2a1a;border-color:#065f46;color:#6ee7b7;padding:8px 20px;">UIFocusManager<br><span style="font-size:10px;font-weight:400;">상태 머신 (중앙)</span></div>
+          <div style="font-size:16px;color:var(--text3);">↕ 등록/알림</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;">
+            <div class="ng-node" style="background:#1a2a0a;border-color:#3f6212;color:#a3e635;font-size:10px;padding:3px 8px;">PausePanel</div>
+            <div class="ng-node" style="background:#1a2a0a;border-color:#3f6212;color:#a3e635;font-size:10px;padding:3px 8px;">InventoryPanel</div>
+            <div class="ng-node" style="background:#1a2a0a;border-color:#3f6212;color:#a3e635;font-size:10px;padding:3px 8px;">ShopPanel</div>
+            <div class="ng-node" style="background:#1a2a0a;border-color:#3f6212;color:#a3e635;font-size:10px;padding:3px 8px;">BakeryPanel ← 새것</div>
+          </div>
+          <div style="font-size:11px;color:var(--green);margin-top:4px;">
+            ✅ 새 패널은 Register만 호출 → 나머지 자동
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight-warn">
+    ⚠️ <strong>구현 권장 시점:</strong> BakeryPanel 추가 시 함께 도입. 새 패널이 생기는 시점에 리팩토링하면 변경 비용이 최소화됨.
+    현재 패널이 많지 않아 당장의 실용적 문제는 없지만, 베이커리 경영 UI 확장 전에 기반을 다지는 것이 유리.
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 7: 베이커리 로드맵 -->
+<!-- ============================================================ -->
+<div class="section" id="tab-bakery">
+  <div class="section-header">
+    <h2>🥐 베이커리 경영 시스템 개발 로드맵</h2>
+    <p>농장 수확 → 재료 획득 → 베이킹 → 판매 경영의 전체 흐름</p>
+  </div>
+
+  <div class="grid-2 mb-24">
+    <div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot tl-active"></div>
+          <div class="tl-title text-blue">Phase 1: 기초 데이터 세팅 <span class="badge badge-blue">1~2일</span></div>
+          <div class="tl-desc">
+            기존 ItemData/CraftData ScriptableObject로 베이커리 재료 & 완성품 에셋 생성.<br>
+            코드 변경 없이 에셋만 추가하면 됨.
+          </div>
+          <div class="tags">
+            <span class="tag tag-green">wheat_flour.asset</span>
+            <span class="tag tag-green">egg.asset</span>
+            <span class="tag tag-green">milk.asset</span>
+            <span class="tag tag-green">sugar.asset</span>
+            <span class="tag tag-green">bread.asset</span>
+            <span class="tag tag-green">cake.asset</span>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot tl-pending"></div>
+          <div class="tl-title">Phase 2: 베이커리 오븐 건설물 <span class="badge badge-blue">2~3일</span></div>
+          <div class="tl-desc">
+            Furnace.cs 패턴 참고 → BakeryOven.cs 작성.<br>
+            레시피: CraftData.craft_items[] 재활용.<br>
+            ActionCook → ActionBake 파생 (최소 수정).
+          </div>
+          <div class="tags">
+            <span class="tag tag-blue">BakeryOven.cs</span>
+            <span class="tag tag-blue">ActionBake.cs</span>
+            <span class="tag tag-blue">BakeryOven.asset</span>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot tl-pending"></div>
+          <div class="tl-title">Phase 3: 베이커리 UI <span class="badge badge-blue">2~3일</span></div>
+          <div class="tl-desc">
+            CraftPanel 패턴으로 BakeryPanel 작성.<br>
+            레시피 목록, 재료 보유 여부 하이라이트, 베이킹 진행률 ProgressBar.
+          </div>
+          <div class="tags">
+            <span class="tag tag-blue">BakeryPanel.cs</span>
+            <span class="tag tag-blue">BakingProgressBar</span>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot tl-pending"></div>
+          <div class="tl-title">Phase 4: 저장 시스템 연동 <span class="badge badge-blue">1일</span></div>
+          <div class="tl-desc">
+            PlayerData에 BakingOvenData 추가.<br>
+            베이킹 중 게임 종료/재시작 시 상태 유지.
+          </div>
+          <div class="tags">
+            <span class="tag tag-yellow">BakingOvenData</span>
+            <span class="tag tag-yellow">PlayerData 확장</span>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot tl-future"></div>
+          <div class="tl-title text-muted">Phase 5: 베이커리 경영 시스템 <span class="badge badge-yellow">중장기</span></div>
+          <div class="tl-desc">
+            NPC 손님 주문, 수요/공급, 평판 시스템.<br>
+            DialogueQuests 퀘스트 시스템과 연동.
+          </div>
+          <div class="tags">
+            <span class="tag tag-orange">NPC 주문 퀘스트</span>
+            <span class="tag tag-orange">동적 가격 변동</span>
+            <span class="tag tag-orange">베이커리 평점</span>
+            <span class="tag tag-orange">계절/날씨 연동</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card mb-16">
+        <div class="card-title">🔄 기존 코드 재활용 전략</div>
+        <table>
+          <thead><tr><th>새 기능</th><th>참고할 기존 코드</th></tr></thead>
+          <tbody>
+            <tr><td>베이커리 오븐</td><td class="font-mono text-blue">Furnace.cs, MixingPot.cs</td></tr>
+            <tr><td>베이킹 액션</td><td class="font-mono text-blue">ActionCook.cs (MAction)</td></tr>
+            <tr><td>레시피 데이터</td><td class="font-mono text-blue">CraftData.craft_items[]</td></tr>
+            <tr><td>베이커리 UI</td><td class="font-mono text-blue">CraftPanel.cs</td></tr>
+            <tr><td>진행률 표시</td><td class="font-mono text-blue">ActionProgress.cs</td></tr>
+            <tr><td>NPC 주문</td><td class="font-mono text-purple">DialogueQuests 퀘스트</td></tr>
+            <tr><td>상점 판매</td><td class="font-mono text-blue">ShopNPC.cs, ShopPanel.cs</td></tr>
+            <tr><td>계절 연동</td><td class="font-mono text-blue">TheGame.onNewDay 이벤트</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 Phase 4 저장 구조 (미리 보기)</div>
+        <pre><span class="cm">// PlayerData.cs에 추가</span>
+[<span class="cl">System.Serializable</span>]
+<span class="kw">public class</span> <span class="cl">BakingOvenData</span> {
+    <span class="kw">public string</span> uid;
+    <span class="kw">public string</span> current_item_id;  <span class="cm">// 굽는 중인 재료</span>
+    <span class="kw">public float</span>  baking_timer;      <span class="cm">// 남은 시간</span>
+    <span class="kw">public int</span>    baked_quantity;    <span class="cm">// 완성품 수량</span>
+}
+
+<span class="kw">public class</span> <span class="cl">PlayerData</span> {
+    <span class="cm">// ... 기존 필드 ...</span>
+    <span class="kw">public</span> Dictionary&lt;<span class="kw">string</span>, <span class="cl">BakingOvenData</span>&gt;
+        baking_ovens = <span class="kw">new</span>();
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🌾 전체 게임 루프 흐름도</div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;">
+      <div class="ng-node" style="background:#0f2a0f;border-color:#166534;color:#86efac;padding:10px 16px;">🌱<br>씨앗 심기<br><span style="font-size:10px;font-weight:400;">ActionPlant</span></div>
+      <div class="ng-arrow">→</div>
+      <div class="ng-node" style="background:#0f2a0f;border-color:#166534;color:#86efac;padding:10px 16px;">💧<br>물 주기<br><span style="font-size:10px;font-weight:400;">ActionWaterPlant</span></div>
+      <div class="ng-arrow">→</div>
+      <div class="ng-node" style="background:#0f2a0f;border-color:#166534;color:#86efac;padding:10px 16px;">⏰<br>성장 대기<br><span style="font-size:10px;font-weight:400;">Plant.SlowUpdate</span></div>
+      <div class="ng-arrow">→</div>
+      <div class="ng-node" style="background:#0f2a0f;border-color:#166534;color:#86efac;padding:10px 16px;">🌾<br>수확<br><span style="font-size:10px;font-weight:400;">ActionHarvest</span></div>
+      <div class="ng-arrow">→</div>
+      <div class="ng-node" style="background:#2a1a0f;border-color:#92400e;color:#fde68a;padding:10px 16px;">🏭<br>제분/가공<br><span style="font-size:10px;font-weight:400;">ActionCook (기존)</span></div>
+      <div class="ng-arrow">→</div>
+      <div class="ng-node" style="background:#2a0f1a;border-color:#9d174d;color:#fbcfe8;padding:10px 16px;">🥐<br>베이킹<br><span style="font-size:10px;font-weight:400;">ActionBake (신규)</span></div>
+      <div class="ng-arrow">→</div>
+      <div class="ng-node" style="background:#1a0f2a;border-color:#5b21b6;color:#ddd6fe;padding:10px 16px;">💰<br>판매/경영<br><span style="font-size:10px;font-weight:400;">ShopNPC (확장)</span></div>
+    </div>
+    <div style="font-size:12px;color:var(--text3);margin-top:8px;">
+      초록 → 기존 시스템 | 주황 → 기존 시스템 활용 | 분홍 → Phase 2 신규 | 보라 → Phase 5 확장
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- TAB 8: 씬 맵 -->
+<!-- ============================================================ -->
+<div class="section" id="tab-scenemap">
+  <div class="section-header">
+    <h2>🗺️ 씬 전체 맵</h2>
+    <p>각 씬의 구성 요소, 필수 매니저, 씬 간 연결 관계</p>
+  </div>
+
+  <!-- 씬 연결 관계도 -->
+  <div class="card mb-16">
+    <div class="card-title">🔗 씬 연결 관계도</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:0;padding:16px 0;">
+
+      <!-- 야외 씬 그룹 -->
+      <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;justify-content:center;">
+
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">사막 지역</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <div class="ng-node" style="background:#2a1a0a;border-color:#c2410c;color:#fdba74;padding:12px 16px;text-align:center;">
+              🌞<br><strong>Desert-Day</strong><br><span style="font-size:10px;font-weight:400;color:var(--text3)">KKUBUL_works</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+              <div style="font-size:10px;color:var(--text3);">시간 전환</div>
+              <div style="color:var(--yellow);font-size:14px;">⇄</div>
+              <div style="font-size:10px;color:var(--text3);">TransitionToNextDay</div>
+            </div>
+            <div class="ng-node" style="background:#0a1a2a;border-color:#1d4ed8;color:#93c5fd;padding:12px 16px;text-align:center;">
+              🌙<br><strong>Desert-Night</strong><br><span style="font-size:10px;font-weight:400;color:var(--text3)">KKUBUL_works</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">샘플 지역</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <div class="ng-node" style="background:#0a2a1a;border-color:#065f46;color:#6ee7b7;padding:12px 16px;text-align:center;">
+              🌞<br><strong>Sample-Day</strong><br><span style="font-size:10px;font-weight:400;color:var(--text3)">KKUBUL_works</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+              <div style="font-size:10px;color:var(--text3);">시간 전환</div>
+              <div style="color:var(--green);font-size:14px;">⇄</div>
+              <div style="font-size:10px;color:var(--text3);">TransitionToNextDay</div>
+            </div>
+            <div class="ng-node" style="background:#0f0f2a;border-color:#4f46e5;color:#c4b5fd;padding:12px 16px;text-align:center;">
+              🌙<br><strong>Sample-Night</strong><br><span style="font-size:10px;font-weight:400;color:var(--text3)">KKUBUL_works</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 수직 화살표 -->
+      <div style="display:flex;gap:160px;margin:8px 0;flex-wrap:wrap;justify-content:center;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <div style="color:var(--text3);font-size:18px;">↕</div>
+          <div style="font-size:10px;color:var(--text3);">ExitZone / Door</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <div style="color:var(--text3);font-size:18px;">↕</div>
+          <div style="font-size:10px;color:var(--text3);">ExitZone / Door</div>
+        </div>
+      </div>
+
+      <!-- 실내 씬 -->
+      <div style="display:flex;justify-content:center;">
+        <div class="ng-node" style="background:#1a0f2a;border-color:#7c3aed;color:#ddd6fe;padding:12px 24px;text-align:center;min-width:200px;">
+          🏠<br><strong>InHouse</strong><br><span style="font-size:10px;font-weight:400;color:var(--text3)">실내 공간 (상점, 창고, 베이커리)</span>
+        </div>
+      </div>
+
+    </div>
+    <div style="margin-top:12px;font-size:11px;color:var(--text3);text-align:center;">
+      씬 전환은 <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">ExitZone.cs</code> → <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">TheGame.GoToScene()</code> → <code style="background:var(--surface2);padding:1px 4px;border-radius:3px;">BlackPanel</code> 페이드 효과로 처리됩니다.
+    </div>
+  </div>
+
+  <!-- 매니저 계층 -->
+  <div class="card mb-16">
+    <div class="card-title">🏛️ 매니저 계층 구조 (모든 씬 공통)</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:8px;">
+
+      <div style="background:#0f1e4a;border:1px solid #1e3f7a;border-radius:8px;padding:12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:8px;">🎮 GameManager</div>
+        <div style="font-size:11px;color:var(--text2);font-family:monospace;">TheGame.cs</div>
+        <ul class="file-list" style="margin-top:6px;">
+          <li style="font-size:11px;">저장/로드 조율</li>
+          <li style="font-size:11px;">씬 전환 관리</li>
+          <li style="font-size:11px;">게임 시간 관리</li>
+          <li style="font-size:11px;">일시정지 제어</li>
+          <li style="font-size:11px;">이벤트 발행 허브</li>
+        </ul>
+        <div class="tags" style="margin-top:6px;"><span class="tag tag-red">씬에 직접 배치 필수</span></div>
+      </div>
+
+      <div style="background:#0f1e4a;border:1px solid #1e3f7a;border-radius:8px;padding:12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:8px;">📦 DataManager</div>
+        <div style="font-size:11px;color:var(--text2);font-family:monospace;">TheData.cs</div>
+        <ul class="file-list" style="margin-top:6px;">
+          <li style="font-size:11px;">ScriptableObject 일괄 로드</li>
+          <li style="font-size:11px;">TheUI 캔버스 인스턴스화</li>
+          <li style="font-size:11px;">TheAudio 인스턴스화</li>
+          <li style="font-size:11px;">ActionSelector 인스턴스화</li>
+        </ul>
+        <div class="tags" style="margin-top:6px;"><span class="tag tag-red">씬에 직접 배치 필수</span></div>
+      </div>
+
+      <div style="background:#0f1e4a;border:1px solid #1e3f7a;border-radius:8px;padding:12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:8px;">📷 CameraManager</div>
+        <div style="font-size:11px;color:var(--text2);font-family:monospace;">TheCamera.cs + RenderQuad</div>
+        <ul class="file-list" style="margin-top:6px;">
+          <li style="font-size:11px;">카메라 이동/줌</li>
+          <li style="font-size:11px;">플레이어 추적</li>
+          <li style="font-size:11px;">화면 셰이크</li>
+          <li style="font-size:11px;">렌더 텍스처 출력</li>
+        </ul>
+        <div class="tags" style="margin-top:6px;"><span class="tag tag-red">씬에 직접 배치 필수</span></div>
+      </div>
+
+      <div style="background:#0a2a1a;border:1px solid #065f46;border-radius:8px;padding:12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px;">🔊 AudioManager</div>
+        <div style="font-size:11px;color:var(--text2);font-family:monospace;">TheAudio.cs</div>
+        <ul class="file-list" style="margin-top:6px;">
+          <li style="font-size:11px;">BGM 재생/전환</li>
+          <li style="font-size:11px;">SFX 재생</li>
+          <li style="font-size:11px;">볼륨 제어</li>
+        </ul>
+        <div class="tags" style="margin-top:6px;"><span class="tag tag-green">TheData가 자동 생성</span></div>
+      </div>
+
+      <div style="background:#0a2a1a;border:1px solid #065f46;border-radius:8px;padding:12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px;">🖥️ UIManager</div>
+        <div style="font-size:11px;color:var(--text2);font-family:monospace;">TheUI.cs (UICanvas 프리팹)</div>
+        <ul class="file-list" style="margin-top:6px;">
+          <li style="font-size:11px;">전체 UI 패널 관리</li>
+          <li style="font-size:11px;">인벤토리/제작/상점</li>
+          <li style="font-size:11px;">일시정지/게임오버</li>
+          <li style="font-size:11px;">포커스 추적</li>
+        </ul>
+        <div class="tags" style="margin-top:6px;"><span class="tag tag-green">TheData가 자동 생성</span></div>
+      </div>
+
+      <div style="background:#1a0f2a;border:1px solid #5b21b6;border-radius:8px;padding:12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--accent2);margin-bottom:8px;">💬 DialogueManager</div>
+        <div style="font-size:11px;color:var(--text2);font-family:monospace;">NarrativeManager.cs</div>
+        <ul class="file-list" style="margin-top:6px;">
+          <li style="font-size:11px;">대화 흐름 제어</li>
+          <li style="font-size:11px;">퀘스트 상태 관리</li>
+          <li style="font-size:11px;">조건/효과 실행</li>
+        </ul>
+        <div class="tags" style="margin-top:6px;"><span class="tag tag-red">씬에 직접 배치 필수</span><span class="tag tag-purple">#if DIALOGUE_QUESTS</span></div>
+      </div>
+
+      <div style="background:#1a0f2a;border:1px solid #5b21b6;border-radius:8px;padding:12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--accent2);margin-bottom:8px;">🔗 IntegrationBridge</div>
+        <div style="font-size:11px;color:var(--text2);font-family:monospace;">DialogueQuestsWrap.cs</div>
+        <ul class="file-list" style="margin-top:6px;">
+          <li style="font-size:11px;">두 시스템 이벤트 연결</li>
+          <li style="font-size:11px;">저장 동기화</li>
+          <li style="font-size:11px;">NPC Actor 초기화</li>
+        </ul>
+        <div class="tags" style="margin-top:6px;"><span class="tag tag-red">씬에 직접 배치 필수</span><span class="tag tag-purple">#if DIALOGUE_QUESTS</span></div>
+      </div>
+
+      <div style="background:#2a1a0a;border:1px solid #92400e;border-radius:8px;padding:12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--yellow);margin-bottom:8px;">🔲 GridManager</div>
+        <div style="font-size:11px;color:var(--text2);font-family:monospace;">GridManager.cs</div>
+        <ul class="file-list" style="margin-top:6px;">
+          <li style="font-size:11px;">그리드 기반 건설 시스템</li>
+          <li style="font-size:11px;">충돌 검사</li>
+          <li style="font-size:11px;">배치 유효성 검증</li>
+        </ul>
+        <div class="tags" style="margin-top:6px;"><span class="tag tag-yellow">야외 씬 필수</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 씬별 구성 카드 -->
+  <div class="card-title" style="margin-bottom:12px;">📋 씬별 구성 요소 체크리스트</div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px;margin-bottom:24px;">
+
+    <!-- Desert-Day -->
+    <div style="background:var(--surface);border:1px solid #c2410c44;border-top:3px solid #c2410c;border-radius:10px;padding:16px;">
+      <div style="font-size:13px;font-weight:700;color:#fdba74;margin-bottom:12px;">🌞 Desert-Day <span style="font-size:10px;font-weight:400;color:var(--text3);">야외 사막 (낮)</span></div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:6px;text-transform:uppercase;">필수 매니저</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> TheGame (GameManager)</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> TheData (DataManager)</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> TheCamera + RenderQuad</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> NarrativeManager (DQ)</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> DialogueQuestsWrap (DQ)</div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin:10px 0 6px;text-transform:uppercase;">환경 요소</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> Terrain / Mesh</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> Global Volume (포스트 프로세싱)</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> WeatherSystem</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> GridManager</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> 낮 Directional Light</div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin:10px 0 6px;text-transform:uppercase;">플레이어 & NPC</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> PlayerCharacter + Actor</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> NPC들 (ShopNPC, Trained...)</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> ExitZone (InHouse 입구)</div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin:10px 0 6px;text-transform:uppercase;">씬 전환</div>
+      <div style="font-size:11px;color:var(--text2);">→ Desert-Night (밤 전환)<br>→ InHouse (건물 입장)</div>
+    </div>
+
+    <!-- Desert-Night -->
+    <div style="background:var(--surface);border:1px solid #1d4ed844;border-top:3px solid #1d4ed8;border-radius:10px;padding:16px;">
+      <div style="font-size:13px;font-weight:700;color:#93c5fd;margin-bottom:12px;">🌙 Desert-Night <span style="font-size:10px;font-weight:400;color:var(--text3);">야외 사막 (밤)</span></div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:6px;text-transform:uppercase;">필수 매니저</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> TheGame (GameManager)</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> TheData (DataManager)</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> TheCamera + RenderQuad</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> NarrativeManager (DQ)</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> DialogueQuestsWrap (DQ)</div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin:10px 0 6px;text-transform:uppercase;">환경 요소</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> Terrain / Mesh (낮과 동일)</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> Global Volume (야간 설정)</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> WeatherSystem</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> GridManager</div>
+      <div class="status warn" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--yellow)"></span> 야간 조명 (어둡게 세팅)</div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin:10px 0 6px;text-transform:uppercase;">플레이어 & NPC</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> PlayerCharacter + Actor</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> ExitZone (InHouse 입구)</div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin:10px 0 6px;text-transform:uppercase;">씬 전환</div>
+      <div style="font-size:11px;color:var(--text2);">→ Desert-Day (낮 전환)<br>→ InHouse (건물 입장)</div>
+    </div>
+
+    <!-- InHouse -->
+    <div style="background:var(--surface);border:1px solid #7c3aed44;border-top:3px solid #7c3aed;border-radius:10px;padding:16px;">
+      <div style="font-size:13px;font-weight:700;color:#ddd6fe;margin-bottom:12px;">🏠 InHouse <span style="font-size:10px;font-weight:400;color:var(--text3);">실내 공간</span></div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:6px;text-transform:uppercase;">필수 매니저</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> TheGame (GameManager)</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> TheData (DataManager)</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> TheCamera + RenderQuad</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> NarrativeManager (DQ)</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> DialogueQuestsWrap (DQ)</div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin:10px 0 6px;text-transform:uppercase;">환경 요소</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> 실내 메시/콜라이더</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> Global Volume (실내 설정)</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> 실내 Point Lights</div>
+      <div class="status warn" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--yellow)"></span> GridManager (베이커리 오븐 배치용)</div>
+      <div class="status info" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--cyan)"></span> WeatherSystem 불필요</div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin:10px 0 6px;text-transform:uppercase;">주요 오브젝트</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> PlayerCharacter + Actor</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> Storage (창고)</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> Furnace / CraftStation</div>
+      <div class="status warn" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--yellow)"></span> BakeryOven (Phase 2 추가)</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> ExitZone (야외로 복귀)</div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin:10px 0 6px;text-transform:uppercase;">씬 전환</div>
+      <div style="font-size:11px;color:var(--text2);">→ Desert-Day 또는 Sample-Day<br>(ExitZone의 설정에 따라)</div>
+    </div>
+
+    <!-- Sample-Day/Night -->
+    <div style="background:var(--surface);border:1px solid #06564344;border-top:3px solid #059669;border-radius:10px;padding:16px;">
+      <div style="font-size:13px;font-weight:700;color:#6ee7b7;margin-bottom:12px;">🧪 Sample-Day/Night <span style="font-size:10px;font-weight:400;color:var(--text3);">테스트/개발용</span></div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:6px;text-transform:uppercase;">Desert와 동일 구성</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> 모든 매니저 동일</div>
+      <div class="status ok" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--green)"></span> 야외 환경 설정</div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin:10px 0 6px;text-transform:uppercase;">특이 사항</div>
+      <div class="status info" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--cyan)"></span> 새 기능 프로토타입용</div>
+      <div class="status info" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--cyan)"></span> 베이커리 오븐 테스트 추천</div>
+      <div class="status warn" style="margin-bottom:3px;"><span class="status-dot" style="background:var(--yellow)"></span> 최종 빌드 전 비활성화 권장</div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin:10px 0 6px;text-transform:uppercase;">씬 전환</div>
+      <div style="font-size:11px;color:var(--text2);">→ Sample-Night (낮↔밤)</div>
+    </div>
+
+  </div>
+
+  <!-- 씬 셋업 템플릿 -->
+  <div class="card">
+    <div class="card-title">📐 새 씬 셋업 필수 체크리스트 (베이커리 씬 등 추가 시)</div>
+    <div class="grid-2">
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;">① 씬에 직접 배치할 오브젝트</div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;"><span style="color:var(--red);">★</span> <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;">TheGame</code> — 컴포넌트: TheGame.cs, TheData.cs</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;"><span style="color:var(--red);">★</span> <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;">TheCamera</code> — 컴포넌트: TheCamera.cs + Camera + RenderQuad</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;"><span style="color:var(--red);">★</span> <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;">NarrativeManager</code> — DialogueQuests</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;"><span style="color:var(--red);">★</span> <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;">DialogueQuestsWrap</code> — 통합 브릿지</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;"><span style="color:var(--yellow);">◆</span> <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;">GridManager</code> — 야외 씬만</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;"><span style="color:var(--yellow);">◆</span> <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;">WeatherSystem</code> — 야외 씬만</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;"><span style="color:var(--cyan);">●</span> <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;">Global Volume</code> — 포스트 프로세싱</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;"><span style="color:var(--cyan);">●</span> <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;">PlayerCharacter</code> + Actor 컴포넌트</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;">② TheData가 자동으로 생성하는 것</div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;"><span style="color:var(--green);">✓</span> <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;">UICanvas</code> — TheUI + PlayerUI + 모든 패널</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;"><span style="color:var(--green);">✓</span> <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;">AudioManager</code> — TheAudio</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;"><span style="color:var(--green);">✓</span> <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;">ActionSelector</code> — 우클릭 메뉴</div>
+        </div>
+        <div style="font-size:12px;font-weight:600;color:var(--text2);margin:12px 0 8px;">③ AssetData에서 참조 확인</div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="font-size:12px;color:var(--text2);">• <code>ui_canvas</code> 프리팹 할당</div>
+          <div style="font-size:12px;color:var(--text2);">• <code>audio_manager</code> 프리팹 할당</div>
+          <div style="font-size:12px;color:var(--text2);">• <code>action_selector</code> 프리팹 할당</div>
+          <div style="font-size:12px;color:var(--text2);">• <code>music_playlist</code> BGM 클립 설정</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 9: 저장 시스템 -->
+<!-- ============================================================ -->
+<div class="section" id="tab-savesystem">
+  <div class="section-header">
+    <h2>💾 저장 시스템 구현 전략</h2>
+    <p>3슬롯 세이브 UI + FarmingEngine (.farming) + DialogueQuests (.dq) 통합 구조</p>
+  </div>
+
+  <!-- 현재 상태 -->
+  <div class="grid-2 mb-16">
+    <div class="card" style="border-color:#7f1d1d;">
+      <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:10px;">❌ 현재 상태 — 기능만 존재, UI 없음</div>
+      <ul class="file-list">
+        <li><span class="dot dot-red"></span> PausePanel의 "Save" 버튼 → <code>TheGame.Get().Save()</code> 바로 호출</li>
+        <li><span class="dot dot-red"></span> 슬롯 없음 — 항상 "player" 고정 파일명</li>
+        <li><span class="dot dot-red"></span> 세이브 내용 미리보기 없음</li>
+        <li><span class="dot dot-red"></span> .farming 저장 후 .dq 저장은 별도 (이벤트로만)</li>
+        <li><span class="dot dot-red"></span> 세이브 파일 삭제 UI 없음</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:#065f46;">
+      <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:10px;">✅ 목표 상태 — 슬롯형 통합 저장 UI</div>
+      <ul class="file-list">
+        <li><span class="dot dot-green"></span> 3개 세이브 슬롯 (slot1/slot2/slot3)</li>
+        <li><span class="dot dot-green"></span> 슬롯별 정보 표시 (날짜, 플레이 시간, 현재 씬, 진행 일수)</li>
+        <li><span class="dot dot-green"></span> 저장/불러오기/삭제 각각 확인 모달</li>
+        <li><span class="dot dot-green"></span> .farming + .dq 동시 저장/로드 보장</li>
+        <li><span class="dot dot-green"></span> PausePanel에서 SaveSlotPanel 호출</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 데이터 구조 -->
+  <div class="card mb-16">
+    <div class="card-title">📦 UnifiedSaveSlotInfo — 슬롯 표시 데이터</div>
+    <div class="grid-2">
+      <pre><span class="cm">// SaveSlotInfo.cs — 세이브 슬롯 표시용 데이터</span>
+[<span class="cl">System.Serializable</span>]
+<span class="kw">public class</span> <span class="cl">SaveSlotInfo</span>
+{
+    <span class="kw">public string</span>   slot_name;       <span class="cm">// "slot1", "slot2", "slot3"</span>
+    <span class="kw">public bool</span>     has_data;        <span class="cm">// 저장 파일 존재 여부</span>
+
+    <span class="cm">// PlayerData (.farming)에서 읽어온 정보</span>
+    <span class="kw">public int</span>      day;             <span class="cm">// 진행 일수</span>
+    <span class="kw">public float</span>    day_time;        <span class="cm">// 게임 내 시각 (0~24)</span>
+    <span class="kw">public float</span>    play_time;       <span class="cm">// 실제 플레이 시간(초)</span>
+    <span class="kw">public string</span>   current_scene;   <span class="cm">// 마지막 씬 이름</span>
+    <span class="kw">public</span> DateTime last_save;       <span class="cm">// 마지막 저장 시각</span>
+    <span class="kw">public string</span>   version;         <span class="cm">// 게임 버전</span>
+
+    <span class="cm">// 사람이 읽기 좋은 형태로 변환</span>
+    <span class="kw">public string</span> <span class="fn">GetDayTimeString</span>() =>
+        <span class="st">$"Day {day} {(int)day_time:D2}:{(int)((day_time%1)*60):D2}"</span>;
+
+    <span class="kw">public string</span> <span class="fn">GetPlayTimeString</span>() {
+        <span class="kw">int</span> h = (<span class="kw">int</span>)(play_time / <span class="nm">3600</span>);
+        <span class="kw">int</span> m = (<span class="kw">int</span>)(play_time % <span class="nm">3600</span> / <span class="nm">60</span>);
+        <span class="kw">return</span> <span class="st">$"{h}h {m}m"</span>;
+    }
+}</pre>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;">슬롯 파일 매핑</div>
+        <table>
+          <thead><tr><th>슬롯</th><th>FarmingEngine</th><th>DialogueQuests</th></tr></thead>
+          <tbody>
+            <tr><td>slot1</td><td class="font-mono text-blue">slot1.farming</td><td class="font-mono text-purple">slot1.dq</td></tr>
+            <tr><td>slot2</td><td class="font-mono text-blue">slot2.farming</td><td class="font-mono text-purple">slot2.dq</td></tr>
+            <tr><td>slot3</td><td class="font-mono text-blue">slot3.farming</td><td class="font-mono text-purple">slot3.dq</td></tr>
+          </tbody>
+        </table>
+        <div class="highlight-info" style="margin-top:10px;">
+          슬롯 이름이 두 시스템의 파일명 기반이 됩니다.<br>
+          저장 시 반드시 <strong>두 파일 모두</strong> 함께 저장되어야 합니다.
+        </div>
+        <div style="font-size:12px;font-weight:600;color:var(--text2);margin:10px 0 6px;">슬롯 정보 로드 방법</div>
+        <pre style="font-size:10px;"><span class="cm">// 파일 존재 여부만 확인 후 최소 데이터 로드</span>
+<span class="kw">public static</span> <span class="cl">SaveSlotInfo</span> <span class="fn">ReadSlotInfo</span>(<span class="kw">string</span> slot) {
+    <span class="kw">var</span> info = <span class="kw">new</span> <span class="cl">SaveSlotInfo</span>();
+    info.slot_name = slot;
+    info.has_data = <span class="cl">SaveTool</span>.<span class="fn">DoesFileExist</span>(slot+<span class="st">".farming"</span>);
+    <span class="kw">if</span> (info.has_data) {
+        <span class="kw">var</span> pdata = <span class="cl">SaveTool</span>.<span class="fn">LoadFile</span>&lt;<span class="cl">PlayerData</span>&gt;(slot+<span class="st">".farming"</span>);
+        info.day = pdata?.day ?? <span class="nm">0</span>;
+        info.play_time = pdata?.play_time ?? <span class="nm">0</span>;
+        info.current_scene = pdata?.current_scene ?? <span class="st">""</span>;
+        info.last_save = pdata?.last_save ?? DateTime.<span class="fn">MinValue</span>();
+    }
+    <span class="kw">return</span> info;
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- SaveManager -->
+  <div class="card mb-16">
+    <div class="card-title">⚙️ SaveManager.cs — 통합 저장/로드 조율</div>
+    <pre><span class="cm">// SaveManager.cs — FarmingEngine + DialogueQuests 통합 저장 관리자</span>
+<span class="kw">namespace</span> <span class="nm">FarmingEngine</span>
+{
+    <span class="kw">public class</span> <span class="cl">SaveManager</span> : <span class="cl">MonoBehaviour</span>
+    {
+        <span class="kw">public static</span> <span class="kw">readonly string</span>[] SLOT_NAMES = { <span class="st">"slot1"</span>, <span class="st">"slot2"</span>, <span class="st">"slot3"</span> };
+        <span class="kw">public static</span> <span class="kw">readonly string</span> LAST_SLOT_KEY = <span class="st">"last_save_slot"</span>;
+
+        <span class="kw">private static</span> <span class="cl">SaveManager</span> _instance;
+        <span class="kw">public static</span> <span class="cl">SaveManager</span> <span class="fn">Get</span>() => _instance;
+
+        <span class="cm">// ── 슬롯 정보 읽기 (저장 선택 UI용) ─────────────────</span>
+        <span class="kw">public</span> <span class="cl">SaveSlotInfo</span>[] <span class="fn">GetAllSlotInfos</span>()
+        {
+            <span class="kw">var</span> infos = <span class="kw">new</span> <span class="cl">SaveSlotInfo</span>[SLOT_NAMES.Length];
+            <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; SLOT_NAMES.Length; i++)
+                infos[i] = <span class="cl">SaveSlotInfo</span>.<span class="fn">ReadSlotInfo</span>(SLOT_NAMES[i]);
+            <span class="kw">return</span> infos;
+        }
+
+        <span class="cm">// ── 저장 (두 시스템 동시) ────────────────────────────</span>
+        <span class="kw">public void</span> <span class="fn">SaveToSlot</span>(<span class="kw">int</span> slot_index)
+        {
+            <span class="kw">string</span> slot = SLOT_NAMES[slot_index];
+
+            <span class="cm">// 1. FarmingEngine 저장</span>
+            TheGame.Get().<span class="fn">Save</span>(slot);          <span class="cm">// → PlayerData.Save(slot)</span>
+
+            <span class="cm">// 2. DialogueQuests 저장</span>
+            <span class="kw">#if</span> DIALOGUE_QUESTS
+            <span class="kw">var</span> dqData = DialogueQuests.NarrativeData.<span class="fn">Get</span>();
+            <span class="kw">if</span> (dqData != <span class="kw">null</span>)
+                DialogueQuests.NarrativeData.<span class="fn">Save</span>(slot, dqData);
+            <span class="kw">#endif</span>
+
+            <span class="cm">// 3. 마지막 슬롯 기록</span>
+            PlayerPrefs.<span class="fn">SetString</span>(LAST_SLOT_KEY, slot);
+            PlayerPrefs.<span class="fn">Save</span>();
+
+            Debug.<span class="fn">Log</span>(<span class="st">$"[SaveManager] 저장 완료 → {slot}"</span>);
+        }
+
+        <span class="cm">// ── 불러오기 (두 시스템 동시) ───────────────────────</span>
+        <span class="kw">public void</span> <span class="fn">LoadFromSlot</span>(<span class="kw">int</span> slot_index)
+        {
+            <span class="kw">string</span> slot = SLOT_NAMES[slot_index];
+            <span class="kw">if</span> (!<span class="cl">SaveTool</span>.<span class="fn">DoesFileExist</span>(slot + <span class="st">".farming"</span>)) <span class="kw">return</span>;
+
+            <span class="cm">// FarmingEngine 로드 (씬 전환까지 포함)</span>
+            TheGame.<span class="fn">Load</span>(slot);    <span class="cm">// afterLoad 이벤트 → DQ도 자동 로드</span>
+
+            PlayerPrefs.<span class="fn">SetString</span>(LAST_SLOT_KEY, slot);
+        }
+
+        <span class="cm">// ── 삭제 (두 파일 동시) ──────────────────────────────</span>
+        <span class="kw">public void</span> <span class="fn">DeleteSlot</span>(<span class="kw">int</span> slot_index)
+        {
+            <span class="kw">string</span> slot = SLOT_NAMES[slot_index];
+            <span class="cl">SaveTool</span>.<span class="fn">DeleteFile</span>(slot + <span class="st">".farming"</span>);
+            <span class="cl">SaveTool</span>.<span class="fn">DeleteFile</span>(slot + <span class="st">".dq"</span>);       <span class="cm">// DQ 세이브도 삭제</span>
+        }
+
+        <span class="cm">// ── 마지막 슬롯 자동 로드 (게임 시작 시) ───────────</span>
+        <span class="kw">public void</span> <span class="fn">AutoLoadLastSlot</span>()
+        {
+            <span class="kw">string</span> slot = PlayerPrefs.<span class="fn">GetString</span>(LAST_SLOT_KEY, <span class="st">"slot1"</span>);
+            <span class="kw">if</span> (<span class="cl">SaveTool</span>.<span class="fn">DoesFileExist</span>(slot + <span class="st">".farming"</span>))
+                <span class="fn">LoadFromSlot</span>(System.Array.<span class="fn">IndexOf</span>(SLOT_NAMES, slot));
+            <span class="kw">else</span>
+                TheGame.<span class="fn">NewGame</span>(slot);  <span class="cm">// 세이브 없으면 새 게임</span>
+        }
+    }
+}</pre>
+  </div>
+
+  <!-- UI 구조 -->
+  <div class="card mb-16">
+    <div class="card-title">🖼️ SaveSlotPanel UI 구조 및 흐름</div>
+    <div class="grid-2">
+      <div>
+        <pre><span class="cm">// SaveSlotPanel.cs</span>
+<span class="kw">public class</span> <span class="cl">SaveSlotPanel</span> : <span class="cl">UIPanel</span>
+{
+    <span class="kw">public enum</span> SavePanelMode { Save, Load }
+
+    [<span class="cl">SerializeField</span>] <span class="cl">SaveSlotUI</span>[] slot_uis;  <span class="cm">// 3개</span>
+    [<span class="cl">SerializeField</span>] <span class="cl">ConfirmPanel</span> confirm;   <span class="cm">// 확인 모달</span>
+
+    <span class="kw">private</span> SavePanelMode mode;
+
+    <span class="kw">public void</span> <span class="fn">Show</span>(SavePanelMode mode)
+    {
+        <span class="kw">this</span>.mode = mode;
+        <span class="kw">var</span> infos = <span class="cl">SaveManager</span>.Get().<span class="fn">GetAllSlotInfos</span>();
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; slot_uis.Length; i++)
+            slot_uis[i].<span class="fn">Refresh</span>(infos[i], mode);
+        <span class="kw">base</span>.<span class="fn">Show</span>();
+    }
+
+    <span class="kw">public void</span> <span class="fn">OnClickSlot</span>(<span class="kw">int</span> index)
+    {
+        <span class="kw">string</span> msg = mode == SavePanelMode.Save
+            ? <span class="st">$"슬롯 {index+1}에 저장하시겠습니까?"</span>
+            : <span class="st">$"슬롯 {index+1}을 불러오시겠습니까?"</span>;
+
+        confirm.<span class="fn">Show</span>(msg, () => {
+            <span class="kw">if</span> (mode == SavePanelMode.Save)
+                <span class="cl">SaveManager</span>.Get().<span class="fn">SaveToSlot</span>(index);
+            <span class="kw">else</span>
+                <span class="cl">SaveManager</span>.Get().<span class="fn">LoadFromSlot</span>(index);
+            <span class="fn">Hide</span>();
+        });
+    }
+
+    <span class="kw">public void</span> <span class="fn">OnClickDelete</span>(<span class="kw">int</span> index)
+    {
+        confirm.<span class="fn">Show</span>(<span class="st">"정말 삭제하시겠습니까?"</span>, () => {
+            <span class="cl">SaveManager</span>.Get().<span class="fn">DeleteSlot</span>(index);
+            <span class="fn">Refresh</span>();
+        });
+    }
+}</pre>
+      </div>
+      <div>
+        <pre><span class="cm">// SaveSlotUI.cs — 슬롯 한 칸 표시</span>
+<span class="kw">public class</span> <span class="cl">SaveSlotUI</span> : <span class="cl">MonoBehaviour</span>
+{
+    [<span class="cl">SerializeField</span>] <span class="cl">Text</span>   label_slot;    <span class="cm">// "SLOT 1"</span>
+    [<span class="cl">SerializeField</span>] <span class="cl">Text</span>   label_day;     <span class="cm">// "Day 5 / 09:30"</span>
+    [<span class="cl">SerializeField</span>] <span class="cl">Text</span>   label_scene;   <span class="cm">// "Desert-Day"</span>
+    [<span class="cl">SerializeField</span>] <span class="cl">Text</span>   label_playtime;<span class="cm">// "2h 30m"</span>
+    [<span class="cl">SerializeField</span>] <span class="cl">Text</span>   label_date;    <span class="cm">// "2026-04-11 14:32"</span>
+    [<span class="cl">SerializeField</span>] <span class="cl">Button</span> btn_action;   <span class="cm">// 저장 또는 불러오기</span>
+    [<span class="cl">SerializeField</span>] <span class="cl">Button</span> btn_delete;   <span class="cm">// 삭제</span>
+    [<span class="cl">SerializeField</span>] <span class="cl">GameObject</span> empty_view; <span class="cm">// "빈 슬롯" 표시</span>
+    [<span class="cl">SerializeField</span>] <span class="cl">GameObject</span> data_view;  <span class="cm">// 데이터 있을 때</span>
+
+    <span class="kw">public void</span> <span class="fn">Refresh</span>(<span class="cl">SaveSlotInfo</span> info, SavePanelMode mode)
+    {
+        <span class="kw">bool</span> has = info.has_data;
+        empty_view.<span class="fn">SetActive</span>(!has);
+        data_view.<span class="fn">SetActive</span>(has);
+        btn_delete.gameObject.<span class="fn">SetActive</span>(has);
+
+        <span class="kw">if</span> (has) {
+            label_day.text   = info.<span class="fn">GetDayTimeString</span>();
+            label_scene.text = info.current_scene;
+            label_playtime.text = info.<span class="fn">GetPlayTimeString</span>();
+            label_date.text  = info.last_save.<span class="fn">ToString</span>(<span class="st">"yy-MM-dd HH:mm"</span>);
+        }
+
+        label_slot.text = <span class="st">$"SLOT {index + 1}"</span>;
+        btn_action.GetComponentInChildren&lt;<span class="cl">Text</span>&gt;().text =
+            mode == SavePanelMode.Save ? <span class="st">"저장"</span> : <span class="st">"불러오기"</span>;
+    }
+}</pre>
+        <div style="margin-top:10px;">
+          <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;">PausePanel 수정 (최소 변경)</div>
+          <pre style="font-size:10px;"><span class="cm">// PausePanel.cs — 기존 직접 저장 → 슬롯 패널로 위임</span>
+<span class="kw">public void</span> <span class="fn">OnClickSave</span>() {
+    <span class="cm">// 기존: TheGame.Get().Save();</span>
+    SaveSlotPanel.Get().<span class="fn">Show</span>(SavePanelMode.Save);
+}
+<span class="kw">public void</span> <span class="fn">OnClickLoad</span>() {
+    <span class="cm">// 기존: TheGame.Load();</span>
+    SaveSlotPanel.Get().<span class="fn">Show</span>(SavePanelMode.Load);
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 전체 흐름도 -->
+  <div class="card mb-16">
+    <div class="card-title">🔄 저장/불러오기 전체 흐름</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:10px;">💾 저장 흐름</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot tl-active"></div>
+            <div style="font-size:12px;font-weight:600;">플레이어가 Pause → Save 클릭</div>
+            <div style="font-size:11px;color:var(--text2);">PausePanel.OnClickSave()</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-active"></div>
+            <div style="font-size:12px;font-weight:600;">SaveSlotPanel 열림</div>
+            <div style="font-size:11px;color:var(--text2);">3슬롯 정보 표시 (날짜, 일수, 씬 이름)</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-active"></div>
+            <div style="font-size:12px;font-weight:600;">슬롯 선택 → 확인 모달</div>
+            <div style="font-size:11px;color:var(--text2);">"슬롯 2에 저장하시겠습니까?" Y/N</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-active"></div>
+            <div style="font-size:12px;font-weight:600;">SaveManager.SaveToSlot(index)</div>
+            <div style="font-size:11px;color:var(--text2);">
+              ① TheGame.Save("slot2") → <code>slot2.farming</code><br>
+              ② beforeSave 이벤트 → NarrativeData.Save() → <code>slot2.dq</code><br>
+              ③ PlayerPrefs에 "slot2" 기록
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-active"></div>
+            <div style="font-size:12px;font-weight:600;">완료 메시지 표시 후 패널 닫힘</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:10px;">📂 불러오기 흐름</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot tl-active"></div>
+            <div style="font-size:12px;font-weight:600;">플레이어가 Pause → Load 클릭</div>
+            <div style="font-size:11px;color:var(--text2);">PausePanel.OnClickLoad()</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-active"></div>
+            <div style="font-size:12px;font-weight:600;">SaveSlotPanel 열림 (Load 모드)</div>
+            <div style="font-size:11px;color:var(--text2);">빈 슬롯은 비활성화</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-active"></div>
+            <div style="font-size:12px;font-weight:600;">슬롯 선택 → 확인 모달</div>
+            <div style="font-size:11px;color:var(--text2);">"현재 진행이 사라집니다. 계속하시겠습니까?"</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-active"></div>
+            <div style="font-size:12px;font-weight:600;">SaveManager.LoadFromSlot(index)</div>
+            <div style="font-size:11px;color:var(--text2);">
+              ① TheGame.Load("slot2") → <code>slot2.farming</code> 로드<br>
+              ② afterLoad 이벤트 → DQWrap.ReloadDQ() → <code>slot2.dq</code> 로드<br>
+              ③ PlayerData.current_scene으로 씬 전환<br>
+              ④ BlackPanel 페이드 효과
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-active"></div>
+            <div style="font-size:12px;font-weight:600;">씬 로드 완료 → 게임 재개</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 구현 체크리스트 -->
+  <div class="card">
+    <div class="card-title">✅ 구현 체크리스트 (순서대로)</div>
+    <div class="grid-2">
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;">📝 새로 만들 파일</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot tl-pending"></div>
+            <div style="font-size:12px;font-weight:600;">SaveSlotInfo.cs</div>
+            <div style="font-size:11px;color:var(--text2);">슬롯 표시용 데이터 클래스<br><code>FarmingEngine_study/Scripts/Data/</code></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-pending"></div>
+            <div style="font-size:12px;font-weight:600;">SaveManager.cs</div>
+            <div style="font-size:11px;color:var(--text2);">통합 저장/로드 조율 싱글톤<br><code>FarmingEngine_study/Scripts/Tools/</code></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-pending"></div>
+            <div style="font-size:12px;font-weight:600;">SaveSlotPanel.cs</div>
+            <div style="font-size:11px;color:var(--text2);">슬롯 목록 UI 패널 (UIPanel 상속)<br><code>FarmingEngine_study/Scripts/UI/</code></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-pending"></div>
+            <div style="font-size:12px;font-weight:600;">SaveSlotUI.cs</div>
+            <div style="font-size:11px;color:var(--text2);">슬롯 한 칸 표시 컴포넌트<br><code>FarmingEngine_study/Scripts/UI/</code></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-pending"></div>
+            <div style="font-size:12px;font-weight:600;">ConfirmPanel.cs</div>
+            <div style="font-size:11px;color:var(--text2);">Y/N 확인 모달 (재사용 가능)<br><code>FarmingEngine_study/Scripts/UI/</code></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;">✏️ 수정할 파일</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot tl-pending"></div>
+            <div style="font-size:12px;font-weight:600;">PausePanel.cs 수정</div>
+            <div style="font-size:11px;color:var(--text2);">OnClickSave/Load → SaveSlotPanel 호출로 교체 (2줄 변경)</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-pending"></div>
+            <div style="font-size:12px;font-weight:600;">UICanvas 프리팹 수정</div>
+            <div style="font-size:11px;color:var(--text2);">SaveSlotPanel + ConfirmPanel UI 오브젝트 추가</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-pending"></div>
+            <div style="font-size:12px;font-weight:600;">TheGame.cs (선택)</div>
+            <div style="font-size:11px;color:var(--text2);">Save(filename) / Load(filename) 오버로드 확인. 기존 메서드 재활용 가능.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-pending"></div>
+            <div style="font-size:12px;font-weight:600;">씬에 SaveManager 배치</div>
+            <div style="font-size:11px;color:var(--text2);">TheGame 오브젝트에 컴포넌트 추가 또는 별도 오브젝트</div>
+          </div>
+        </div>
+        <div class="highlight-info" style="margin-top:12px;">
+          💡 기존 <code>PlayerData.Save()</code> / <code>TheGame.Load()</code> 내부 로직은 그대로 재사용.<br>
+          SaveManager는 이를 조율하는 얇은 레이어만 추가합니다.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- TAB 10: 게임 씬 흐름 -->
+<!-- ============================================================ -->
+<div class="section" id="tab-gameflow">
+  <div class="section-header">
+    <h2>🎮 게임 씬 흐름 — 1차 플레이어블 샘플</h2>
+    <p>타이틀 → 인트로 → 캐릭터 생성 → 농장 플레이의 전체 흐름 전략</p>
+  </div>
+
+  <div class="highlight-warn mb-16">
+    ⚠️ <strong>기존 씬 주의:</strong> Desert-Day/Night, Sample-Day/Night, InHouse 는 <strong>쉐이더 실험용</strong>. 게임 씬 경로에서 참조하지 않음. 앞으로 Scene_* 컨벤션으로 새 씬을 구축한다.
+  </div>
+
+  <!-- 씬 흐름 다이어그램 -->
+  <div class="card mb-16">
+    <div class="card-title">🗺️ 전체 씬 흐름도</div>
+    <div style="overflow-x:auto;padding:8px 0;">
+    <div style="display:flex;align-items:flex-start;gap:0;min-width:900px;">
+
+      <!-- Scene_Start -->
+      <div style="display:flex;flex-direction:column;align-items:center;min-width:200px;">
+        <div style="background:#1e2640;border:2px solid var(--accent);border-radius:10px;padding:14px 16px;text-align:center;width:180px;">
+          <div style="font-size:16px;margin-bottom:4px;">🏠</div>
+          <div style="font-weight:700;color:var(--accent);font-size:13px;">Scene_Start</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px;">타이틀 스크린</div>
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:3px;">
+            <div style="font-size:10px;background:#0f2a4a;border:1px solid #1d4ed8;border-radius:4px;padding:2px 6px;color:#93c5fd;">새 게임</div>
+            <div style="font-size:10px;background:#0a2a1a;border:1px solid #065f46;border-radius:4px;padding:2px 6px;color:#6ee7b7;">불러오기</div>
+            <div style="font-size:10px;background:#2a2a0a;border:1px solid #92400e;border-radius:4px;padding:2px 6px;color:#fde68a;">설정</div>
+            <div style="font-size:10px;background:#2a0f0f;border:1px solid #7f1d1d;border-radius:4px;padding:2px 6px;color:#fca5a5;">나가기</div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-top:6px;">TheGame ❌<br>TheData ❌<br>경량 씬</div>
+      </div>
+
+      <!-- 화살표 분기 -->
+      <div style="display:flex;flex-direction:column;justify-content:center;padding:0 8px;gap:24px;margin-top:20px;">
+        <div style="display:flex;align-items:center;gap:4px;">
+          <div style="width:40px;height:1px;background:var(--accent);"></div>
+          <div style="font-size:9px;color:var(--accent);white-space:nowrap;">새게임</div>
+          <div style="color:var(--accent);">→</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <div style="width:40px;height:1px;background:var(--green);"></div>
+          <div style="font-size:9px;color:var(--green);white-space:nowrap;">불러오기</div>
+          <div style="color:var(--green);">→</div>
+        </div>
+      </div>
+
+      <!-- Scene_Intro + CharCreate -->
+      <div style="display:flex;flex-direction:column;gap:8px;min-width:180px;margin-top:10px;">
+        <div style="background:#0a2a1a;border:2px solid #065f46;border-radius:10px;padding:12px 14px;text-align:center;">
+          <div style="font-size:13px;margin-bottom:2px;">📖</div>
+          <div style="font-weight:700;color:var(--green);font-size:12px;">Scene_Intro</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:3px;">세계관 인트로<br>TypeWriter 텍스트</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px;">TheGame ❌ 경량</div>
+        </div>
+        <div style="text-align:center;font-size:12px;color:var(--text3);">↓</div>
+        <div style="background:#1a0f2a;border:2px solid #7c3aed;border-radius:10px;padding:12px 14px;text-align:center;">
+          <div style="font-size:13px;margin-bottom:2px;">✏️</div>
+          <div style="font-weight:700;color:var(--accent2);font-size:12px;">Scene_CharCreate</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:3px;">이름 / 외형 / 배경<br>PlayerData 생성</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px;">TheGame ❌ 경량</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;padding:0 10px;margin-top:20px;">
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:center;">
+          <div style="font-size:9px;color:var(--text3);">완료</div>
+          <div style="color:var(--text3);font-size:18px;">→</div>
+          <div style="font-size:9px;color:var(--green);">직접 로드</div>
+          <div style="color:var(--green);font-size:18px;">→</div>
+        </div>
+      </div>
+
+      <!-- Scene_Farm_01 -->
+      <div style="display:flex;flex-direction:column;align-items:center;min-width:200px;">
+        <div style="background:#0f2a1a;border:2px solid var(--green);border-radius:10px;padding:14px 16px;text-align:center;width:180px;">
+          <div style="font-size:16px;margin-bottom:4px;">🌾</div>
+          <div style="font-weight:700;color:var(--green);font-size:13px;">Scene_Farm_01</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px;">첫 플레이어블 씬</div>
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:2px;text-align:left;">
+            <div style="font-size:10px;color:var(--text2);">• Soil 구역 × 6</div>
+            <div style="font-size:10px;color:var(--text2);">• 우물 (물 공급)</div>
+            <div style="font-size:10px;color:var(--text2);">• 창고 1개</div>
+            <div style="font-size:10px;color:var(--text2);">• NPC (튜토리얼)</div>
+            <div style="font-size:10px;color:var(--text3);">• ExitZone (비활성)</div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-top:6px;">TheGame ✅<br>TheData ✅<br>풀 매니저 씬</div>
+      </div>
+
+      <div style="display:flex;align-items:center;padding:0 10px;margin-top:20px;">
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div style="font-size:9px;color:var(--text3);">향후</div>
+          <div style="color:var(--border);font-size:18px;">→</div>
+        </div>
+      </div>
+
+      <!-- 향후 씬 -->
+      <div style="display:flex;flex-direction:column;gap:8px;min-width:160px;margin-top:10px;opacity:0.5;">
+        <div style="background:var(--surface2);border:1px dashed var(--border);border-radius:10px;padding:10px 12px;text-align:center;">
+          <div style="font-size:12px;margin-bottom:2px;">🏘️</div>
+          <div style="font-weight:700;color:var(--text2);font-size:11px;">Scene_Town_01</div>
+          <div style="font-size:10px;color:var(--text3);">마을 (향후)</div>
+        </div>
+        <div style="background:var(--surface2);border:1px dashed var(--border);border-radius:10px;padding:10px 12px;text-align:center;">
+          <div style="font-size:12px;margin-bottom:2px;">🥐</div>
+          <div style="font-weight:700;color:var(--text2);font-size:11px;">Scene_Bakery_01</div>
+          <div style="font-size:10px;color:var(--text3);">베이커리 (향후)</div>
+        </div>
+      </div>
+
+    </div>
+    </div>
+  </div>
+
+  <!-- 4개 씬 상세 카드 -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:24px;">
+
+    <!-- Scene_Start 상세 -->
+    <div style="background:var(--surface);border:1px solid #1e3f7a;border-top:3px solid var(--accent);border-radius:10px;padding:16px;">
+      <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:4px;">🏠 Scene_Start</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">타이틀 스크린 — 경량 씬</div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px;">메뉴 항목</div>
+
+      <div style="background:#0f1e3a;border-radius:6px;padding:10px;margin-bottom:8px;">
+        <div style="font-size:11px;font-weight:600;color:var(--accent);margin-bottom:4px;">🆕 새 게임</div>
+        <div style="font-size:10px;color:var(--text2);">
+          빈 슬롯 있음 → SaveSlotPanel (NewGame 모드)<br>
+          &nbsp;&nbsp;↳ 빈 슬롯: "새 게임" 강조<br>
+          &nbsp;&nbsp;↳ 데이터 있는 슬롯: "덮어쓰기" 경고<br>
+          슬롯 모두 참 → 덮어쓰기만 가능<br>
+          선택 → ConfirmPanel → <strong>Scene_Intro</strong>
+        </div>
+      </div>
+
+      <div style="background:#0a1e14;border-radius:6px;padding:10px;margin-bottom:8px;">
+        <div style="font-size:11px;font-weight:600;color:var(--green);margin-bottom:4px;">📂 불러오기</div>
+        <div style="font-size:10px;color:var(--text2);">
+          세이브 없음 → 버튼 비활성(회색)<br>
+          SaveSlotPanel (Load 모드)<br>
+          슬롯 선택 → SaveManager.LoadFromSlot()<br>
+          → <strong>PlayerData.current_scene</strong> 으로 이동
+        </div>
+      </div>
+
+      <div style="background:#1e1e0a;border-radius:6px;padding:10px;margin-bottom:8px;">
+        <div style="font-size:11px;font-weight:600;color:var(--yellow);margin-bottom:4px;">⚙️ 설정</div>
+        <div style="font-size:10px;color:var(--text2);">
+          SettingsPanel 오버레이 표시<br>
+          오디오: 마스터/음악/효과음 슬라이더<br>
+          그래픽: 해상도/품질<br>
+          저장: PlayerPrefs (PlayerData 없는 상태)
+        </div>
+      </div>
+
+      <div style="background:#1e0a0a;border-radius:6px;padding:10px;">
+        <div style="font-size:11px;font-weight:600;color:var(--red);margin-bottom:4px;">🚪 나가기</div>
+        <div style="font-size:10px;color:var(--text2);">
+          ConfirmPanel("종료하시겠습니까?")<br>
+          → Application.Quit()
+        </div>
+      </div>
+
+      <div style="margin-top:10px;font-size:10px;color:var(--text3);">
+        배치: StartScreenManager.cs 하나<br>
+        저장 읽기: SaveTool (static) 만 사용
+      </div>
+    </div>
+
+    <!-- Scene_Intro 상세 -->
+    <div style="background:var(--surface);border:1px solid #065f46;border-top:3px solid var(--green);border-radius:10px;padding:16px;">
+      <div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:4px;">📖 Scene_Intro</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">세계관 인트로 — 경량 씬</div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px;">인트로 내용 (4단계)</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="background:var(--surface2);border-radius:6px;padding:8px;font-size:11px;">
+          <span style="color:var(--text3);">1/4</span> <span style="color:var(--text2);">황폐해진 마을 '골든크로프트'<br>한때 풍요로웠지만 가뭄과 이주로 쇠락</span>
+        </div>
+        <div style="background:var(--surface2);border-radius:6px;padding:8px;font-size:11px;">
+          <span style="color:var(--text3);">2/4</span> <span style="color:var(--text2);">할아버지의 낡은 농장을 물려받음<br>먼지, 녹슨 도구, 빈 창고만 남음</span>
+        </div>
+        <div style="background:var(--surface2);border-radius:6px;padding:8px;font-size:11px;">
+          <span style="color:var(--text3);">3/4</span> <span style="color:var(--text2);">"이 마을을 살릴 수 있는 건 당신뿐"<br>남은 주민들의 기대</span>
+        </div>
+        <div style="background:var(--surface2);border-radius:6px;padding:8px;font-size:11px;">
+          <span style="color:var(--text3);">4/4</span> <span style="color:var(--text2);">농장을 일구고 빵집을 열어<br>마을에 활기를 되돌리자 → 시작</span>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:10px;color:var(--text3);">
+        IntroManager.cs / TypeWriter 효과<br>
+        건너뛰기 버튼 → SceneNav.GoTo("Scene_CharCreate")<br>
+        배경 이미지 순차 표시 + FadeIn/Out
+      </div>
+    </div>
+
+    <!-- Scene_CharCreate 상세 -->
+    <div style="background:var(--surface);border:1px solid #5b21b6;border-top:3px solid var(--accent2);border-radius:10px;padding:16px;">
+      <div style="font-size:13px;font-weight:700;color:var(--accent2);margin-bottom:4px;">✏️ Scene_CharCreate</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">캐릭터 생성 — 경량 씬</div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px;">생성 단계 (3단계)</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+        <div style="background:var(--surface2);border-radius:6px;padding:8px;display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:11px;font-weight:600;color:var(--text);">① 이름 입력</div>
+          <div style="font-size:10px;color:var(--text3);">→ player_name</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:6px;padding:8px;display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:11px;font-weight:600;color:var(--text);">② 외형 선택</div>
+          <div style="font-size:10px;color:var(--text3);">→ appearance_index</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:6px;padding:8px;">
+          <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:4px;">③ 배경 선택</div>
+          <div style="display:flex;flex-direction:column;gap:3px;">
+            <div style="font-size:10px;color:var(--green);">🌾 농부 — 씨앗 5종 + 물뿌리개</div>
+            <div style="font-size:10px;color:var(--yellow);">💰 상인 — 골드 200 + 씨앗 2종</div>
+            <div style="font-size:10px;color:var(--orange);">👨‍🍳 요리사 — 요리법 1개 + 씨앗 + 조리도구</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#1a0f2a;border-radius:6px;padding:8px;font-size:10px;color:var(--text2);">
+        <strong>완료 시:</strong><br>
+        1. PlayerData.NewGame(selectedSlot) 호출<br>
+        2. CharCreateData → PlayerData 필드 주입<br>
+        3. 배경별 시작 아이템 지급<br>
+        4. SceneNav.GoTo("Scene_Farm_01")
+      </div>
+
+      <div style="margin-top:8px;font-size:10px;color:var(--text3);">
+        PlayerData 신규 필드: player_name, appearance_index, background_id
+      </div>
+    </div>
+
+    <!-- Scene_Farm_01 상세 -->
+    <div style="background:var(--surface);border:1px solid #166534;border-top:3px solid #22c55e;border-radius:10px;padding:16px;">
+      <div style="font-size:13px;font-weight:700;color:#4ade80;margin-bottom:4px;">🌾 Scene_Farm_01</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">첫 플레이어블 씬 — 풀 매니저</div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px;">씬 초기 구성</div>
+      <ul class="file-list" style="margin-bottom:12px;">
+        <li><span class="dot dot-green"></span> 경작 Soil 구역 × 6개</li>
+        <li><span class="dot dot-green"></span> 우물 (물 공급, 항상 활성)</li>
+        <li><span class="dot dot-green"></span> 창고 1개 (초기 아이템 보관)</li>
+        <li><span class="dot dot-green"></span> NPC 할머니 (튜토리얼 퀘스트)</li>
+        <li><span class="dot dot-yellow"></span> ExitZone (마을 연결 — 비활성)</li>
+      </ul>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px;">첫 플레이 자동 이벤트</div>
+      <div style="background:var(--surface2);border-radius:6px;padding:8px;font-size:10px;color:var(--text2);">
+        Day 1, 06:00 시작<br>
+        → NPC 자동 대화 "오셨군요!"<br>
+        → 튜토리얼 퀘스트 시작<br>
+        &nbsp;&nbsp;&nbsp;퀘스트1: 밭 갈기<br>
+        &nbsp;&nbsp;&nbsp;퀘스트2: 씨앗 심기<br>
+        &nbsp;&nbsp;&nbsp;퀘스트3: 물 주기<br>
+        &nbsp;&nbsp;&nbsp;퀘스트4: 수확
+      </div>
+
+      <div style="margin-top:8px;font-size:10px;color:var(--text3);">
+        필수 매니저: TheGame, TheData, TheCamera,<br>
+        NarrativeManager, DialogueQuestsWrap, SaveManager
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 매니저 요약 테이블 -->
+  <div class="card mb-16">
+    <div class="card-title">⚙️ 씬별 매니저 배치 요약</div>
+    <div class="scroll-x">
+    <table>
+      <thead>
+        <tr>
+          <th>씬</th>
+          <th>TheGame</th>
+          <th>TheData</th>
+          <th>NarrativeManager</th>
+          <th>SaveManager</th>
+          <th>PlayerData 상태</th>
+          <th>씬 전환 방법</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="font-mono text-blue">Scene_Start</td>
+          <td class="text-red">❌</td>
+          <td class="text-red">❌</td>
+          <td class="text-red">❌</td>
+          <td class="text-red">❌ (static SaveTool)</td>
+          <td class="text-muted">없음</td>
+          <td class="font-mono text-sm">SceneNav.GoTo()</td>
+        </tr>
+        <tr>
+          <td class="font-mono text-green">Scene_Intro</td>
+          <td class="text-red">❌</td>
+          <td class="text-red">❌</td>
+          <td class="text-red">❌</td>
+          <td class="text-red">❌</td>
+          <td class="text-muted">없음</td>
+          <td class="font-mono text-sm">SceneNav.GoTo()</td>
+        </tr>
+        <tr>
+          <td class="font-mono" style="color:var(--accent2);">Scene_CharCreate</td>
+          <td class="text-red">❌</td>
+          <td class="text-red">❌</td>
+          <td class="text-red">❌</td>
+          <td class="text-red">❌</td>
+          <td class="text-yellow">없음 → 여기서 생성</td>
+          <td class="font-mono text-sm">SceneNav.GoTo()</td>
+        </tr>
+        <tr>
+          <td class="font-mono text-green">Scene_Farm_01</td>
+          <td class="text-green">✅</td>
+          <td class="text-green">✅</td>
+          <td class="text-green">✅</td>
+          <td class="text-green">✅</td>
+          <td class="text-green">로드됨 (존재)</td>
+          <td class="font-mono text-sm">TheGame.GoToScene()</td>
+        </tr>
+        <tr>
+          <td class="font-mono text-muted">Scene_Town_01 (향후)</td>
+          <td class="text-green">✅</td>
+          <td class="text-green">✅</td>
+          <td class="text-green">✅</td>
+          <td class="text-green">✅</td>
+          <td class="text-green">로드됨</td>
+          <td class="font-mono text-sm">TheGame.GoToScene()</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- 구현 파일 목록 -->
+  <div class="card">
+    <div class="card-title">📝 1차 샘플 구현 파일 목록</div>
+    <div class="grid-2">
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--green);margin-bottom:8px;">새로 만들 스크립트</div>
+        <div class="tree">
+<span class="folder">Scripts/</span>
+├── <span class="folder">StartScreen/</span>
+│   ├── <span class="file-cs">StartScreenManager.cs</span>    <span class="count">← 메인 메뉴</span>
+│   └── <span class="file-cs">SettingsPanel.cs</span>         <span class="count">← 설정 오버레이</span>
+├── <span class="folder">Intro/</span>
+│   └── <span class="file-cs">IntroManager.cs</span>          <span class="count">← TypeWriter + 씬전환</span>
+├── <span class="folder">CharCreate/</span>
+│   ├── <span class="file-cs">CharCreateManager.cs</span>     <span class="count">← 생성 흐름 관리</span>
+│   ├── <span class="file-cs">CharCreateData.cs</span>        <span class="count">← 임시 정적 컨테이너</span>
+│   └── <span class="file-cs">BackgroundCardUI.cs</span>      <span class="count">← 배경 선택 카드 UI</span>
+└── <span class="folder">SaveSystem/</span>
+    ├── <span class="file-cs">SaveSlotInfo.cs</span>           <span class="count">← 슬롯 표시 데이터</span>
+    ├── <span class="file-cs">SaveManager.cs</span>            <span class="count">← 통합 조율 싱글톤</span>
+    ├── <span class="file-cs">SaveSlotPanel.cs</span>          <span class="count">← 슬롯 목록 UI</span>
+    ├── <span class="file-cs">SaveSlotUI.cs</span>             <span class="count">← 슬롯 한 칸</span>
+    └── <span class="file-cs">ConfirmPanel.cs</span>           <span class="count">← Y/N 모달 (범용)</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--yellow);margin-bottom:8px;">수정할 기존 파일</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot tl-pending"></div>
+            <div style="font-size:12px;font-weight:600;">PlayerData.cs</div>
+            <div style="font-size:11px;color:var(--text2);">player_name, appearance_index, background_id 필드 추가</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-pending"></div>
+            <div style="font-size:12px;font-weight:600;">PausePanel.cs</div>
+            <div style="font-size:11px;color:var(--text2);">OnClickSave/Load → SaveSlotPanel 호출 (2줄 교체)</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot tl-pending"></div>
+            <div style="font-size:12px;font-weight:600;">UICanvas 프리팹</div>
+            <div style="font-size:11px;color:var(--text2);">SaveSlotPanel, ConfirmPanel UI 오브젝트 추가</div>
+          </div>
+        </div>
+        <div class="highlight-info" style="margin-top:12px;">
+          💡 <strong>구현 순서 권장:</strong><br>
+          ① SaveSystem (SaveManager, SaveSlotPanel, ConfirmPanel)<br>
+          ② Scene_Start + StartScreenManager<br>
+          ③ Scene_Intro + IntroManager<br>
+          ④ Scene_CharCreate + CharCreateManager<br>
+          ⑤ Scene_Farm_01 씬 구축 + 튜토리얼 퀘스트
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- .content -->
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

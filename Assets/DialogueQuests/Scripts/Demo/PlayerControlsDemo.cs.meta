@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 6490ba9e81c832e4a962cba89123e414
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Scripts/Demo/PlayerControlsDemo.cs
+  uploadId: 669316

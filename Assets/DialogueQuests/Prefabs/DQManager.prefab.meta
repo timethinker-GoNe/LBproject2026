@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 2d6a2278e87d77c47b3d2b7b2842a3c6
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Prefabs/DQManager.prefab
+  uploadId: 669316

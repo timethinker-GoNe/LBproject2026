@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 27f1bd83d26cddc498068a2635392a25
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Scripts/Demo/PlayerCharacterAnimDemo.cs
+  uploadId: 669316

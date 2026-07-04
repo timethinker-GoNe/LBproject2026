@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: df37bd930f5da8749ab662c6d6948a7a
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Effects/destroy.asset
+  uploadId: 669316

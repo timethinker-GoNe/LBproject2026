@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a9042cbd508a7bb4680d4c4c6db945d7
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Demo/Materials/Grass.mat
+  uploadId: 669316

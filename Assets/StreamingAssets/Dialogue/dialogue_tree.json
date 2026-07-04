@@ -1,0 +1,4 @@
+{
+  "_comment": "LEGACY — DialogueQuestsWrap이 더 이상 이 파일을 읽지 않습니다. story_events.json(스토리이벤트) + npc_idle.json(아이들 대화)로 분리됨. 삭제해도 무방.",
+  "_migrated_to": ["story_events.json", "npc_idle.json"]
+}

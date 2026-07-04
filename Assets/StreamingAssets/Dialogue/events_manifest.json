@@ -1,0 +1,136 @@
+{
+  "_comment": "게임 이벤트 트리거 목록. FarmingEvents.cs에 이벤트 추가 시 여기도 업데이트하세요.",
+  "categories": [
+    {
+      "id": "farming",
+      "label": "농업 액션",
+      "icon": "🌾",
+      "description": "플레이어가 농사 관련 행동을 완료할 때 발생",
+      "events": [
+        {
+          "id": "onTilledSoil",
+          "label": "밭 갈기",
+          "description": "괭이로 흙을 경작할 때 (PlayerCharacterHoe)",
+          "suggested_variable": "tilled_count",
+          "status": "active"
+        },
+        {
+          "id": "onPlantedSeed",
+          "label": "씨앗 심기",
+          "description": "Plant 씨앗을 밭에 심을 때 (PlayerCharacterCraft)",
+          "suggested_variable": "planted_count",
+          "status": "active"
+        },
+        {
+          "id": "onWateredPlant",
+          "label": "물 주기",
+          "description": "작물 또는 흙에 물을 줄 때 (ActionWaterPlant)",
+          "suggested_variable": "watered_count",
+          "status": "active"
+        },
+        {
+          "id": "onHarvestedPlant",
+          "label": "수확",
+          "description": "성숙한 작물을 수확할 때 (ActionHarvest)",
+          "suggested_variable": "harvested_count",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "inventory",
+      "label": "인벤토리",
+      "icon": "📦",
+      "description": "아이템 획득·제작·사용 관련",
+      "events": [
+        {
+          "id": "onItemPickedUp",
+          "label": "아이템 획득",
+          "description": "지면 아이템을 주울 때",
+          "suggested_variable": "pickup_count",
+          "status": "planned"
+        },
+        {
+          "id": "onItemCrafted",
+          "label": "아이템 제작",
+          "description": "크래프팅 완료 시",
+          "suggested_variable": "craft_count",
+          "status": "planned"
+        },
+        {
+          "id": "onItemSold",
+          "label": "아이템 판매",
+          "description": "상점에서 아이템 판매 시",
+          "suggested_variable": "sell_count",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "movement",
+      "label": "이동 / 구역 진입",
+      "icon": "🚶",
+      "description": "특정 구역 진입·이탈 이벤트",
+      "events": [
+        {
+          "id": "onAreaEntered",
+          "label": "구역 진입",
+          "description": "Trigger Collider 구역에 진입할 때",
+          "suggested_variable": "area_count",
+          "status": "planned"
+        },
+        {
+          "id": "onSceneChanged",
+          "label": "씬 이동",
+          "description": "다른 씬으로 이동할 때",
+          "suggested_variable": "scene_count",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "time",
+      "label": "시간 / 날짜",
+      "icon": "⏰",
+      "description": "게임 내 시간 흐름 이벤트",
+      "events": [
+        {
+          "id": "onDayPassed",
+          "label": "하루 경과",
+          "description": "게임 내 하루가 끝날 때",
+          "suggested_variable": "days_passed",
+          "status": "planned"
+        },
+        {
+          "id": "onSeasonChanged",
+          "label": "계절 변경",
+          "description": "계절이 바뀔 때",
+          "suggested_variable": "season_count",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "npc",
+      "label": "NPC 상호작용",
+      "icon": "💬",
+      "description": "대화 및 NPC 관련 이벤트",
+      "events": [
+        {
+          "id": "onNpcTalked",
+          "label": "NPC 대화",
+          "description": "NPC와 대화를 완료할 때",
+          "suggested_variable": "talk_count",
+          "status": "planned"
+        },
+        {
+          "id": "onGiftGiven",
+          "label": "선물 증정",
+          "description": "NPC에게 아이템을 선물할 때",
+          "suggested_variable": "gift_count",
+          "status": "planned"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ee361d9659307234182378a6a949a579
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Prefabs/InteractIconFX.prefab
+  uploadId: 669316

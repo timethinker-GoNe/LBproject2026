@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e21aa9197a35e8f4098979802431a1ef
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Resources/Effects/quest_step.asset
+  uploadId: 669316

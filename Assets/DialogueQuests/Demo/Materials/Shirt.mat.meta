@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 821f5797bc518a24d9480b09137fc81b
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183780
+  packageName: Dialogue and Quests
+  packageVersion: 2.02
+  assetPath: Assets/DialogueQuests/Demo/Materials/Shirt.mat
+  uploadId: 669316

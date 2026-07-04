@@ -1,0 +1,204 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!181963792 &2655988077585873504
+Preset:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: NightLight
+  m_TargetType:
+    m_NativeTypeID: 114
+    m_ManagedTypePPtr: {fileID: 11500000, guid: d353f47f283f7b546ac9ab70625dfeb3, type: 3}
+    m_ManagedTypeFallback: 
+  m_Properties:
+  - target: {fileID: 0}
+    propertyPath: m_Enabled
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorHideFlags
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorClassIdentifier
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: lightColor.r
+    value: 0.7075472
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: lightColor.g
+    value: 0.94861555
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: lightColor.b
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: lightColor.a
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: lightStrength
+    value: 0.77
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: lightRamps
+    value: 6
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: fadeStart
+    value: -0.1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: fadeStrength
+    value: 0.63
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: directionalFading
+    value: 0.77
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: shadowStrength
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: shadowRamps
+    value: 5
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: directionalDisappearance
+    value: 0.75
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: cloudAreaNearClipPlane
+    value: 14
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: cloudAreaFarClipPlane
+    value: 35
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: showCloudAreaInEditor
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: shadowMarchStepSize
+    value: 0.01
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: shadowMarchSteps
+    value: 24
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: cloudDataResolution
+    value: 100
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: autoApplySettings
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _preComputedCloudTexture
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: cloudDataTexture
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: godrayMat
+    value: 
+    objectReference: {fileID: 2100000, guid: 537bd907ba1985245943775012f80daf, type: 2}
+  - target: {fileID: 0}
+    propertyPath: cloudDataWriterMat
+    value: 
+    objectReference: {fileID: 2100000, guid: 967fc2803a8d52646a6738c86445ad60, type: 2}
+  - target: {fileID: 0}
+    propertyPath: mainCamera
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: mainLightTrans
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: anchorTrans
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: planeOrigo.x
+    value: -13.729755
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: planeOrigo.y
+    value: 31.771385
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: planeOrigo.z
+    value: -51.836388
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: cloudMovement.x
+    value: -0.1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: cloudMovement.y
+    value: 0.1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: cloudStep.x
+    value: 13
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: cloudStep.y
+    value: 17
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: planeWidthWorldUnits
+    value: 30.595932
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: planeHeightWorldUnits
+    value: 21
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: screenWidthWorldUnits
+    value: 26.666666
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: screenHeightWorldUnits
+    value: 15
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: cloudCoverage
+    value: 0.82
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: cloudScale
+    value: 0.07
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: cloudChange
+    value: 0.005
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: dataWriterMultiplier
+    value: 1.57
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: dataWriterAdditive
+    value: -0.61166674
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: brightness
+    value: -0.2475
+    objectReference: {fileID: 0}
+  m_ExcludedProperties: []
+  m_CoupledType:
+    m_NativeTypeID: 0
+    m_ManagedTypePPtr: {fileID: 0}
+    m_ManagedTypeFallback: 
+  m_CoupledProperties: []
