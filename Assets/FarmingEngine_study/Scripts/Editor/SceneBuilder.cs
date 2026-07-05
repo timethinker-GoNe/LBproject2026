@@ -1540,6 +1540,22 @@ namespace FarmingEngine.SceneTools
                 });
             }
 
+            // Plant (작물)
+            foreach (var plant in Object.FindObjectsOfType<Plant>())
+            {
+                var pos = plant.transform.position;
+                Track(pos.x, pos.z);
+                entries.Add(new SceneObjEntry {
+                    id        = "plant_" + Mathf.Abs(plant.GetInstanceID()).ToString(),
+                    unityName = plant.gameObject.name,
+                    type      = "plant",
+                    label     = plant.data?.title ?? plant.gameObject.name,
+                    emoji     = "🌱",
+                    unityX    = pos.x,
+                    unityZ    = pos.z,
+                });
+            }
+
             // Soil
             foreach (var soil in Object.FindObjectsOfType<Soil>())
             {

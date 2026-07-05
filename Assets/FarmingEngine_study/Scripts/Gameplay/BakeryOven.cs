@@ -5,6 +5,8 @@ namespace FarmingEngine
 {
     [RequireComponent(typeof(Selectable))]
     [RequireComponent(typeof(UniqueID))]
+    [RequireComponent(typeof(Buildable))]
+    [RequireComponent(typeof(Construction))]
     public class BakeryOven : MonoBehaviour
     {
         private UniqueID unique_id;

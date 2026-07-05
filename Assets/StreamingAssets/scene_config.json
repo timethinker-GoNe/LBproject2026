@@ -2,10 +2,10 @@
   "farm_01": {
     "name": "Scene_Farm_01",
     "bounds": {
-      "minX": -10,
-      "maxX": 8,
-      "minZ": -10,
-      "maxZ": 9
+      "minX": -11.0,
+      "maxX": 14.1346693,
+      "minZ": -10.0,
+      "maxZ": 11.0
     },
     "objects": [
       {
@@ -14,32 +14,35 @@
         "type": "player",
         "label": "",
         "emoji": "🧑",
-        "unityX": 1,
-        "unityZ": -4
+        "unityX": 1.0,
+        "unityZ": -4.0
       },
       {
         "id": "npc_grandma",
         "unityName": "NPC_Grandma",
         "type": "npc",
-        "label": "",
+        "label": "grandma.name",
         "emoji": "👤",
-        "unityX": 2,
-        "unityZ": 3,
-        "x": 2,
-        "y": 3,
-        "thumbName": "NPCGirl"
+        "unityX": 1.962706,
+        "unityZ": 2.69842267
       },
       {
-        "id": "well",
-        "unityName": "Well",
+        "id": "house",
+        "unityName": "House",
         "type": "structure",
-        "label": "Well",
+        "label": "House",
         "emoji": "🏚️",
-        "unityX": -4,
-        "unityZ": 0,
-        "x": -4,
-        "y": 0,
-        "thumbName": "Well"
+        "unityX": 8.134669,
+        "unityZ": 3.47690225
+      },
+      {
+        "id": "bakeoven",
+        "unityName": "BakeOven",
+        "type": "structure",
+        "label": "Bakery Oven",
+        "emoji": "🏚️",
+        "unityX": 1.43,
+        "unityZ": 0.0
       },
       {
         "id": "storage_chestwood",
@@ -47,191 +50,125 @@
         "type": "structure",
         "label": "Wood Chest",
         "emoji": "🏚️",
-        "unityX": -4,
-        "unityZ": 2,
-        "thumbName": "ChestWood",
-        "x": -4,
-        "y": 2
+        "unityX": -4.0,
+        "unityZ": 2.0
       },
       {
-        "id": "soil_79246",
-        "unityName": "Soil_6",
-        "type": "soil",
-        "label": "흙밭",
-        "emoji": "",
-        "unityX": -2,
-        "unityZ": 1,
-        "x": -2,
-        "y": 1,
-        "thumbName": "Soil"
+        "id": "well",
+        "unityName": "Well",
+        "type": "structure",
+        "label": "Well",
+        "emoji": "🏚️",
+        "unityX": -4.0,
+        "unityZ": 0.0
       },
       {
-        "id": "soil_79010",
-        "unityName": "Soil_3",
-        "type": "soil",
-        "label": "흙밭",
-        "emoji": "",
-        "unityX": 0,
-        "unityZ": 1,
-        "x": 0,
-        "y": 1,
-        "thumbName": "Soil"
+        "id": "bbq",
+        "unityName": "BBQ",
+        "type": "structure",
+        "label": "BBQ",
+        "emoji": "🏚️",
+        "unityX": 5.0,
+        "unityZ": -1.0
       },
       {
-        "id": "soil_78668",
+        "id": "candle",
+        "unityName": "Candle",
+        "type": "structure",
+        "label": "Candle",
+        "emoji": "🏚️",
+        "unityX": 4.0,
+        "unityZ": 2.0
+      },
+      {
+        "id": "plant_11944",
+        "unityName": "CarrotPlantS2",
+        "type": "plant",
+        "label": "Carrot Plant",
+        "emoji": "🌱",
+        "unityX": -5.0,
+        "unityZ": 4.0
+      },
+      {
+        "id": "plant_11472",
+        "unityName": "CarrotPlantS1",
+        "type": "plant",
+        "label": "Carrot Plant",
+        "emoji": "🌱",
+        "unityX": -4.0,
+        "unityZ": 5.0
+      },
+      {
+        "id": "plant_11410",
+        "unityName": "CornPlantS3",
+        "type": "plant",
+        "label": "Corn Plant",
+        "emoji": "🌱",
+        "unityX": 3.0,
+        "unityZ": 5.0
+      },
+      {
+        "id": "plant_11278",
+        "unityName": "CornPlantS2",
+        "type": "plant",
+        "label": "Corn Plant",
+        "emoji": "🌱",
+        "unityX": 5.0,
+        "unityZ": 5.0
+      },
+      {
+        "id": "soil_12184",
         "unityName": "Soil_1",
         "type": "soil",
         "label": "흙밭",
         "emoji": "",
-        "unityX": -2,
-        "unityZ": 0,
-        "x": -2,
-        "y": 0,
-        "thumbName": "Soil"
+        "unityX": -2.0,
+        "unityZ": 0.0
       },
       {
-        "id": "soil_77926",
+        "id": "soil_11328",
+        "unityName": "Soil_6",
+        "type": "soil",
+        "label": "흙밭",
+        "emoji": "",
+        "unityX": -2.0,
+        "unityZ": 1.0
+      },
+      {
+        "id": "soil_11258",
         "unityName": "Soil_2",
         "type": "soil",
         "label": "흙밭",
         "emoji": "",
-        "unityX": 0,
-        "unityZ": 0,
-        "x": 0,
-        "y": 0,
-        "thumbName": "Soil"
+        "unityX": 0.0,
+        "unityZ": 0.0
       },
       {
-        "id": "soil_69184",
+        "id": "soil_10964",
         "unityName": "Soil_4",
         "type": "soil",
         "label": "흙밭",
         "emoji": "",
-        "unityX": -1,
-        "unityZ": 0,
-        "x": -1,
-        "y": 0,
-        "thumbName": "Soil"
+        "unityX": -1.0,
+        "unityZ": 0.0
       },
       {
-        "id": "soil_69094",
+        "id": "soil_10724",
         "unityName": "Soil_5",
         "type": "soil",
         "label": "흙밭",
         "emoji": "",
-        "unityX": -1,
-        "unityZ": 1,
-        "x": -1,
-        "y": 1,
-        "thumbName": "Soil"
+        "unityX": -1.0,
+        "unityZ": 1.0
       },
       {
-        "id": "structure_molhf8i6",
-        "type": "structure",
-        "label": "Candle",
+        "id": "soil_1354",
+        "unityName": "Soil_3",
+        "type": "soil",
+        "label": "흙밭",
         "emoji": "",
-        "unityName": "Candle",
-        "unityX": 4,
-        "unityZ": 2,
-        "x": 4,
-        "y": 2,
-        "thumbName": "Candle"
-      },
-      {
-        "id": "structure_motvcrvf",
-        "type": "structure",
-        "label": "BBQ",
-        "emoji": "",
-        "unityName": "BBQ",
-        "unityX": 5,
-        "unityZ": -1,
-        "x": 5,
-        "y": -1,
-        "thumbName": "BBQ"
-      },
-      {
-        "id": "plant_motvdl5e",
-        "type": "plant",
-        "label": "CornPlantS2",
-        "emoji": "🌱",
-        "unityName": "CornPlantS2",
-        "unityX": 0,
-        "unityZ": 6,
-        "x": 0,
-        "y": 6,
-        "thumbName": "CornPlantS2"
-      },
-      {
-        "id": "plant_motvdmeu",
-        "type": "plant",
-        "label": "CornPlantS2",
-        "emoji": "🌱",
-        "unityName": "CornPlantS2",
-        "unityX": -2,
-        "unityZ": 5,
-        "x": -2,
-        "y": 5,
-        "thumbName": "CornPlantS2"
-      },
-      {
-        "id": "plant_motvdnqi",
-        "type": "plant",
-        "label": "CornPlantS2",
-        "emoji": "🌱",
-        "unityName": "CornPlantS2",
-        "unityX": 5,
-        "unityZ": 5,
-        "x": 5,
-        "y": 5,
-        "thumbName": "CornPlantS2"
-      },
-      {
-        "id": "plant_motvdp17",
-        "type": "plant",
-        "label": "CornPlantS3",
-        "emoji": "🌱",
-        "unityName": "CornPlantS3",
-        "unityX": 3,
-        "unityZ": 5,
-        "x": 3,
-        "y": 5,
-        "thumbName": "CornPlantS3"
-      },
-      {
-        "id": "plant_motvdqbn",
-        "type": "plant",
-        "label": "CarrotPlantS2",
-        "emoji": "🌱",
-        "unityName": "CarrotPlantS2",
-        "unityX": -5,
-        "unityZ": 4,
-        "x": -5,
-        "y": 4,
-        "thumbName": "CarrotPlantS2"
-      },
-      {
-        "id": "plant_motvdrh4",
-        "type": "plant",
-        "label": "CarrotPlantS1",
-        "emoji": "🌱",
-        "unityName": "CarrotPlantS1",
-        "unityX": -4,
-        "unityZ": 5,
-        "x": -4,
-        "y": 5,
-        "thumbName": "CarrotPlantS1"
-      },
-      {
-        "id": "structure_motvr8jh",
-        "type": "structure",
-        "label": "HouseStatic",
-        "emoji": "",
-        "unityName": "HouseStatic",
-        "unityX": 8,
-        "unityZ": 4,
-        "x": 8,
-        "y": 4,
-        "thumbName": "HouseStatic"
+        "unityX": 0.0,
+        "unityZ": 1.0
       }
     ]
   }
