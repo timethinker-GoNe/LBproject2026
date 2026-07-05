@@ -680,6 +680,11 @@ namespace FarmingEngine
 
             float slope_angle = Vector3.Angle(ground_normal, Vector3.up);
             is_grounded = is_grounded && slope_angle <= slope_angle_max;
+
+            //Snap exactly onto the ground surface to remove the detection margin gap
+            bool is_flying = fall_speed < 0.01f;
+            if (is_grounded && !is_flying)
+                transform.position += Vector3.up * grounded_dist;
         }
 
         //Detect if there is an obstacle in front of the character
