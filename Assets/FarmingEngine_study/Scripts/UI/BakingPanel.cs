@@ -36,6 +36,7 @@ namespace FarmingEngine
 
         private bool is_baking = false;
         private float bake_timer = 0f;
+        private float bake_end_time = 0f;
         private BreadRecipeData pending_result = null;  // 완료 대기 중인 레시피
 
         private List<GameObject> recipe_buttons = new List<GameObject>();
@@ -48,6 +49,14 @@ namespace FarmingEngine
         protected override void Awake()
         {
             base.Awake();
+
+            if (_instance != null && _instance != this)
+            {
+                Debug.LogWarning("[BakingPanel] Duplicate BakingPanel disabled: " + name, this);
+                gameObject.SetActive(false);
+                return;
+            }
+
             _instance = this;
 
             if (bake_button != null)
@@ -70,6 +79,8 @@ namespace FarmingEngine
         {
             base.Update();
 
+            UpdateBakingTimer();
+
             if (!IsVisible()) return;
 
             // 거리 체크 - 오븐과 너무 멀어지면 닫기
@@ -87,24 +98,6 @@ namespace FarmingEngine
                 }
             }
 
-            // 베이킹 타이머
-            if (is_baking && pending_result != null)
-            {
-                bake_timer += Time.deltaTime;
-                float pct = Mathf.Clamp01(bake_timer / pending_result.bake_duration);
-
-                if (progress_slider != null)
-                    progress_slider.value = pct;
-
-                if (status_text != null)
-                {
-                    int remaining = Mathf.CeilToInt(pending_result.bake_duration - bake_timer);
-                    status_text.text = $"굽는 중... {remaining}초";
-                }
-
-                if (bake_timer >= pending_result.bake_duration)
-                    FinishBaking();
-            }
         }
 
         // ─────────────────────────────────────────
@@ -115,12 +108,19 @@ namespace FarmingEngine
 
             BreadRecipeData.Load();
             BuildRecipeList();
-            ClearRightPanel();
-            SetOutputVisible(false);
 
-            if (progress_slider != null)
+            if (pending_result != null)
             {
-                progress_slider.value = is_baking ? bake_timer / (pending_result?.bake_duration ?? 1f) : 0f;
+                UpdateBakingTimer();
+                SelectRecipe(pending_result);
+                RefreshBakingStateUI();
+            }
+            else
+            {
+                ClearRightPanel();
+                SetOutputVisible(false);
+                if (progress_slider != null)
+                    progress_slider.value = 0f;
             }
 
             Show();
@@ -130,6 +130,12 @@ namespace FarmingEngine
         {
             base.Hide(instant);
             selected_recipe = null;
+        }
+
+        public override void AfterHide()
+        {
+            // BakingPanel owns active baking progress, so it must stay active while hidden.
+            // UIPanel.AfterHide() disables the GameObject, which stops Update().
         }
 
         // ─────────────────────────────────────────
@@ -254,6 +260,7 @@ namespace FarmingEngine
             // 타이머 시작
             pending_result = selected_recipe;
             bake_timer = 0f;
+            bake_end_time = Time.time + Mathf.Max(pending_result.bake_duration, 0.01f);
             is_baking = true;
 
             if (progress_slider != null) progress_slider.value = 0f;
@@ -263,13 +270,62 @@ namespace FarmingEngine
             SetOutputVisible(false);
         }
 
+        private void UpdateBakingTimer()
+        {
+            if (!is_baking || pending_result == null)
+                return;
+
+            float duration = Mathf.Max(pending_result.bake_duration, 0.01f);
+            if (bake_end_time <= 0f)
+                bake_end_time = Time.time + Mathf.Max(duration - bake_timer, 0f);
+
+            bake_timer = Mathf.Clamp(duration - (bake_end_time - Time.time), 0f, duration);
+
+            if (Time.time >= bake_end_time)
+            {
+                bake_timer = duration;
+                FinishBaking();
+            }
+            else if (IsVisible())
+            {
+                RefreshBakingStateUI();
+            }
+        }
+
         private void FinishBaking()
         {
             is_baking = false;
-            if (progress_slider != null) progress_slider.value = 1f;
-            if (status_text != null) status_text.text = "완성! 클릭해서 가져가세요";
+            RefreshBakingStateUI();
+        }
 
-            SetOutputVisible(true, pending_result);
+        private void RefreshBakingStateUI()
+        {
+            if (pending_result == null)
+                return;
+
+            float duration = Mathf.Max(pending_result.bake_duration, 0.01f);
+
+            if (progress_slider != null)
+                progress_slider.value = is_baking ? Mathf.Clamp01(bake_timer / duration) : 1f;
+
+            if (bake_button != null)
+                bake_button.interactable = false;
+
+            if (is_baking)
+            {
+                if (status_text != null)
+                {
+                    int remaining = Mathf.CeilToInt(duration - bake_timer);
+                    status_text.text = $"굽는 중... {remaining}초";
+                }
+                SetOutputVisible(false);
+            }
+            else
+            {
+                if (status_text != null)
+                    status_text.text = "완성! 클릭해서 가져가세요";
+                SetOutputVisible(true, pending_result);
+            }
         }
 
         private void OnClickOutput()
@@ -277,7 +333,10 @@ namespace FarmingEngine
             if (pending_result == null || player == null) return;
             player.Inventory.GainItem(pending_result.result_item, pending_result.result_quantity);
             pending_result = null;
+            bake_timer = 0f;
+            bake_end_time = 0f;
             SetOutputVisible(false);
+            if (progress_slider != null) progress_slider.value = 0f;
             if (status_text != null) status_text.text = "레시피를 선택하세요";
             RefreshBakeButton();
         }
