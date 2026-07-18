@@ -11,7 +11,7 @@ namespace FarmingEngine
     /// Basic class for any type of slot (item, other)
     /// </summary>
 
-    public class UISlot : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
+    public class UISlot : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         [Header("Navigation")] //Leave empty for default navigation
         public UISlot top;
@@ -43,6 +43,7 @@ namespace FarmingEngine
         protected bool active = true;
         protected bool selected = false;
         protected bool key_hover = false;
+        protected bool pointer_hover = false;
 
         private bool is_holding = false;
         private bool is_dragging = false;
@@ -135,6 +136,11 @@ namespace FarmingEngine
             return selected;
         }
 
+        public bool IsHover()
+        {
+            return key_hover || pointer_hover;
+        }
+
         public void Show()
         {
             active = true;
@@ -213,26 +219,65 @@ namespace FarmingEngine
             is_holding = false;
 
             //Drag n drop
-            if (is_dragging)
-            {
-                is_dragging = false;
-                onDragEnd?.Invoke(this);
-                Vector3 anchor_pos = TheUI.Get().ScreenPointToCanvasPos(PlayerControlsMouse.Get().GetMousePosition());
-                UISlot target = UISlot.GetNearestActive(anchor_pos, 50f);
-                if (target != null && target != this)
-                    onDragTo?.Invoke(this, target);
-            }
+            CompleteDrag();
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            pointer_hover = true;
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
+            pointer_hover = false;
             bool hold = PlayerControlsMouse.Get().IsMouseHoldUI();
             if (is_holding && hold)
             {
-                is_holding = false;
-                is_dragging = true;
-                onDragStart?.Invoke(this);
+                StartDrag();
             }
+        }
+
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            if (eventData.button == PointerEventData.InputButton.Left)
+                StartDrag();
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            if (eventData.button == PointerEventData.InputButton.Left)
+                StartDrag();
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            CompleteDrag();
+        }
+
+        private void StartDrag()
+        {
+            if (is_dragging)
+                return;
+
+            is_holding = false;
+            is_dragging = true;
+            onDragStart?.Invoke(this);
+        }
+
+        private void CompleteDrag()
+        {
+            if (!is_dragging)
+                return;
+
+            is_dragging = false;
+            onDragEnd?.Invoke(this);
+            Vector2 mouse_pos = PlayerControlsMouse.Get().GetMousePosition();
+            Vector3 anchor_pos = TheUI.Get().ScreenPointToCanvasPos(mouse_pos);
+            UISlot target = UISlot.GetSlotAt(mouse_pos);
+            if (target == null)
+                target = UISlot.GetNearestActive(anchor_pos, 90f);
+            if (target != null && target != this)
+                onDragTo?.Invoke(this, target);
         }
 
         public bool IsVisible()
@@ -281,6 +326,25 @@ namespace FarmingEngine
                 }
             }
             return nearest;
+        }
+
+        public static UISlot GetSlotAt(Vector2 screen_pos)
+        {
+            foreach (UISlot slot in slot_list)
+            {
+                if (slot == null || !slot.gameObject.activeInHierarchy)
+                    continue;
+
+                RectTransform slotRect = slot.GetRect();
+                if (slotRect == null)
+                    continue;
+
+                Canvas canvas = slot.GetComponentInParent<Canvas>();
+                Camera camera = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
+                if (RectTransformUtility.RectangleContainsScreenPoint(slotRect, screen_pos, camera))
+                    return slot;
+            }
+            return null;
         }
     }
 

@@ -337,6 +337,10 @@ namespace FarmingEngine
         static void Bg(RectTransform rt, Color color)
         {
             var img = rt.gameObject.GetComponent<Image>() ?? rt.gameObject.AddComponent<Image>();
+            bool isDivider = (rt.sizeDelta.x > 0f && rt.sizeDelta.x <= 4f)
+                || (rt.sizeDelta.y > 0f && rt.sizeDelta.y <= 4f);
+            img.sprite = isDivider ? null : InventoryUITheme.RoundedRectSprite;
+            img.type = isDivider ? Image.Type.Simple : Image.Type.Sliced;
             img.color = color;
         }
 
@@ -351,15 +355,16 @@ namespace FarmingEngine
             rt.offsetMin = new Vector2(ol, ob);
             rt.offsetMax = new Vector2(-or_, -ot);
             var t = go.AddComponent<Text>();
-            t.font = _font; t.text = text; t.fontSize = size;
-            t.fontStyle = style; t.color = color; t.alignment = align;
+            bool isTitle = style == FontStyle.Bold && size >= 22;
+            t.font = isTitle ? InventoryUITheme.TitleFont : _font;
+            t.text = text; t.fontSize = size;
+            t.fontStyle = isTitle ? FontStyle.Normal : style;
+            t.color = color; t.alignment = align;
         }
 
         Font GetFont()
         {
-            foreach (var t in FindObjectsOfType<Text>())
-                if (t.font != null) return t.font;
-            return Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            return InventoryUITheme.BodyFont;
         }
 
         static string ObjLabel(ObjectiveData obj)
@@ -375,5 +380,6 @@ namespace FarmingEngine
                 default:            return obj.type;
             }
         }
+
     }
 }

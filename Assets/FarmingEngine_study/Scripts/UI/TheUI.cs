@@ -49,6 +49,44 @@ namespace FarmingEngine
                 foreach (Text txt in GetComponentsInChildren<Text>())
                     txt.material = text_material;
             }
+
+            StyleTopRightSettingsButtons();
+        }
+
+        private void StyleTopRightSettingsButtons()
+        {
+            foreach (Transform child in GetComponentsInChildren<Transform>(true))
+            {
+                if (child.name != "PauseButton")
+                    continue;
+
+                Image image = child.GetComponent<Image>();
+                Button button = child.GetComponent<Button>();
+                RectTransform buttonRect = child as RectTransform;
+                if (image == null || button == null || buttonRect == null)
+                    continue;
+
+                buttonRect.anchorMin = buttonRect.anchorMax = Vector2.one;
+                buttonRect.pivot = Vector2.one;
+                buttonRect.anchoredPosition = new Vector2(-18f, -18f);
+                buttonRect.sizeDelta = new Vector2(56f, 56f);
+                buttonRect.localScale = Vector3.one;
+
+                image.sprite = InventoryUITheme.SettingsIcon;
+                image.type = Image.Type.Simple;
+                image.preserveAspect = true;
+                image.color = Color.white;
+
+                ColorBlock colors = button.colors;
+                colors.normalColor = Color.white;
+                colors.highlightedColor = new Color(1f, 0.94f, 0.82f, 1f);
+                colors.selectedColor = colors.highlightedColor;
+                colors.pressedColor = new Color(0.82f, 0.70f, 0.54f, 1f);
+                colors.disabledColor = new Color(1f, 1f, 1f, 0.4f);
+                colors.colorMultiplier = 1f;
+                button.colors = colors;
+                button.targetGraphic = image;
+            }
         }
 
         private void Start()

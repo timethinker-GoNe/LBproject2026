@@ -250,10 +250,34 @@ namespace FarmingEngine
             {
                 ItemSlot islot = slot as ItemSlot;
                 ItemSlot itarget = target as ItemSlot;
-                MergeSlots(islot, itarget);
+                MoveOrSwapDraggedSlot(islot, itarget);
                 if (onMergeSlot != null)
                     onMergeSlot.Invoke(islot, itarget);
             }
+        }
+
+        private void MoveOrSwapDraggedSlot(ItemSlot source, ItemSlot target)
+        {
+            if (source == null || target == null || current_player == null || source == target)
+                return;
+            if (source.GetItem() == null)
+                return;
+
+            InventoryData sourceInventory = source.GetInventory();
+            InventoryData targetInventory = target.GetInventory();
+            if (sourceInventory == null || targetInventory == null)
+                return;
+
+            bool sameInventory = sourceInventory == targetInventory;
+            bool targetOccupied = target.GetItem() != null;
+            if (sameInventory && targetOccupied)
+            {
+                PlayerData.Get().SwapInventoryItems(sourceInventory, source.index, targetInventory, target.index);
+                CancelPlayerSelection();
+                return;
+            }
+
+            MergeSlots(source, target);
         }
 
         private void OnCancel(UISlot slot)

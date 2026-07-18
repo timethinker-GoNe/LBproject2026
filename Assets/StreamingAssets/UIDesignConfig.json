@@ -1,69 +1,69 @@
 {
   "quickbar": {
-    "ancMinX": 0.25,
-    "ancMinY": 0.02,
-    "ancMaxX": 0.75,
-    "ancMaxY": 0.12,
+    "ancMinX": 0.5,
+    "ancMinY": 0,
+    "ancMaxX": 0.5,
+    "ancMaxY": 0,
     "areas": [
       {
         "name": "main",
-        "slotCount": 10,
-        "slotCols": 10,
-        "slotGap": 0,
+        "slotCount": 9,
+        "slotCols": 9,
+        "slotGap": 6,
         "slotPad": 12,
-        "slotSize": 84,
+        "slotSize": 64,
         "slotJustify": "center",
         "slotAlign": "center",
-        "slotPadLeft": 15,
-        "slotPadRight": 20,
+        "slotPadLeft": 18,
+        "slotPadRight": 18,
         "slotPadTop": 12,
         "slotPadBottom": 12
       }
     ],
-    "bgSprite": "UISprites/T_bar_quick.png",
-    "slotSprite": "UISprites/quickbar_slot.png"
+    "bgSprite": "",
+    "slotSprite": ""
   },
   "equip": {
-    "ancMinX": 0.8,
-    "ancMinY": 0.01,
+    "ancMinX": 1,
+    "ancMinY": 0,
     "ancMaxX": 1,
-    "ancMaxY": 0.25,
+    "ancMaxY": 0,
     "areas": [
       {
         "name": "main",
         "slotCount": 6,
         "slotCols": 3,
-        "slotGap": 12,
-        "slotPad": 5,
-        "slotSize": 100,
+        "slotGap": 8,
+        "slotPad": 12,
+        "slotSize": 56,
         "slotJustify": "center",
         "slotAlign": "center",
-        "slotPadLeft": 5,
-        "slotPadRight": 10,
-        "slotPadTop": 15,
-        "slotPadBottom": 15
+        "slotPadLeft": 12,
+        "slotPadRight": 12,
+        "slotPadTop": 12,
+        "slotPadBottom": 12
       }
     ],
-    "bgSprite": "Panel_square",
-    "slotSprite": "UISprites/equip_slot.png"
+    "bgSprite": "",
+    "slotSprite": ""
   },
   "fullinv": {
-    "ancMinX": 0.25,
-    "ancMinY": 0.37,
-    "ancMaxX": 0.75,
-    "ancMaxY": 0.95,
+    "ancMinX": 0.5,
+    "ancMinY": 0.5,
+    "ancMaxX": 0.5,
+    "ancMaxY": 0.5,
     "slotCount": 24,
     "cols": 8,
-    "cellSize": 35,
+    "cellSize": 58,
     "cellSpacing": 6,
     "slotJustify": "center",
     "slotAlign": "start",
-    "headerHeight": 40,
+    "headerHeight": 48,
     "headerText": "인벤토리",
-    "panelBgSprite": "Panel_big",
-    "slotBgSprite": "Slot",
-    "closeBtnSprite": "Button_close",
-    "headerBarSprite": "bar_long2",
+    "panelBgSprite": "",
+    "slotBgSprite": "",
+    "closeBtnSprite": "",
+    "headerBarSprite": "",
     "compSprites": { "slotPanel": "@panel_big", "header": "@bar_long", "close": "@close" }
   },
   "bag": {

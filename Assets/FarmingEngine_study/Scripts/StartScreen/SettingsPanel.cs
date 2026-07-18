@@ -43,12 +43,14 @@ namespace FarmingEngine
         private const string KEY_SFX     = "settings_sfx";
         private const string KEY_QUALITY = "settings_quality";
 
-        private static readonly Color TAB_ACTIVE   = new Color(0.45f, 0.38f, 0.10f, 1f);
-        private static readonly Color TAB_INACTIVE = new Color(0.20f, 0.20f, 0.20f, 1f);
+        private static readonly Color TAB_ACTIVE   = new Color(0.72f, 0.50f, 0.29f, 1f);
+        private static readonly Color TAB_INACTIVE = new Color(0.72f, 0.62f, 0.49f, 1f);
 
         private Button   listening_button  = null;
         private Coroutine listen_coroutine = null;
         private int       current_tab      = 0;
+        private Button    quality_cycle_button;
+        private Text      quality_cycle_label;
 
         private static SettingsPanel _instance;
         public static SettingsPanel Get() { return _instance; }
@@ -57,6 +59,7 @@ namespace FarmingEngine
         {
             base.Awake();
             _instance = this;
+            ApplyBakeryStyle();
         }
 
         protected override void Start()
@@ -68,6 +71,7 @@ namespace FarmingEngine
             if (music_slider     != null) music_slider    .onValueChanged.AddListener(v => PlayerPrefs.SetFloat(KEY_MUSIC,   v));
             if (sfx_slider       != null) sfx_slider      .onValueChanged.AddListener(v => PlayerPrefs.SetFloat(KEY_SFX,    v));
             if (quality_dropdown != null) quality_dropdown.onValueChanged.AddListener(v => { QualitySettings.SetQualityLevel(v); PlayerPrefs.SetInt(KEY_QUALITY, v); });
+            SetupQualityButton();
 
             if (tab_audio   != null) tab_audio  .onClick.AddListener(() => ShowTab(0));
             if (tab_display != null) tab_display.onClick.AddListener(() => ShowTab(1));
@@ -81,6 +85,7 @@ namespace FarmingEngine
             SetupBindButton(bind_attack,    "kb_attack",    KeyCode.LeftShift);
             SetupBindButton(bind_journal,   "kb_journal",   KeyCode.J);
 
+            ApplyBakeryStyle();
             ShowTab(0);
         }
 
@@ -105,7 +110,62 @@ namespace FarmingEngine
         {
             if (btn == null) return;
             var img = btn.GetComponent<Image>();
-            if (img != null) img.color = active ? TAB_ACTIVE : TAB_INACTIVE;
+            if (img != null)
+            {
+                img.sprite = InventoryUITheme.RoundedRectSprite;
+                img.type = Image.Type.Sliced;
+                img.color = active ? TAB_ACTIVE : TAB_INACTIVE;
+            }
+        }
+
+        private void SetupQualityButton()
+        {
+            if (quality_dropdown != null)
+                return;
+
+            Transform target = section_display != null
+                ? section_display.transform.Find("Quality_Dropdown")
+                : null;
+            if (target == null)
+                return;
+
+            quality_cycle_button = target.GetComponent<Button>() ?? target.gameObject.AddComponent<Button>();
+            StyleButton(quality_cycle_button);
+            quality_cycle_label = target.GetComponentInChildren<Text>(true);
+            if (quality_cycle_label != null)
+            {
+                quality_cycle_label.font = InventoryUITheme.BodyFont;
+                quality_cycle_label.fontSize = 17;
+                quality_cycle_label.fontStyle = FontStyle.Bold;
+                quality_cycle_label.color = InventoryUITheme.TextPrimary;
+                quality_cycle_label.alignment = TextAnchor.MiddleCenter;
+            }
+
+            quality_cycle_button.onClick.AddListener(CycleQuality);
+            RefreshQualityLabel();
+        }
+
+        private void CycleQuality()
+        {
+            int count = QualitySettings.names.Length;
+            if (count == 0)
+                return;
+
+            int next = (QualitySettings.GetQualityLevel() + 1) % count;
+            QualitySettings.SetQualityLevel(next);
+            PlayerPrefs.SetInt(KEY_QUALITY, next);
+            RefreshQualityLabel();
+        }
+
+        private void RefreshQualityLabel()
+        {
+            if (quality_cycle_label == null)
+                return;
+
+            int count = QualitySettings.names.Length;
+            int index = Mathf.Clamp(QualitySettings.GetQualityLevel(), 0, Mathf.Max(0, count - 1));
+            float ratio = count <= 1 ? 1f : index / (float)(count - 1);
+            quality_cycle_label.text = ratio < 0.34f ? "낮음" : ratio < 0.68f ? "보통" : "높음";
         }
 
         // ─── 키 바인딩 ────────────────────────────────────────────────────────
@@ -199,6 +259,162 @@ namespace FarmingEngine
             if (music_slider     != null) music_slider.value     = music;
             if (sfx_slider       != null) sfx_slider.value       = sfx;
             if (quality_dropdown != null) quality_dropdown.value = quality;
+            RefreshQualityLabel();
+        }
+
+        private void ApplyBakeryStyle()
+        {
+            RectTransform root = GetComponent<RectTransform>();
+            root.anchorMin = new Vector2(0.06f, 0.06f);
+            root.anchorMax = new Vector2(0.94f, 0.94f);
+            root.pivot = Vector2.one * 0.5f;
+            root.anchoredPosition = Vector2.zero;
+            root.sizeDelta = Vector2.zero;
+            root.localScale = Vector3.one;
+
+            foreach (RectTransform child in transform)
+                child.localScale = Vector3.one;
+
+            Image background = GetComponent<Image>() ?? gameObject.AddComponent<Image>();
+            background.sprite = InventoryUITheme.RoundedRectSprite;
+            background.type = Image.Type.Sliced;
+            background.color = new Color(0.96f, 0.91f, 0.82f, 0.99f);
+
+            Outline outline = GetComponent<Outline>() ?? gameObject.AddComponent<Outline>();
+            outline.effectColor = InventoryUITheme.PanelBorder;
+            outline.effectDistance = new Vector2(3f, -3f);
+            outline.useGraphicAlpha = true;
+
+            Image header = GetOrCreateImage(transform, "CleanHeader");
+            SetRect(header.rectTransform, new Vector2(0f, 1f), Vector2.one,
+                new Vector2(0f, -62f), Vector2.zero);
+            header.sprite = InventoryUITheme.RoundedRectSprite;
+            header.type = Image.Type.Sliced;
+            header.color = new Color(0.43f, 0.31f, 0.22f, 1f);
+            header.raycastTarget = false;
+            header.transform.SetAsFirstSibling();
+
+            Text titleText = transform.Find("Title")?.GetComponent<Text>();
+            if (titleText != null)
+            {
+                SetRect(titleText.rectTransform, new Vector2(0f, 1f), Vector2.one,
+                    new Vector2(24f, -62f), new Vector2(-24f, 0f));
+                titleText.font = InventoryUITheme.TitleFont;
+                titleText.fontSize = 28;
+                titleText.fontStyle = FontStyle.Normal;
+                titleText.color = InventoryUITheme.SlotEmpty;
+                titleText.alignment = TextAnchor.MiddleCenter;
+            }
+
+            RectTransform tabBar = transform.Find("TabBar") as RectTransform;
+            if (tabBar != null)
+                SetRect(tabBar, new Vector2(0f, 1f), Vector2.one,
+                    new Vector2(24f, -116f), new Vector2(-24f, -70f));
+
+            StyleSection(section_audio);
+            StyleSection(section_display);
+            StyleSection(section_keys);
+            StyleBottomButton(transform.Find("Btn_ResetKeys")?.GetComponent<Button>(), false);
+            StyleBottomButton(transform.Find("Btn_Close")?.GetComponent<Button>(), true);
+
+            foreach (Text label in GetComponentsInChildren<Text>(true))
+            {
+                if (label == titleText)
+                    continue;
+                label.font = InventoryUITheme.BodyFont;
+                label.color = InventoryUITheme.TextPrimary;
+                label.raycastTarget = false;
+            }
+
+            foreach (Button button in GetComponentsInChildren<Button>(true))
+                StyleButton(button);
+            foreach (Slider slider in GetComponentsInChildren<Slider>(true))
+                StyleSlider(slider);
+
+            Transform hint = section_display != null ? section_display.transform.Find("Hint_Display") : null;
+            if (hint != null)
+                hint.gameObject.SetActive(false);
+        }
+
+        private static void StyleSection(GameObject section)
+        {
+            if (section == null)
+                return;
+            RectTransform rect = section.GetComponent<RectTransform>();
+            SetRect(rect, Vector2.zero, Vector2.one,
+                new Vector2(28f, 76f), new Vector2(-28f, -126f));
+            if (section.GetComponent<RectMask2D>() == null)
+                section.AddComponent<RectMask2D>();
+        }
+
+        private static void StyleBottomButton(Button button, bool right)
+        {
+            if (button == null)
+                return;
+            RectTransform rect = button.GetComponent<RectTransform>();
+            rect.anchorMin = rect.anchorMax = new Vector2(right ? 1f : 0f, 0f);
+            rect.pivot = new Vector2(right ? 1f : 0f, 0f);
+            rect.anchoredPosition = new Vector2(right ? -24f : 24f, 18f);
+            rect.sizeDelta = new Vector2(156f, 42f);
+        }
+
+        private static void StyleButton(Button button)
+        {
+            if (button == null)
+                return;
+            Image image = button.GetComponent<Image>();
+            if (image != null)
+            {
+                image.sprite = InventoryUITheme.RoundedRectSprite;
+                image.type = Image.Type.Sliced;
+                image.color = TAB_INACTIVE;
+            }
+
+            ColorBlock colors = button.colors;
+            colors.normalColor = Color.white;
+            colors.highlightedColor = new Color(1f, 0.90f, 0.72f, 1f);
+            colors.selectedColor = colors.highlightedColor;
+            colors.pressedColor = new Color(0.78f, 0.62f, 0.45f, 1f);
+            colors.disabledColor = new Color(1f, 1f, 1f, 0.4f);
+            button.colors = colors;
+        }
+
+        private static void StyleSlider(Slider slider)
+        {
+            foreach (Image image in slider.GetComponentsInChildren<Image>(true))
+            {
+                string lower = image.name.ToLowerInvariant();
+                image.sprite = InventoryUITheme.RoundedRectSprite;
+                image.type = Image.Type.Sliced;
+                if (lower.Contains("fill"))
+                    image.color = new Color(0.72f, 0.50f, 0.29f, 1f);
+                else if (lower.Contains("handle"))
+                    image.color = new Color(0.43f, 0.31f, 0.22f, 1f);
+                else
+                    image.color = new Color(0.82f, 0.75f, 0.64f, 1f);
+            }
+        }
+
+        private static Image GetOrCreateImage(Transform parent, string name)
+        {
+            Transform existing = parent.Find(name);
+            if (existing != null)
+                return existing.GetComponent<Image>() ?? existing.gameObject.AddComponent<Image>();
+
+            GameObject child = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            child.transform.SetParent(parent, false);
+            return child.GetComponent<Image>();
+        }
+
+        private static void SetRect(RectTransform rect, Vector2 anchorMin, Vector2 anchorMax,
+            Vector2 offsetMin, Vector2 offsetMax)
+        {
+            if (rect == null)
+                return;
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.offsetMin = offsetMin;
+            rect.offsetMax = offsetMax;
         }
 
         // ─── 업데이트 / 닫기 ──────────────────────────────────────────────────

@@ -35,7 +35,7 @@ namespace FarmingEngine
         [Header("풀 인벤토리 설정")]
         public int slot_count  = 30;
         public int cols        = 6;
-        public int slot_offset = 10;
+        public int slot_offset = 9;
         public Text title_text;
 
         [Header("스타일 스프라이트 (Inspector에서 할당 — 미할당 시 기본 색상 사용)")]
@@ -47,14 +47,10 @@ namespace FarmingEngine
         // 런타임 JSON 설정 (Resources/UIDesignConfig.json)
         private FullInventoryUIConfig cfg = new FullInventoryUIConfig();
 
-        static readonly Color COL_PANEL_BG  = new Color(0.54f, 0.27f, 0.07f, 0.97f);
-        static readonly Color COL_HEADER    = new Color(0.35f, 0.16f, 0.03f, 1.00f);
-        static readonly Color COL_TITLE     = new Color(1.00f, 0.92f, 0.72f, 1.00f);
-        static readonly Color COL_SLOT_BG   = new Color(0.80f, 0.60f, 0.28f, 1.00f);
-        static readonly Color COL_HOVER     = new Color(0.95f, 0.75f, 0.40f, 1.00f);
-        static readonly Color COL_SEPARATOR = new Color(0.25f, 0.10f, 0.01f, 1.00f);
-        static readonly Color COL_SLOT_SEL  = new Color(1.00f, 0.88f, 0.55f, 1.00f);
-        static readonly Color COL_SLOT_HL   = new Color(1.00f, 0.85f, 0.20f, 0.00f);
+        private const float HeaderHeight = 48f;
+        private const float ContentTop = 66f;
+        private const float PanelHorizontalPadding = 24f;
+        private const float PanelBottomPadding = 22f;
 
         private int nav_index = 0;
 
@@ -71,6 +67,7 @@ namespace FarmingEngine
         protected override void Awake()
         {
             LoadConfig();
+            ApplyQuickbarOffset();
             SetupPanelRect();
             BuildVisuals();
             slots = BuildSlots();
@@ -84,6 +81,13 @@ namespace FarmingEngine
             selection_index = slot_offset;
 
             Hide(true);
+        }
+
+        private void ApplyQuickbarOffset()
+        {
+            int quickbarCount;
+            if (UILayoutConfig.TryGetSlotCount("quickbar", out quickbarCount))
+                slot_offset = Mathf.Clamp(quickbarCount, 1, 20);
         }
 
         protected override void Start()
@@ -174,40 +178,44 @@ namespace FarmingEngine
         {
             var rt = GetComponent<RectTransform>();
             if (rt == null) return;
-            rt.anchorMin = new Vector2(cfg.ancMinX, cfg.ancMinY);
-            rt.anchorMax = new Vector2(cfg.ancMaxX, cfg.ancMaxY);
-            rt.offsetMin = rt.offsetMax = Vector2.zero;
+
+            int rows = Mathf.CeilToInt(slot_count / (float)cols);
+            float gridWidth = cols * cfg.cellSize + Mathf.Max(0, cols - 1) * cfg.cellSpacing;
+            float gridHeight = rows * cfg.cellSize + Mathf.Max(0, rows - 1) * cfg.cellSpacing;
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.anchoredPosition = new Vector2(0f, 18f);
+            rt.sizeDelta = new Vector2(
+                gridWidth + PanelHorizontalPadding * 2f,
+                ContentTop + gridHeight + PanelBottomPadding);
         }
 
         // ─── 패널 비주얼 생성 (배경 + 헤더 + 닫기 버튼) ──────────────────
         private void BuildVisuals()
         {
-            // 1. 루트 GO Image — 투명 (패널 뒤 클릭 차단용만, 스프라이트 없음)
+            // Root panel owns the visual frame so the grid can stay mathematically exact.
             var bg = gameObject.GetComponent<Image>() ?? gameObject.AddComponent<Image>();
-            bg.sprite = null;
-            bg.color  = Color.clear;
+            bg.sprite = InventoryUITheme.RoundedRectSprite;
+            bg.type = Image.Type.Sliced;
+            bg.color  = InventoryUITheme.Panel;
             bg.raycastTarget = true;
+            var panelOutline = gameObject.GetComponent<Outline>() ?? gameObject.AddComponent<Outline>();
+            panelOutline.effectColor = InventoryUITheme.PanelBorder;
+            panelOutline.effectDistance = new Vector2(2f, -2f);
+            panelOutline.useGraphicAlpha = true;
 
-            // 2. 헤더 바 — 패널 최상단 고정 40px
             var headerGO = new GameObject("Header");
             headerGO.transform.SetParent(transform, false);
             var headerImg = headerGO.AddComponent<Image>();
-            Sprite resolvedHeaderBar = GetSprite(headerBarSprite, cfg.headerBarSprite);
-            if (resolvedHeaderBar != null)
-            {
-                headerImg.sprite = resolvedHeaderBar;
-                headerImg.type   = Image.Type.Sliced;
-                headerImg.color  = Color.white;
-            }
-            else
-            {
-                headerImg.color = COL_HEADER;
-            }
+            headerImg.sprite = InventoryUITheme.RoundedRectSprite;
+            headerImg.type = Image.Type.Sliced;
+            headerImg.color = new Color(0.66f, 0.53f, 0.39f, 0.98f);
+            headerImg.raycastTarget = false;
             var headerRt = headerGO.GetComponent<RectTransform>();
             headerRt.anchorMin        = new Vector2(0f, 1f);
             headerRt.anchorMax        = new Vector2(1f, 1f);
             headerRt.pivot            = new Vector2(0.5f, 1f);
-            headerRt.offsetMin        = new Vector2(0f, -40f);
+            headerRt.offsetMin        = new Vector2(0f, -HeaderHeight);
             headerRt.offsetMax        = new Vector2(0f,   0f);
 
             // 3. 타이틀 텍스트
@@ -215,11 +223,12 @@ namespace FarmingEngine
             titleGO.transform.SetParent(headerGO.transform, false);
             var titleTxt = titleGO.AddComponent<Text>();
             titleTxt.text      = "인벤토리";
-            titleTxt.font      = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            titleTxt.fontSize  = 18;
-            titleTxt.fontStyle = FontStyle.Bold;
-            titleTxt.color     = COL_TITLE;
+            titleTxt.font      = InventoryUITheme.TitleFont;
+            titleTxt.fontSize  = 19;
+            titleTxt.fontStyle = FontStyle.Normal;
+            titleTxt.color     = InventoryUITheme.SlotEmpty;
             titleTxt.alignment = TextAnchor.MiddleCenter;
+            titleTxt.raycastTarget = false;
             FullRect(titleGO.GetComponent<RectTransform>());
             title_text = titleTxt;
 
@@ -234,34 +243,25 @@ namespace FarmingEngine
             closeBtnRt.sizeDelta        = new Vector2(34f, 34f);
             closeBtnRt.anchoredPosition = new Vector2(-5f, 0f);
 
-            Sprite resolvedCloseBtn = GetSprite(closeBtnSprite, cfg.closeBtnSprite);
-            if (resolvedCloseBtn != null)
-            {
-                closeBtnImg.sprite = resolvedCloseBtn;
-                closeBtnImg.type   = Image.Type.Simple;
-                closeBtnImg.color  = Color.white;
-            }
-            else
-            {
-                closeBtnImg.color = new Color(0.75f, 0.20f, 0.05f, 1f);
-                // X 텍스트 레이블
-                var xGO  = new GameObject("X");
-                xGO.transform.SetParent(closeBtnGO.transform, false);
-                var xTxt = xGO.AddComponent<Text>();
-                xTxt.text      = "✕";
-                xTxt.font      = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-                xTxt.fontSize  = 16;
-                xTxt.fontStyle = FontStyle.Bold;
-                xTxt.color     = Color.white;
-                xTxt.alignment = TextAnchor.MiddleCenter;
-                FullRect(xGO.GetComponent<RectTransform>());
-            }
+            closeBtnImg.sprite = InventoryUITheme.RoundedRectSprite;
+            closeBtnImg.type = Image.Type.Sliced;
+            closeBtnImg.color = new Color(0.94f, 0.88f, 0.76f, 1f);
+            var xGO  = new GameObject("X");
+            xGO.transform.SetParent(closeBtnGO.transform, false);
+            var xTxt = xGO.AddComponent<Text>();
+            xTxt.text      = "×";
+            xTxt.font      = InventoryUITheme.BodyFont;
+            xTxt.fontSize  = 20;
+            xTxt.color     = InventoryUITheme.TextMuted;
+            xTxt.alignment = TextAnchor.MiddleCenter;
+            xTxt.raycastTarget = false;
+            FullRect(xGO.GetComponent<RectTransform>());
 
             var closeBtn = closeBtnGO.AddComponent<Button>();
             closeBtn.targetGraphic = closeBtnImg;
             var bc = closeBtn.colors;
-            bc.highlightedColor = new Color(1f, 0.65f, 0.1f, 1f);
-            bc.pressedColor     = new Color(0.9f, 0.4f, 0.1f, 1f);
+            bc.highlightedColor = new Color(0.91f, 0.69f, 0.44f, 1f);
+            bc.pressedColor     = new Color(0.82f, 0.54f, 0.31f, 1f);
             closeBtn.colors = bc;
             closeBtn.onClick.AddListener(() => Hide());
 
@@ -269,13 +269,13 @@ namespace FarmingEngine
             var sepGO  = new GameObject("Separator");
             sepGO.transform.SetParent(transform, false);
             var sepImg = sepGO.AddComponent<Image>();
-            sepImg.color = COL_SEPARATOR;
+            sepImg.color = InventoryUITheme.PanelBorder;
             var sepRt  = sepGO.GetComponent<RectTransform>();
             sepRt.anchorMin        = new Vector2(0f, 1f);
             sepRt.anchorMax        = new Vector2(1f, 1f);
             sepRt.pivot            = new Vector2(0.5f, 1f);
-            sepRt.offsetMin        = new Vector2(0f, -42f);
-            sepRt.offsetMax        = new Vector2(0f, -40f);
+            sepRt.offsetMin        = new Vector2(0f, -HeaderHeight - 1f);
+            sepRt.offsetMax        = new Vector2(0f, -HeaderHeight);
         }
 
         // ─── 슬롯 그리드 생성 ─────────────────────────────────────────────
@@ -287,34 +287,29 @@ namespace FarmingEngine
                 var gridGO = new GameObject("SlotContainer");
                 gridGO.transform.SetParent(transform, false);
                 var gridRt = gridGO.AddComponent<RectTransform>();
-                // 헤더(40px) + 구분선(2px) + 여백 아래에 배치
-                gridRt.anchorMin = new Vector2(0f, 0f);
-                gridRt.anchorMax = new Vector2(1f, 1f);
-                gridRt.offsetMin = new Vector2(6f,  6f);
-                gridRt.offsetMax = new Vector2(-6f, -44f);
+                gridRt.anchorMin = gridRt.anchorMax = new Vector2(0.5f, 1f);
+                gridRt.pivot = new Vector2(0.5f, 1f);
                 grid = gridGO.AddComponent<GridLayoutGroup>();
             }
 
             grid.transform.SetAsFirstSibling();
 
-            // SlotContainer에 배경 Image 추가 (Panel_big) — 다른 패널의 BG GO 역할
-            var slotContainerImg = grid.gameObject.GetComponent<Image>() ?? grid.gameObject.AddComponent<Image>();
-            Sprite resolvedPanelBg = GetSprite(panelBgSprite, cfg.panelBgSprite);
-            if (resolvedPanelBg != null)
-            {
-                slotContainerImg.sprite = resolvedPanelBg;
-                slotContainerImg.type   = Image.Type.Sliced;
-                slotContainerImg.color  = Color.white;
-            }
-            else
-            {
-                slotContainerImg.sprite = null;
-                slotContainerImg.color  = COL_PANEL_BG;
-            }
-            slotContainerImg.raycastTarget = false;
+            int rows = Mathf.CeilToInt(slot_count / (float)cols);
+            RectTransform exactGridRect = grid.GetComponent<RectTransform>();
+            exactGridRect.anchorMin = exactGridRect.anchorMax = new Vector2(0.5f, 1f);
+            exactGridRect.pivot = new Vector2(0.5f, 1f);
+            exactGridRect.anchoredPosition = new Vector2(0f, -ContentTop);
+            exactGridRect.sizeDelta = new Vector2(
+                cols * cfg.cellSize + Mathf.Max(0, cols - 1) * cfg.cellSpacing,
+                rows * cfg.cellSize + Mathf.Max(0, rows - 1) * cfg.cellSpacing);
 
-            if (grid.GetComponent<RectMask2D>() == null)
-                grid.gameObject.AddComponent<RectMask2D>();
+            var slotContainerImg = grid.gameObject.GetComponent<Image>() ?? grid.gameObject.AddComponent<Image>();
+            slotContainerImg.sprite = null;
+            slotContainerImg.color = Color.clear;
+            slotContainerImg.raycastTarget = false;
+            RectMask2D existingMask = grid.GetComponent<RectMask2D>();
+            if (existingMask != null)
+                existingMask.enabled = false;
 
             ApplyGridLayout(grid);
 
@@ -377,16 +372,10 @@ namespace FarmingEngine
         {
             grid.cellSize        = new Vector2(cfg.cellSize, cfg.cellSize);
             grid.spacing         = new Vector2(cfg.cellSpacing, cfg.cellSpacing);
-            grid.padding         = cfg.slotFlex
-                ? new RectOffset(
-                    Mathf.RoundToInt(cfg.slotPadLeft),
-                    Mathf.RoundToInt(cfg.slotPadRight),
-                    Mathf.RoundToInt(cfg.slotPadTop),
-                    Mathf.RoundToInt(cfg.slotPadBottom))
-                : new RectOffset(6, 6, 6, 6);
+            grid.padding         = new RectOffset(0, 0, 0, 0);
             grid.startCorner     = GridLayoutGroup.Corner.UpperLeft;
             grid.startAxis       = GridLayoutGroup.Axis.Horizontal;
-            grid.childAlignment  = cfg.slotFlex ? GetGridAlignment(cfg.slotJustify, cfg.slotAlign) : TextAnchor.UpperLeft;
+            grid.childAlignment  = TextAnchor.UpperCenter;
             grid.constraint      = GridLayoutGroup.Constraint.FixedColumnCount;
             grid.constraintCount = cols;
         }
@@ -417,39 +406,18 @@ namespace FarmingEngine
             var go = new GameObject("Slot_" + index);
             go.transform.SetParent(parent, false);
 
-            // 슬롯 배경
+            // Keep the root image transparent for Button input; visual styling is shared.
             var bg = go.AddComponent<Image>();
-            Sprite resolvedSlotBg = GetSprite(slotBgSprite, cfg.slotBgSprite);
-            if (resolvedSlotBg != null)
-            {
-                bg.sprite = resolvedSlotBg;
-                bg.type   = Image.Type.Simple;
-                bg.color  = Color.white;
-            }
-            else
-            {
-                bg.color = COL_SLOT_BG;
-            }
+            bg.sprite = null;
+            bg.color = new Color(1f, 1f, 1f, 0.001f);
             var rt = go.GetComponent<RectTransform>();
             rt.sizeDelta = new Vector2(cfg.cellSize, cfg.cellSize);
-
-            // 슬롯 테두리 (안쪽 어두운 테두리 효과)
-            var borderGO  = new GameObject("Border");
-            borderGO.transform.SetParent(go.transform, false);
-            var borderImg = borderGO.AddComponent<Image>();
-            borderImg.color = new Color(0.35f, 0.16f, 0.03f, 0.55f);
-            var borderRt = borderGO.GetComponent<RectTransform>();
-            borderRt.anchorMin = Vector2.zero;
-            borderRt.anchorMax = Vector2.one;
-            borderRt.offsetMin = new Vector2( 1f,  1f);
-            borderRt.offsetMax = new Vector2(-1f, -1f);
-            borderImg.raycastTarget = false;
 
             // 선택 하이라이트
             var hlGO  = new GameObject("Highlight");
             hlGO.transform.SetParent(go.transform, false);
             var hlImg = hlGO.AddComponent<Image>();
-            hlImg.color         = COL_SLOT_HL;
+            hlImg.color         = Color.clear;
             hlImg.raycastTarget = false;
             FullRect(hlGO.GetComponent<RectTransform>());
 
@@ -461,18 +429,19 @@ namespace FarmingEngine
             iconImg.enabled         = false;
             iconImg.raycastTarget   = false;
             var iconRt = iconGO.GetComponent<RectTransform>();
-            iconRt.anchorMin = new Vector2(0.08f, 0.18f);
-            iconRt.anchorMax = new Vector2(0.92f, 0.92f);
-            iconRt.offsetMin = iconRt.offsetMax = Vector2.zero;
+            iconRt.anchorMin = iconRt.anchorMax = iconRt.pivot = Vector2.one * 0.5f;
+            iconRt.sizeDelta = Vector2.one * (cfg.cellSize * 0.68f);
+            iconRt.anchoredPosition = Vector2.zero;
+            iconImg.preserveAspect = true;
 
             // 수량 텍스트
             var qtyGO  = new GameObject("Qty");
             qtyGO.transform.SetParent(go.transform, false);
             var qtyTxt = qtyGO.AddComponent<Text>();
-            qtyTxt.font      = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            qtyTxt.fontSize  = 11;
+            qtyTxt.font      = InventoryUITheme.BodyFont;
+            qtyTxt.fontSize  = 15;
             qtyTxt.fontStyle = FontStyle.Bold;
-            qtyTxt.color     = Color.white;
+            qtyTxt.color     = InventoryUITheme.TextPrimary;
             qtyTxt.alignment = TextAnchor.LowerRight;
             var qtyRt = qtyGO.GetComponent<RectTransform>();
             qtyRt.anchorMin = new Vector2(0f, 0f);
@@ -485,15 +454,11 @@ namespace FarmingEngine
             slot.value     = qtyTxt;
             slot.highlight = hlImg;
 
+            InventoryUITheme.StyleSlot(slot, cfg.cellSize);
+
             var btn = go.AddComponent<Button>();
             btn.targetGraphic = bg;
-            var bc = btn.colors;
-            bc.normalColor      = Color.white;
-            bc.highlightedColor = COL_HOVER;
-            bc.pressedColor     = COL_SLOT_SEL;
-            bc.selectedColor    = COL_SLOT_SEL;
-            bc.fadeDuration     = 0.08f;
-            btn.colors = bc;
+            btn.transition = UnityEngine.UI.Selectable.Transition.None;
 
             return slot;
         }
@@ -534,6 +499,8 @@ namespace FarmingEngine
                 {
                     slot.Hide();
                 }
+
+                InventoryUITheme.RefreshSlot(slot);
             }
 
             ItemSlot sslot = GetSelectedSlot();
@@ -576,6 +543,13 @@ namespace FarmingEngine
 
             PlayerControls controls = PlayerControls.Get();
             if (controls == null || !IsVisible()) return;
+
+            for (int i = 0; i < slots.Length; i++)
+            {
+                ItemSlot slot = slots[i] as ItemSlot;
+                if (slot != null && slot.gameObject.activeSelf)
+                    InventoryUITheme.RefreshSlot(slot);
+            }
 
             if (controls.IsPressMenuCancel())
             {

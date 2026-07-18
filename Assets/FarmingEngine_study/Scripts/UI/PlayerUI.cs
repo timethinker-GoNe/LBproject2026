@@ -36,6 +36,8 @@ namespace FarmingEngine
             ui_list.Add(this);
 
             item_slot_panels = GetComponentsInChildren<ItemSlotPanel>();
+            HideCraftButton();
+            SetupTopHUD();
 
             if (build_mode_text != null)
                 build_mode_text.enabled = false;
@@ -49,6 +51,120 @@ namespace FarmingEngine
         void OnDestroy()
         {
             ui_list.Remove(this);
+        }
+
+        private void HideCraftButton()
+        {
+            Canvas canvas = GetComponentInParent<Canvas>();
+            Transform root = canvas != null ? canvas.transform : transform.root;
+            Transform[] children = root.GetComponentsInChildren<Transform>(true);
+            foreach (Transform child in children)
+            {
+                if (child.name == "ButtonCraft")
+                    child.gameObject.SetActive(false);
+            }
+        }
+
+        private void SetupTopHUD()
+        {
+            foreach (AttributeBar attributeBar in GetComponentsInChildren<AttributeBar>(true))
+            {
+                if (attributeBar.attribute == AttributeType.Energy)
+                    attributeBar.gameObject.SetActive(false);
+            }
+
+            if (gold_value == null)
+                return;
+
+            Transform goldIcon = null;
+            Transform bars = transform.Find("Bars");
+            if (bars != null)
+            {
+                foreach (Transform child in bars)
+                {
+                    if (child.name == "GoldIcon")
+                        goldIcon = child;
+                }
+            }
+
+            Transform existing = transform.Find("CleanGoldHUD");
+            GameObject panelObject = existing != null
+                ? existing.gameObject
+                : new GameObject("CleanGoldHUD", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            panelObject.transform.SetParent(transform, false);
+
+            RectTransform panelRect = panelObject.GetComponent<RectTransform>();
+            panelRect.anchorMin = panelRect.anchorMax = new Vector2(0f, 1f);
+            panelRect.pivot = new Vector2(0f, 1f);
+            panelRect.anchoredPosition = new Vector2(18f, -106f);
+            panelRect.sizeDelta = new Vector2(210f, 40f);
+
+            Image panel = panelObject.GetComponent<Image>();
+            panel.sprite = InventoryUITheme.RoundedRectSprite;
+            panel.type = Image.Type.Sliced;
+            panel.color = new Color(0.27f, 0.22f, 0.19f, 0.78f);
+            panel.raycastTarget = false;
+            Outline panelOutline = panelObject.GetComponent<Outline>() ?? panelObject.AddComponent<Outline>();
+            panelOutline.effectColor = new Color(0.67f, 0.53f, 0.40f, 0.42f);
+            panelOutline.effectDistance = new Vector2(1f, -1f);
+            panelOutline.useGraphicAlpha = true;
+
+            gold_value.transform.SetParent(panelObject.transform, false);
+            RectTransform valueRect = gold_value.rectTransform;
+            valueRect.anchorMin = new Vector2(0f, 0f);
+            valueRect.anchorMax = new Vector2(1f, 1f);
+            valueRect.offsetMin = new Vector2(48f, 0f);
+            valueRect.offsetMax = new Vector2(-12f, 0f);
+            valueRect.localScale = Vector3.one;
+            gold_value.font = InventoryUITheme.BodyFont;
+            gold_value.fontSize = 16;
+            gold_value.fontStyle = FontStyle.Bold;
+            gold_value.alignment = TextAnchor.MiddleRight;
+            gold_value.color = InventoryUITheme.SlotEmpty;
+            gold_value.raycastTarget = false;
+            Outline valueOutline = gold_value.GetComponent<Outline>();
+            if (valueOutline != null)
+                valueOutline.enabled = false;
+
+            if (goldIcon != null)
+                goldIcon.gameObject.SetActive(false);
+
+            Transform badgeTransform = panelObject.transform.Find("CoinBadge");
+            GameObject badgeObject = badgeTransform != null
+                ? badgeTransform.gameObject
+                : new GameObject("CoinBadge", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            badgeObject.transform.SetParent(panelObject.transform, false);
+            RectTransform badgeRect = badgeObject.GetComponent<RectTransform>();
+            badgeRect.anchorMin = badgeRect.anchorMax = new Vector2(0f, 0.5f);
+            badgeRect.pivot = new Vector2(0.5f, 0.5f);
+            badgeRect.anchoredPosition = new Vector2(24f, 0f);
+            badgeRect.sizeDelta = new Vector2(36f, 36f);
+            Image badge = badgeObject.GetComponent<Image>();
+            badge.sprite = InventoryUITheme.GoldIcon;
+            badge.type = Image.Type.Simple;
+            badge.preserveAspect = true;
+            badge.color = Color.white;
+            badge.raycastTarget = false;
+
+            Transform labelTransform = badgeObject.transform.Find("Label");
+            GameObject labelObject = labelTransform != null
+                ? labelTransform.gameObject
+                : new GameObject("Label", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+            labelObject.transform.SetParent(badgeObject.transform, false);
+            RectTransform labelRect = labelObject.GetComponent<RectTransform>();
+            labelRect.anchorMin = Vector2.zero;
+            labelRect.anchorMax = Vector2.one;
+            labelRect.offsetMin = labelRect.offsetMax = Vector2.zero;
+            Text label = labelObject.GetComponent<Text>();
+            label.text = "";
+            label.font = InventoryUITheme.BodyFont;
+            label.fontSize = 13;
+            label.fontStyle = FontStyle.Bold;
+            label.alignment = TextAnchor.MiddleCenter;
+            label.color = InventoryUITheme.TextPrimary;
+            label.raycastTarget = false;
+
+            gold_value.transform.SetAsLastSibling();
         }
 
         protected override void Start()
@@ -70,7 +186,7 @@ namespace FarmingEngine
             PlayerCharacter character = GetPlayer();
             int gold = (character != null) ? character.SaveData.gold : 0;
             if (gold_value != null)
-                gold_value.text = gold.ToString();
+                gold_value.text = gold.ToString("N0");
 
             //Init inventories from here because they are disabled
             foreach (ItemSlotPanel panel in item_slot_panels)

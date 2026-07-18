@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using FarmingEngine;
 
 namespace DialogueQuests
 {
@@ -45,6 +46,7 @@ namespace DialogueQuests
 
         private Coroutine text_anim;
         private bool text_anim_completed = true;
+        private Canvas dialogue_canvas;
 
         private static DialoguePanel _instance;
 
@@ -52,6 +54,9 @@ namespace DialogueQuests
         {
             base.Awake();
             _instance = this;
+
+            EnsureTopCanvas();
+            ApplyBakeryDialogueStyle();
 
             if (arrow != null)
             {
@@ -63,6 +68,7 @@ namespace DialogueQuests
         protected override void Start()
         {
             base.Start();
+            ApplyBakeryDialogueStyle();
             Hide();
 
             if (NarrativeManager.Get())
@@ -107,7 +113,7 @@ namespace DialogueQuests
                     if (arrow_rect != null)
                     {
                         arrow_rect.anchoredPosition = button.GetRect().anchoredPosition
-                        + (Vector2.left * button.GetRect().sizeDelta.x * 0.5f)
+                        + (Vector2.left * button.GetRect().rect.width * 0.5f)
                         + (Vector2.left * arrow_rect.sizeDelta.x * 0.5f);
                     }
                 }
@@ -133,8 +139,9 @@ namespace DialogueQuests
             current_text = msg.GetText();
             this.text.text = current_text;
 
+            string actorTitle = ResolveActorTitle(msg.actor);
             if (title != null)
-                title.text = msg.actor ? msg.actor.GetTitle() : "";
+                title.text = actorTitle;
 
             if (portrait_animator != null)
             {
@@ -160,20 +167,38 @@ namespace DialogueQuests
             {
                 bool isLeft = msg.actor.portrait_side == PortraitSide.Left;
                 Image fullTarget = isLeft ? portrait_full_left : portrait_full_right;
-                Image nameBgTarget = isLeft ? portrait_name_bg_left : portrait_name_bg_right;
-                Text nameTarget = isLeft ? portrait_name_left : portrait_name_right;
                 if (fullTarget != null)
                 {
                     fullTarget.sprite = msg.actor.portrait_full;
                     fullTarget.enabled = true;
+                    fullTarget.transform.SetAsFirstSibling();
                 }
-                if (nameBgTarget != null)
-                    nameBgTarget.enabled = true;
-                if (nameTarget != null)
+            }
+
+            // Full portraits are root-level siblings of the dialogue panel.
+            // Keep the illustration behind the complete box, name and body text.
+            transform.SetAsLastSibling();
+            RectTransform dialogueBox = text != null ? text.transform.parent as RectTransform : null;
+            if (dialogueBox != null)
+                dialogueBox.SetAsLastSibling();
+            ApplySpeakerLayout(msg.actor != null && msg.actor.portrait_full != null, line.choices.Count > 0);
+
+            // Always keep the speaker name inside the dialogue box. Scene-specific
+            // full-portrait labels can sit outside the safe area after prefab overrides.
+            if (msg.actor != null)
+            {
+                if (title_box != null)
+                    title_box.enabled = true;
+                if (title != null)
                 {
-                    nameTarget.text = msg.actor.GetTitle();
-                    nameTarget.enabled = true;
+                    title.text = actorTitle;
+                    title.enabled = true;
+                    title.transform.SetAsLastSibling();
                 }
+                if (title_box != null)
+                    title_box.transform.SetAsLastSibling();
+                if (title != null)
+                    title.transform.SetAsLastSibling();
             }
 
             text_skipable = line.parent.dialogue_type == DialogueMessageType.DialoguePanel;
@@ -297,6 +322,7 @@ namespace DialogueQuests
         {
             if (line.parent.dialogue_type == type)
             {
+                EnsureTopCanvas();
                 SetDialogue(line, msg);
                 Show();
 
@@ -319,17 +345,276 @@ namespace DialogueQuests
         public override void Hide(bool instant = false)
         {
             base.Hide(instant);
+        }
+
+        public override void AfterHide()
+        {
             if (portrait_full_left != null) portrait_full_left.enabled = false;
             if (portrait_full_right != null) portrait_full_right.enabled = false;
             if (portrait_name_bg_left != null) portrait_name_bg_left.enabled = false;
             if (portrait_name_bg_right != null) portrait_name_bg_right.enabled = false;
             if (portrait_name_left != null) portrait_name_left.enabled = false;
             if (portrait_name_right != null) portrait_name_right.enabled = false;
+            if (portrait != null) portrait.enabled = false;
+            if (title_box != null) title_box.enabled = false;
+            if (title != null) title.enabled = false;
+
+            base.AfterHide();
         }
 
         public static DialoguePanel Get()
         {
             return _instance;
+        }
+
+        private void EnsureTopCanvas()
+        {
+            if (dialogue_canvas == null)
+                dialogue_canvas = GetComponentInParent<Canvas>();
+            if (dialogue_canvas == null)
+                return;
+
+            dialogue_canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            dialogue_canvas.worldCamera = null;
+            dialogue_canvas.overrideSorting = true;
+            SortingLayer[] layers = SortingLayer.layers;
+            if (layers.Length > 0)
+                dialogue_canvas.sortingLayerID = layers[layers.Length - 1].id;
+            dialogue_canvas.sortingOrder = 32700;
+        }
+
+        private void ApplyBakeryDialogueStyle()
+        {
+            RectTransform box = text != null ? text.transform.parent as RectTransform : null;
+            if (box == null)
+                return;
+
+            box.anchorMin = new Vector2(0.08f, 0f);
+            box.anchorMax = new Vector2(0.92f, 0f);
+            box.pivot = new Vector2(0.5f, 0f);
+            box.anchoredPosition = new Vector2(0f, 18f);
+            box.sizeDelta = new Vector2(0f, 230f);
+            box.localScale = Vector3.one;
+            box.SetAsLastSibling();
+
+            Image boxImage = box.GetComponent<Image>() ?? box.gameObject.AddComponent<Image>();
+            boxImage.sprite = InventoryUITheme.RoundedRectSprite;
+            boxImage.type = Image.Type.Sliced;
+            boxImage.color = new Color(0.96f, 0.91f, 0.82f, 0.98f);
+            boxImage.raycastTarget = true;
+
+            Outline boxOutline = box.GetComponent<Outline>() ?? box.gameObject.AddComponent<Outline>();
+            boxOutline.effectColor = InventoryUITheme.PanelBorder;
+            boxOutline.effectDistance = new Vector2(3f, -3f);
+            boxOutline.useGraphicAlpha = true;
+
+            StylePortrait();
+            StyleNameBadge(title_box, title);
+            StyleNameBadge(portrait_name_bg_left, portrait_name_left);
+            StyleNameBadge(portrait_name_bg_right, portrait_name_right);
+
+            PositionNameBadge(title_box, title, 220f);
+            if (title_box != null)
+                title_box.transform.SetAsLastSibling();
+            if (title != null)
+                title.transform.SetAsLastSibling();
+
+            RectTransform textRect = text.rectTransform;
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = new Vector2(220f, 24f);
+            textRect.offsetMax = new Vector2(-24f, -64f);
+            text.font = InventoryUITheme.BodyFont;
+            text.fontSize = 30;
+            text.fontStyle = FontStyle.Normal;
+            text.alignment = TextAnchor.UpperLeft;
+            text.color = InventoryUITheme.TextPrimary;
+            text.lineSpacing = 1.15f;
+            text.raycastTarget = false;
+
+            for (int i = 0; i < choices.Length; i++)
+                StyleChoice(choices[i], i);
+
+            if (arrow != null)
+            {
+                arrow.color = new Color(0.89f, 0.55f, 0.22f, 1f);
+                arrow.rectTransform.sizeDelta = new Vector2(30f, 30f);
+            }
+        }
+
+        private void StylePortrait()
+        {
+            if (portrait == null)
+                return;
+
+            RectTransform portraitRect = portrait.rectTransform;
+            portraitRect.anchorMin = portraitRect.anchorMax = Vector2.zero;
+            portraitRect.pivot = new Vector2(0.5f, 0.5f);
+            portraitRect.anchoredPosition = new Vector2(122f, 172f);
+            portraitRect.sizeDelta = new Vector2(184f, 184f);
+            portrait.preserveAspect = true;
+            portrait.raycastTarget = false;
+        }
+
+        private static void StyleNameBadge(Image badge, Text label)
+        {
+            if (badge != null)
+            {
+                badge.sprite = InventoryUITheme.RoundedRectSprite;
+                badge.type = Image.Type.Sliced;
+                badge.color = new Color(0.42f, 0.30f, 0.22f, 0.98f);
+                badge.raycastTarget = false;
+            }
+
+            if (label != null)
+            {
+                label.font = InventoryUITheme.TitleFont;
+                label.fontSize = 25;
+                label.fontStyle = FontStyle.Normal;
+                label.alignment = TextAnchor.MiddleCenter;
+                label.color = InventoryUITheme.SlotEmpty;
+                label.raycastTarget = false;
+            }
+        }
+
+        private static void PositionNameBadge(Image badge, Text label, float left)
+        {
+            if (badge != null)
+            {
+                RectTransform rect = badge.rectTransform;
+                rect.anchorMin = rect.anchorMax = new Vector2(0f, 1f);
+                rect.pivot = new Vector2(0f, 1f);
+                rect.anchoredPosition = new Vector2(left, -14f);
+                rect.sizeDelta = new Vector2(240f, 46f);
+            }
+
+            if (label != null)
+            {
+                RectTransform rect = label.rectTransform;
+                rect.anchorMin = rect.anchorMax = new Vector2(0f, 1f);
+                rect.pivot = new Vector2(0f, 1f);
+                rect.anchoredPosition = new Vector2(left, -14f);
+                rect.sizeDelta = new Vector2(240f, 46f);
+            }
+        }
+
+        private static void StyleChoice(DialogueChoiceButton choice, int index)
+        {
+            if (choice == null)
+                return;
+
+            RectTransform rect = choice.GetRect();
+            if (rect == null)
+                rect = choice.GetComponent<RectTransform>();
+
+            int column = index % 2;
+            int row = index / 2;
+            float left = column == 0 ? 0.21f : 0.60f;
+            float right = column == 0 ? 0.58f : 0.97f;
+            rect.anchorMin = new Vector2(left, 0f);
+            rect.anchorMax = new Vector2(right, 0f);
+            rect.pivot = Vector2.one * 0.5f;
+            rect.anchoredPosition = new Vector2(0f, 63f - row * 44f);
+            rect.sizeDelta = new Vector2(0f, 38f);
+            rect.localScale = Vector3.one;
+
+            Image background = choice.GetComponent<Image>();
+            if (background != null)
+            {
+                background.sprite = InventoryUITheme.RoundedRectSprite;
+                background.type = Image.Type.Sliced;
+                background.color = Color.white;
+            }
+
+            Button button = choice.GetComponent<Button>();
+            if (button != null)
+            {
+                Color normal = new Color(0.79f, 0.69f, 0.55f, 1f);
+                ColorBlock colors = button.colors;
+                colors.normalColor = normal;
+                colors.highlightedColor = new Color(0.91f, 0.67f, 0.36f, 1f);
+                colors.selectedColor = colors.highlightedColor;
+                colors.pressedColor = new Color(0.68f, 0.45f, 0.25f, 1f);
+                colors.disabledColor = new Color(normal.r, normal.g, normal.b, 0.45f);
+                button.colors = colors;
+            }
+
+            if (choice.highlight != null)
+            {
+                RectTransform highlightRect = choice.highlight.rectTransform;
+                highlightRect.anchorMin = Vector2.zero;
+                highlightRect.anchorMax = Vector2.one;
+                highlightRect.offsetMin = new Vector2(2f, 2f);
+                highlightRect.offsetMax = new Vector2(-2f, -2f);
+                choice.highlight.sprite = InventoryUITheme.RoundedRectSprite;
+                choice.highlight.type = Image.Type.Sliced;
+                choice.highlight.color = new Color(0.93f, 0.62f, 0.28f, 0.92f);
+                choice.highlight.raycastTarget = false;
+                choice.highlight.transform.SetAsFirstSibling();
+            }
+
+            if (choice.text != null)
+            {
+                RectTransform labelRect = choice.text.rectTransform;
+                labelRect.anchorMin = Vector2.zero;
+                labelRect.anchorMax = Vector2.one;
+                labelRect.offsetMin = new Vector2(16f, 4f);
+                labelRect.offsetMax = new Vector2(-16f, -4f);
+                choice.text.font = InventoryUITheme.TitleFont;
+                choice.text.fontSize = 22;
+                choice.text.fontStyle = FontStyle.Normal;
+                choice.text.alignment = TextAnchor.MiddleLeft;
+                choice.text.color = InventoryUITheme.TextPrimary;
+                choice.text.raycastTarget = false;
+                choice.text.transform.SetAsLastSibling();
+            }
+        }
+
+        private void ApplySpeakerLayout(bool hasFullPortrait, bool hasChoices)
+        {
+            RectTransform box = text != null ? text.transform.parent as RectTransform : null;
+            if (box == null)
+                return;
+
+            box.anchorMin = new Vector2(hasFullPortrait ? 0.18f : 0.08f, 0f);
+            box.anchorMax = new Vector2(hasFullPortrait ? 0.94f : 0.92f, 0f);
+            box.anchoredPosition = new Vector2(0f, 18f);
+            box.sizeDelta = new Vector2(0f, 230f);
+            box.SetAsLastSibling();
+
+            float contentLeft = hasFullPortrait ? 28f : 220f;
+            PositionNameBadge(title_box, title, contentLeft);
+
+            RectTransform textRect = text.rectTransform;
+            textRect.offsetMin = new Vector2(contentLeft, hasChoices ? 88f : 24f);
+            textRect.offsetMax = new Vector2(-24f, -64f);
+
+            for (int i = 0; i < choices.Length; i++)
+            {
+                StyleChoice(choices[i], i);
+                if (!hasFullPortrait || choices[i] == null)
+                    continue;
+
+                RectTransform choiceRect = choices[i].GetRect();
+                int column = i % 2;
+                choiceRect.anchorMin = new Vector2(column == 0 ? 0.02f : 0.51f, 0f);
+                choiceRect.anchorMax = new Vector2(column == 0 ? 0.49f : 0.98f, 0f);
+            }
+        }
+
+        private static string ResolveActorTitle(ActorData actor)
+        {
+            if (actor == null)
+                return "";
+
+            string actorTitle = actor.GetTitle();
+            if (string.IsNullOrWhiteSpace(actorTitle) || actorTitle == actor.title)
+            {
+                string fallback = DialogueLocalizer.Get(actor.actor_id + ".name");
+                if (!string.IsNullOrWhiteSpace(fallback))
+                    actorTitle = fallback;
+            }
+            return actorTitle;
         }
     }
 

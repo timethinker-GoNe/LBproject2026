@@ -70,6 +70,20 @@ namespace FarmingEngine
             return true;
         }
 
+        public static bool TryGetSlotCount(string panelKey, out int slotCount)
+        {
+            slotCount = 0;
+            var root = GetRoot();
+            if (root == null) return false;
+            var p = root[panelKey];
+            if (p == null) return false;
+
+            var areas = p["areas"] as Newtonsoft.Json.Linq.JArray;
+            var src = (areas != null && areas.Count > 0) ? areas[0] : p;
+            slotCount = src.Value<int?>("slotCount") ?? 0;
+            return slotCount > 0;
+        }
+
         /// <summary>
         /// areas 배열에서 특정 areaName을 찾아 슬롯 레이아웃을 반환한다.
         /// slotSize: 직접 지정값 (컨테이너 최대 크기로 캡핑은 SlotArea에서 처리).

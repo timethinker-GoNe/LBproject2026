@@ -51,18 +51,20 @@ namespace FarmingEngine
 
         private void BuildUI()
         {
-            Font font = GetFont();
+            Font font = InventoryUITheme.BodyFont;
 
-            // ── 트래커 (우상단) ──────────────────────────────────────────────
+            // 장비창 바로 위에 쌓이는 퀘스트 트래커
             _trackerRoot = GetOrCreate(transform, "Tracker");
             var trackerRT = EnsureRT(_trackerRoot);
-            trackerRT.anchorMin        = Vector2.one;
-            trackerRT.anchorMax        = Vector2.one;
-            trackerRT.pivot            = Vector2.one;
-            trackerRT.anchoredPosition = new Vector2(-12f, -12f);
-            trackerRT.sizeDelta        = new Vector2(240f, 130f);
+            trackerRT.anchorMin        = new Vector2(1f, 0f);
+            trackerRT.anchorMax        = new Vector2(1f, 0f);
+            trackerRT.pivot            = new Vector2(1f, 0f);
+            trackerRT.anchoredPosition = new Vector2(-24f, 178f);
+            trackerRT.sizeDelta        = new Vector2(270f, 126f);
             var trackerBG = _trackerRoot.GetComponent<Image>() ?? _trackerRoot.AddComponent<Image>();
-            trackerBG.color = new Color(0f, 0f, 0f, 0.65f);
+            trackerBG.sprite = InventoryUITheme.RoundedRectSprite;
+            trackerBG.type = Image.Type.Sliced;
+            trackerBG.color = new Color(0.33f, 0.25f, 0.20f, 0.90f);
             _trackerCG = _trackerRoot.GetComponent<CanvasGroup>() ?? _trackerRoot.AddComponent<CanvasGroup>();
 
             var titleGO = GetOrCreate(_trackerRoot.transform, "Title");
@@ -73,10 +75,10 @@ namespace FarmingEngine
             titleRT.anchoredPosition = new Vector2(10f, -8f);
             titleRT.sizeDelta        = new Vector2(-20f, 28f);
             _titleText = titleGO.GetComponent<Text>() ?? titleGO.AddComponent<Text>();
-            _titleText.font      = font;
-            _titleText.fontSize  = 22;
-            _titleText.fontStyle = FontStyle.Bold;
-            _titleText.color     = Color.white;
+            _titleText.font      = InventoryUITheme.TitleFont;
+            _titleText.fontSize  = 20;
+            _titleText.fontStyle = FontStyle.Normal;
+            _titleText.color     = InventoryUITheme.SlotEmpty;
             _titleText.alignment = TextAnchor.UpperLeft;
 
             var objGO = GetOrCreate(_trackerRoot.transform, "Objectives");
@@ -87,22 +89,24 @@ namespace FarmingEngine
             objRT.offsetMax = new Vector2(-10f, -42f);
             _objectivesText = objGO.GetComponent<Text>() ?? objGO.AddComponent<Text>();
             _objectivesText.font      = font;
-            _objectivesText.fontSize  = 18;
-            _objectivesText.color     = new Color(0.85f, 0.85f, 0.85f);
+            _objectivesText.fontSize  = 16;
+            _objectivesText.color     = new Color(0.93f, 0.86f, 0.74f, 1f);
             _objectivesText.alignment = TextAnchor.UpperLeft;
 
             _trackerRoot.SetActive(false);
 
-            // ── 토스트 (상단 중앙) ────────────────────────────────────────────
+            // 시작/완료 토스트는 트래커 위에 표시
             _toastRoot = GetOrCreate(transform, "Toast");
             var toastRT = EnsureRT(_toastRoot);
-            toastRT.anchorMin        = new Vector2(0.5f, 1f);
-            toastRT.anchorMax        = new Vector2(0.5f, 1f);
-            toastRT.pivot            = new Vector2(0.5f, 1f);
-            toastRT.anchoredPosition = new Vector2(0f, -80f);
-            toastRT.sizeDelta        = new Vector2(320f, 70f);
+            toastRT.anchorMin        = new Vector2(1f, 0f);
+            toastRT.anchorMax        = new Vector2(1f, 0f);
+            toastRT.pivot            = new Vector2(1f, 0f);
+            toastRT.anchoredPosition = new Vector2(-24f, 316f);
+            toastRT.sizeDelta        = new Vector2(270f, 72f);
             var toastBG = _toastRoot.GetComponent<Image>() ?? _toastRoot.AddComponent<Image>();
-            toastBG.color = new Color(0.1f, 0.3f, 0.1f, 0.9f);
+            toastBG.sprite = InventoryUITheme.RoundedRectSprite;
+            toastBG.type = Image.Type.Sliced;
+            toastBG.color = new Color(0.72f, 0.55f, 0.34f, 0.96f);
 
             var toastTextGO = GetOrCreate(_toastRoot.transform, "ToastText");
             var toastTextRT = EnsureRT(toastTextGO);
@@ -111,10 +115,10 @@ namespace FarmingEngine
             toastTextRT.offsetMin = new Vector2(12f, 8f);
             toastTextRT.offsetMax = new Vector2(-12f, -8f);
             _toastText = toastTextGO.GetComponent<Text>() ?? toastTextGO.AddComponent<Text>();
-            _toastText.font      = font;
-            _toastText.fontSize  = 13;
-            _toastText.fontStyle = FontStyle.Bold;
-            _toastText.color     = Color.white;
+            _toastText.font      = InventoryUITheme.TitleFont;
+            _toastText.fontSize  = 17;
+            _toastText.fontStyle = FontStyle.Normal;
+            _toastText.color     = InventoryUITheme.SlotEmpty;
             _toastText.alignment = TextAnchor.MiddleCenter;
 
             _toastRoot.SetActive(false);
@@ -181,7 +185,6 @@ namespace FarmingEngine
 
             if (_titleText != null)
                 _titleText.text = def.title ?? progress.questId;
-
             if (_objectivesText != null)
             {
                 var sb = new StringBuilder();
@@ -239,9 +242,7 @@ namespace FarmingEngine
 
         private Font GetFont()
         {
-            foreach (var t in FindObjectsOfType<Text>())
-                if (t.font != null) return t.font;
-            return Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            return InventoryUITheme.BodyFont;
         }
 
         private static GameObject GetOrCreate(Transform parent, string childName)
